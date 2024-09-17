@@ -16,8 +16,11 @@ interface UsuarioService {
     //Result do nosso pacote (br.senai..)
     // A URL é padrão na API tod, na requisição colocamos apenas o diferente na URL, no caso da url abaixo né a palvra character
     //https://rickandmortyapi.com/api/character
-    @GET("character")
-    fun getAllCharacters(): Call<Result>
+    @GET("/v1/sinalibras/alunos")
+    fun getAllAlunos(): Call<Result>
+
+    @GET("/v1/sinalibras/professores")
+    fun getAllProfessores(): Call<Result>
 
 
     //https://rickandmortyapi.com/api/character/1

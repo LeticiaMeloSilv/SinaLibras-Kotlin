@@ -51,6 +51,7 @@ import retrofit2.Callback
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
+
 @Composable
 fun Cadastro(controleDeNavegacao: NavHostController) {
 
@@ -58,10 +59,10 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
         mutableStateOf("")
     }
 //pegando data atual
-        val currentDate: LocalDate = LocalDate.now()
-        val currentDateTime: LocalDateTime = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
-        val formattedDateTime: String = currentDateTime.format(formatter)
+    val currentDate: LocalDate = LocalDate.now()
+    val currentDateTime: LocalDateTime = LocalDateTime.now()
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+    val formattedDateTime: String = currentDateTime.format(formatter)
 
     var emailState = remember {
         mutableStateOf("")
@@ -81,16 +82,17 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
     var umError = remember {
         mutableStateOf(false)
     }
-    var mensagemErroState= remember {
+    var mensagemErroState = remember {
         mutableStateOf("")
     }
 //mudar visibilidade da senha
     var senhaVisivel by remember { mutableStateOf(false) }
-    val textoOculto = if (senhaVisivel) VisualTransformation.None else PasswordVisualTransformation()
+    val textoOculto =
+        if (senhaVisivel) VisualTransformation.None else PasswordVisualTransformation()
 //mudar visibilidade da senha
     var confirmaSenhaVisivel by remember { mutableStateOf(false) }
-    val textoOcultoConfirmaSenha = if (confirmaSenhaVisivel) VisualTransformation.None else PasswordVisualTransformation()
-
+    val textoOcultoConfirmaSenha =
+        if (confirmaSenhaVisivel) VisualTransformation.None else PasswordVisualTransformation()
 
 
     //gradiente do background
@@ -107,8 +109,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
-                //controleDeNavegacao.navigate("inicio")
-            },//ARRUMAR REDIRECIONAMENTO DE TELA
+                controleDeNavegacao.navigate("inicio")
+            },
             colors = ButtonColors(
                 Color.Transparent,
                 Color.Transparent,
@@ -141,16 +143,18 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
 
         }
         Spacer(modifier = Modifier.height(90.dp))
-        Column(modifier = Modifier
-            .width(300.dp)
-            .align(Alignment.CenterHorizontally)
-            .fillMaxHeight()) {
+        Column(
+            modifier = Modifier
+                .width(300.dp)
+                .align(Alignment.CenterHorizontally)
+                .fillMaxHeight()
+        ) {
             TextField(
                 value = nomeState.value,
-                onValueChange = {nomeState.value = it
+                onValueChange = {
+                    nomeState.value = it
                 },
-                modifier = Modifier.fillMaxWidth()
-                ,
+                modifier = Modifier.fillMaxWidth(),
                 label = { Text("Nome Completo") },
                 isError = umError.value,
                 colors = TextFieldDefaults
@@ -159,8 +163,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                         focusedTextColor = Color(0xff334EAC),
                         unfocusedContainerColor = Color.Transparent,
                         unfocusedTextColor = Color(0xff334EAC),
-                        errorTextColor=Color(0xff334EAC),
-                        errorContainerColor= Color.Transparent,
+                        errorTextColor = Color(0xff334EAC),
+                        errorContainerColor = Color.Transparent,
                         errorPlaceholderColor = Color(0xff334EAC),
                         errorLabelColor = Color(0xff334EAC),
                         focusedPlaceholderColor = Color(0xff334EAC),
@@ -173,7 +177,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
             )
             TextField(
                 value = emailState.value,
-                onValueChange = {emailState.value = it
+                onValueChange = {
+                    emailState.value = it
                 },
                 label = { Text("Email") },
                 keyboardOptions = KeyboardOptions(
@@ -187,8 +192,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                         focusedTextColor = Color(0xff334EAC),
                         unfocusedContainerColor = Color.Transparent,
                         unfocusedTextColor = Color(0xff334EAC),
-                        errorTextColor=Color(0xff334EAC),
-                        errorContainerColor= Color.Transparent,
+                        errorTextColor = Color(0xff334EAC),
+                        errorContainerColor = Color.Transparent,
                         errorPlaceholderColor = Color(0xff334EAC),
                         errorLabelColor = Color(0xff334EAC),
                         focusedPlaceholderColor = Color(0xff334EAC),
@@ -199,7 +204,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
             )
             TextField(
                 value = senhaState.value,
-                onValueChange = {senhaState.value = it
+                onValueChange = {
+                    senhaState.value = it
                 },
                 label = { Text("Senha") },
                 isError = umError.value,
@@ -208,15 +214,14 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 ),
                 visualTransformation = textoOculto,
                 trailingIcon = {
-                    val image = if (senhaVisivel){
+                    val image = if (senhaVisivel) {
                         Icons.Default.Visibility
-                    }
-                    else{
+                    } else {
                         Icons.Default.VisibilityOff
                     }
 
-                    IconButton(onClick = {senhaVisivel = !senhaVisivel}){
-                        Icon(imageVector  = image, "",tint=Color(0xff334EAC))
+                    IconButton(onClick = { senhaVisivel = !senhaVisivel }) {
+                        Icon(imageVector = image, "", tint = Color(0xff334EAC))
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -226,8 +231,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                         focusedTextColor = Color(0xff334EAC),
                         unfocusedContainerColor = Color.Transparent,
                         unfocusedTextColor = Color(0xff334EAC),
-                        errorTextColor=Color(0xff334EAC),
-                        errorContainerColor= Color.Transparent,
+                        errorTextColor = Color(0xff334EAC),
+                        errorContainerColor = Color.Transparent,
                         errorPlaceholderColor = Color(0xff334EAC),
                         errorLabelColor = Color(0xff334EAC),
                         focusedPlaceholderColor = Color(0xff334EAC),
@@ -238,7 +243,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
             )
             TextField(
                 value = confirmaSenhaState.value,
-                onValueChange = {confirmaSenhaState.value = it
+                onValueChange = {
+                    confirmaSenhaState.value = it
                 },
                 label = { Text("Confirmar senha") },
 
@@ -248,15 +254,14 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 ),
                 visualTransformation = textoOcultoConfirmaSenha,
                 trailingIcon = {
-                    val image = if (confirmaSenhaVisivel){
+                    val image = if (confirmaSenhaVisivel) {
                         Icons.Default.Visibility
-                    }
-                    else{
+                    } else {
                         Icons.Default.VisibilityOff
                     }
 
-                    IconButton(onClick = {confirmaSenhaVisivel = !confirmaSenhaVisivel}){
-                        Icon(imageVector  = image, "",tint=Color(0xff334EAC))
+                    IconButton(onClick = { confirmaSenhaVisivel = !confirmaSenhaVisivel }) {
+                        Icon(imageVector = image, "", tint = Color(0xff334EAC))
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -266,8 +271,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                         focusedTextColor = Color(0xff334EAC),
                         unfocusedContainerColor = Color.Transparent,
                         unfocusedTextColor = Color(0xff334EAC),
-                        errorTextColor=Color(0xff334EAC),
-                        errorContainerColor= Color.Transparent,
+                        errorTextColor = Color(0xff334EAC),
+                        errorContainerColor = Color.Transparent,
                         errorPlaceholderColor = Color(0xff334EAC),
                         errorLabelColor = Color(0xff334EAC),
                         focusedPlaceholderColor = Color(0xff334EAC),
@@ -278,7 +283,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
             )
             TextField(
                 value = nascimentoState.value,
-                onValueChange = {nascimentoState.value = it
+                onValueChange = {
+                    nascimentoState.value = it
                 },
                 label = { Text("Data de nascimento") },
                 placeholder = { Text("ex: 00/00/0000") },
@@ -290,8 +296,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                         focusedTextColor = Color(0xff334EAC),
                         unfocusedContainerColor = Color.Transparent,
                         unfocusedTextColor = Color(0xff334EAC),
-                        errorTextColor=Color(0xff334EAC),
-                        errorContainerColor= Color.Transparent,
+                        errorTextColor = Color(0xff334EAC),
+                        errorContainerColor = Color.Transparent,
                         errorPlaceholderColor = Color(0xff334EAC),
                         errorLabelColor = Color(0xff334EAC),
                         focusedPlaceholderColor = Color(0xff334EAC),
@@ -305,46 +311,60 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
             Spacer(modifier = Modifier.height(82.dp))
             Button(
                 onClick = {
-
-                    if (emailState.value==""||nomeState.value==""||nascimentoState.value==""||senhaState.value==""||confirmaSenhaState.value==""){
-                        mensagemErroState.value="Todos os campos devem ser preenchidos"
-                        umError.value=true
-                    }
-                    else if (senhaState.value!=confirmaSenhaState.value){
-                        mensagemErroState.value="Sua senha não confere"
-                        umError.value=true
-                    }
-                    else if(senhaState.value.length>8||confirmaSenhaState.value.length>8){
-                        mensagemErroState.value="Sua senha deve ter 8 caracteres"
-                        umError.value=true
-                    }
-                    else if(nascimentoState.value.length>10||nascimentoState.value.length>10){
-                        mensagemErroState.value="O formato do campo -Data de nascimento- está incorreto"
-                        umError.value=true
-                    }
-                    else{
+                    val nascimento = nascimentoState.value
+                    var dataNascimento = ""
+                    if (nascimento.contains("/")) {
                         //arruma o estilo da data pra mandar ela bonitinha pro back
-                        val nascimento = nascimentoState.value
                         val partes = nascimento.split("/")
                         val dia = partes[0]
                         val mes = partes[1]
                         val ano = partes[2]
-                        val dataNascimento="${ano}-${mes}-${dia}"
-
+                        dataNascimento = "$ano-$mes-$dia"
+                    } else {
+                        mensagemErroState.value =
+                            "O formato do campo data de nascimento está incorreto"
+                        umError.value = true
+                    }
+                    if (emailState.value == "" || nomeState.value == "" || nascimentoState.value == "" || senhaState.value == "" || confirmaSenhaState.value == "") {
+                        mensagemErroState.value = "Todos os campos devem ser preenchidos"
+                        umError.value = true
+                    } else if (senhaState.value != confirmaSenhaState.value) {
+                        mensagemErroState.value = "Sua senha não confere"
+                        umError.value = true
+                    } else if (senhaState.value.length > 8 || confirmaSenhaState.value.length > 8) {
+                        mensagemErroState.value = "Sua senha deve ter 8 caracteres"
+                        umError.value = true
+                    } else if (nascimentoState.value.length > 10 || nascimentoState.value.length > 10) {
+                        mensagemErroState.value =
+                            "O formato do campo data de nascimento está incorreto"
+                        umError.value = true
+                    } else {
+                        Log.i("NOME", nomeState.value)
+                        Log.i("EMAIL", emailState.value)
+                        Log.i("SENHA", nomeState.value)
+                        Log.i("DATA_NASCIMENTO", dataNascimento)
                         val callUsuarios = RetrofitFactory()
-                            .getUsuarioService().save(usuario = Usuario(nome=nomeState.value,email=emailState.value,senha=senhaState.value, data_nascimento=dataNascimento, foto_perfil=fotoState.value))
-                        callUsuarios.enqueue(object: Callback<Usuario> {
+                            .getUsuarioService().save(
+                                usuario = Usuario(
+                                    nome = nomeState.value,
+                                    email = emailState.value,
+                                    senha = senhaState.value,
+                                    data_nascimento = dataNascimento,
+                                    foto_perfil = fotoState.value
+                                )
+                            )
+                        callUsuarios.enqueue(object : Callback<Usuario> {
                             override fun onResponse(
                                 p0: Call<Usuario>,
                                 p1: retrofit2.Response<Usuario>
                             ) {
                                 val usuarioSalvo = p1.body()
-
-                                if(usuarioSalvo==null){
-                                    mensagemErroState.value="Algo deu errado :(, favor verificar se os campos foram preenchidos corretamente"
-                                    umError.value=true
-                                }
-                                else{
+                                Log.i("USUARIOSALVO", usuarioSalvo.toString())
+                                if (usuarioSalvo == null) {
+                                    mensagemErroState.value =
+                                        "Algo deu errado :(, favor verificar se os campos foram preenchidos corretamente"
+                                    umError.value = true
+                                } else {
                                     Log.i("FOI!!!", usuarioSalvo.toString())
                                     //controleDeNavegacao.navigate("home")
                                 }
@@ -353,7 +373,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
 
                             override fun onFailure(p0: Call<Usuario>, p1: Throwable) {
                                 Log.i("ERRO_CADASTRO", p1.toString())
-                                mensagemErroState.value="Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+                                mensagemErroState.value =
+                                    "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
 
                             }
 
@@ -368,8 +389,10 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(size = 8.dp)
             ) {
-                Text(text = "ENTRAR", color = Color(0xff3459DE),
-                    fontSize = 24.sp,fontWeight = FontWeight.Bold)
+                Text(
+                    text = "ENTRAR", color = Color(0xff3459DE),
+                    fontSize = 24.sp, fontWeight = FontWeight.Bold
+                )
             }
         }
 

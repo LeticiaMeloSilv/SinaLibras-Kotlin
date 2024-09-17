@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.sinalibras.Screens.Inicio
+import br.senai.sp.jandira.sinalibras.Screens.Login
 import br.senai.sp.jandira.sinalibras.ui.theme.SinaLibrasTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 
@@ -29,9 +30,10 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         navController = controleDeNavegacao,
                         startDestination = "inicio"
-                    ){
-                        composable(route = "cadastro"){ Cadastro(controleDeNavegacao) }
-                        composable(route = "inicio"){ Inicio(controleDeNavegacao) }
+                    ) {
+                        composable(route = "cadastro") { Cadastro(controleDeNavegacao) }
+                        composable(route = "inicio") { Inicio(controleDeNavegacao) }
+                        composable(route = "login") { Login(controleDeNavegacao) }
                         //composable(route = "singup"){ TelaSingUp(controleDeNavegacao)}
                     }
 
