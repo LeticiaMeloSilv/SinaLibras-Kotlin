@@ -1,6 +1,5 @@
 package br.senai.sp.jandira.sinalibras.model
 
 data class Result(
-    val results: List<Usuario>,
-    val teste: String = ""
+    val results: List<Usuario>
 )
