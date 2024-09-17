@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.senai.sp.jandira.sinalibras.Screens.Inicio
 import br.senai.sp.jandira.sinalibras.ui.theme.SinaLibrasTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 
@@ -27,10 +28,10 @@ class MainActivity : ComponentActivity() {
                     val controleDeNavegacao = rememberNavController()
                     NavHost(
                         navController = controleDeNavegacao,
-                        startDestination = "cadastro"
+                        startDestination = "inicio"
                     ){
                         composable(route = "cadastro"){ Cadastro(controleDeNavegacao) }
-                        //composable(route = "home"){ Home(controleDeNavegacao) }
+                        composable(route = "inicio"){ Inicio(controleDeNavegacao) }
                         //composable(route = "singup"){ TelaSingUp(controleDeNavegacao)}
                     }
 

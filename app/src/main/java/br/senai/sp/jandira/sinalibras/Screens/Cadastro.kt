@@ -51,8 +51,6 @@ import retrofit2.Callback
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
-
-
 @Composable
 fun Cadastro(controleDeNavegacao: NavHostController) {
 
