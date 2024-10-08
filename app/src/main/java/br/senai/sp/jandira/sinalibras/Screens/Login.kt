@@ -210,8 +210,7 @@ fun Login(controleDeNavegacao: NavHostController) {
 
                 callCharacters.enqueue(object : Callback<Result> {
                     override fun onResponse(p0: retrofit2.Call<Result>, p1: Response<Result>) {
-
-                        alunoList = p1.body()!!.results
+                        alunoList = p1.body()!!.alunos
                         Log.i("RICKcerto", "onResponse:${alunoList} ")
                         Log.i("AAAAAAAAAAAAAAAAAAA", p1.errorBody().toString())
                         if(alunoList==null){
@@ -222,14 +221,14 @@ fun Login(controleDeNavegacao: NavHostController) {
                         else{
                             for (Usuario in alunoList){
                                 if (Usuario.email==emailState.value && Usuario.senha==senhaState.value){
-                                    //controleDeNavegacao.navigate("home")
-
+                                    controleDeNavegacao.navigate("inicio")
                                 }
                                 else{
                                     mensagemErroState.value =
                                         "Usuario não encontrado, verifique se os campos foram preenchidos corretamente"
                                     umError.value = true
                                 }
+
                             }
                         }
 
@@ -239,7 +238,6 @@ fun Login(controleDeNavegacao: NavHostController) {
                         Log.i("ERRO_LOGIN", p1.toString())
                         mensagemErroState.value =
                             "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"                    }
-//192.168.15.5
                 })
             },
             colors = ButtonColors(

@@ -86,7 +86,7 @@ fun Inicio(controleDeNavegacao: NavHostController) {
         Text(text = "Ainda não possui uma conta?", color = Color(0xffEFF3FF))
         Button(
             onClick = {
-                controleDeNavegacao.navigate("cadastro")
+                controleDeNavegacao.navigate("escolha")
 
             },
             colors = ButtonColors(

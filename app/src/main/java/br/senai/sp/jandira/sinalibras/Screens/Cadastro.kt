@@ -320,6 +320,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                         val mes = partes[1]
                         val ano = partes[2]
                         dataNascimento = "$ano-$mes-$dia"
+                        Log.i("323",dataNascimento)
                     } else {
                         mensagemErroState.value =
                             "O formato do campo data de nascimento está incorreto"

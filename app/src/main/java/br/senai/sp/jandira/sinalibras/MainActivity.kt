@@ -10,8 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.senai.sp.jandira.sinalibras.Screens.Escolha
 import br.senai.sp.jandira.sinalibras.Screens.Inicio
 import br.senai.sp.jandira.sinalibras.Screens.Login
+import br.senai.sp.jandira.sinalibras.Screens.Quiz
 import br.senai.sp.jandira.sinalibras.ui.theme.SinaLibrasTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 
@@ -34,7 +36,9 @@ class MainActivity : ComponentActivity() {
                         composable(route = "cadastro") { Cadastro(controleDeNavegacao) }
                         composable(route = "inicio") { Inicio(controleDeNavegacao) }
                         composable(route = "login") { Login(controleDeNavegacao) }
-                        //composable(route = "singup"){ TelaSingUp(controleDeNavegacao)}
+                        composable(route = "escolha"){ Escolha(controleDeNavegacao) }
+                        composable(route = "quiz"){ Quiz(controleDeNavegacao) }
+
                     }
 
                 }
