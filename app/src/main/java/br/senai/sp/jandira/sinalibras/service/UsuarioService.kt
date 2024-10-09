@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.service
 
+import br.senai.sp.jandira.sinalibras.model.AlunoResponse
 import br.senai.sp.jandira.sinalibras.model.Result
 import br.senai.sp.jandira.sinalibras.model.Usuario
 import retrofit2.Call
@@ -28,7 +29,7 @@ interface UsuarioService {
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/aluno")
-    fun save(@Body usuario: Usuario): Call<Usuario>
+    fun save(@Body usuario: Usuario): Call<AlunoResponse>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/aluno/validacao")
