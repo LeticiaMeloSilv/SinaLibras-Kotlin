@@ -47,6 +47,7 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.model.Usuario
 import br.senai.sp.jandira.sinalibras.model.Result
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
+import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
@@ -75,9 +76,6 @@ fun Login(controleDeNavegacao: NavHostController) {
         end = Offset(0f, Float.POSITIVE_INFINITY)
     )
 
-    var alunoList by remember {
-        mutableStateOf(listOf<Usuario>())
-    }
 
 
 
@@ -205,13 +203,22 @@ fun Login(controleDeNavegacao: NavHostController) {
                     mensagemErroState.value = "Todos os campos devem ser preenchidos"
                     umError.value = true
                 }
-                val callCharacters = RetrofitFactory()
-                    .getUsuarioService().getAllAlunos()
+                val callUsuarios = RetrofitFactory()
+                    .getUsuarioService().validaEntrada(
+                        usuario = Usuario(
+                            email = emailState.value,
+                            senha = senhaState.value
+                        )
+                    )
+                callUsuarios.enqueue(object : Callback<Usuario> {
+                    override fun onResponse(
+                        p0: Call<Usuario>,
+                        p1: retrofit2.Response<Usuario>
+                    ) {
+                        Log.i("RICKcerto", "onResponse:${p1}")
 
-                callCharacters.enqueue(object : Callback<Result> {
-                    override fun onResponse(p0: retrofit2.Call<Result>, p1: Response<Result>) {
-                        alunoList = p1.body()!!.alunos
-                        Log.i("RICKcerto", "onResponse:${alunoList} ")
+                        val alunoList = p1.body()
+                        Log.i("RICKcerto", "onResponse:${p1.body()?.id_aluno} ")
                         Log.i("AAAAAAAAAAAAAAAAAAA", p1.errorBody().toString())
                         if(alunoList==null){
                             mensagemErroState.value =
@@ -219,25 +226,18 @@ fun Login(controleDeNavegacao: NavHostController) {
                             umError.value = true
                         }
                         else{
-                            for (Usuario in alunoList){
-                                if (Usuario.email==emailState.value && Usuario.senha==senhaState.value){
-                                    controleDeNavegacao.navigate("inicio")
-                                }
-                                else{
-                                    mensagemErroState.value =
-                                        "Usuario não encontrado, verifique se os campos foram preenchidos corretamente"
-                                    umError.value = true
-                                }
-
-                            }
+                                    controleDeNavegacao.navigate("perfil/${alunoList.id_aluno}")
                         }
 
                     }
 
-                    override fun onFailure(p0: retrofit2.Call<Result>, p1: Throwable) {
+                    override fun onFailure(p0: Call<Usuario>, p1: Throwable) {
                         Log.i("ERRO_LOGIN", p1.toString())
                         mensagemErroState.value =
-                            "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"                    }
+                            "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+
+                    }
+
                 })
             },
             colors = ButtonColors(

@@ -348,10 +348,11 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                             .getUsuarioService().save(
                                 usuario = Usuario(
                                     nome = nomeState.value,
-                                    email = emailState.value,
+                                    email = emailState.value.lowercase(),
                                     senha = senhaState.value,
                                     data_nascimento = dataNascimento,
-                                    foto_perfil = fotoState.value
+                                    foto_perfil = fotoState.value,
+                                    data_cadastro = currentDate.toString()
                                 )
                             )
                         callUsuarios.enqueue(object : Callback<Usuario> {
@@ -359,15 +360,15 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                 p0: Call<Usuario>,
                                 p1: retrofit2.Response<Usuario>
                             ) {
-                                val usuarioSalvo = p1.body()
+                                val usuarioSalvo = p1.body()?.id_aluno
                                 Log.i("USUARIOSALVO", usuarioSalvo.toString())
                                 if (usuarioSalvo == null) {
                                     mensagemErroState.value =
                                         "Algo deu errado :(, favor verificar se os campos foram preenchidos corretamente"
                                     umError.value = true
                                 } else {
-                                    Log.i("FOI!!!", usuarioSalvo.toString())
-                                    //controleDeNavegacao.navigate("home")
+                                    Log.d("IDDDDDDD",usuarioSalvo.toString())
+                                    controleDeNavegacao.navigate("perfil/${usuarioSalvo}")
                                 }
 
                             }

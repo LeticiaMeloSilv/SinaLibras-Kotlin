@@ -6,6 +6,6 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun Quiz(controleDeNavegacao:NavHostController) {
-    controleDeNavegacao.navigate("acerto")
+    controleDeNavegacao.navigate("acerto/${70}")
 
 }

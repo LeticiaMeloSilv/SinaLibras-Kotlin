@@ -23,11 +23,14 @@ interface UsuarioService {
     fun getAllProfessores(): Call<Result>
 
 
-    //https://rickandmortyapi.com/api/character/1
-    @GET("character/{id}")
-    fun getCharacterByID(@Path("id")id:Int): Call<Usuario>
+    @GET("/v1/sinalibras/aluno/{id}")
+    fun getAlunoId(@Path("id")id:Int): Call<Usuario>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/aluno")
     fun save(@Body usuario: Usuario): Call<Usuario>
+
+    @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
+    @POST("/v1/sinalibras/aluno/validacao")
+    fun validaEntrada(@Body usuario: Usuario): Call<Usuario>
 }
