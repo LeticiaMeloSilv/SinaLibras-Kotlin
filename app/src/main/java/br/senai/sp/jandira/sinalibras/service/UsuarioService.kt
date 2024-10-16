@@ -1,7 +1,6 @@
 package br.senai.sp.jandira.service
 
-import br.senai.sp.jandira.sinalibras.model.AlunoResponse
-import br.senai.sp.jandira.sinalibras.model.Result
+import br.senai.sp.jandira.sinalibras.model.ResultAluno
 import br.senai.sp.jandira.sinalibras.model.Usuario
 import retrofit2.Call
 import retrofit2.http.Body
@@ -18,18 +17,18 @@ interface UsuarioService {
     // A URL é padrão na API tod, na requisição colocamos apenas o diferente na URL, no caso da url abaixo né a palvra character
     //https://rickandmortyapi.com/api/character
     @GET("/v1/sinalibras/alunos")
-    fun getAllAlunos(): Call<Result>
+    fun getAllAlunos(): Call<ResultAluno>
 
     @GET("/v1/sinalibras/professores")
-    fun getAllProfessores(): Call<Result>
+    fun getAllProfessores(): Call<ResultAluno>
 
 
     @GET("/v1/sinalibras/aluno/{id}")
-    fun getAlunoId(@Path("id")id:Int): Call<Usuario>
+    fun getAlunoId(@Path("id")id:Int): Call<ResultAluno>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/aluno")
-    fun save(@Body usuario: Usuario): Call<AlunoResponse>
+    fun save(@Body usuario: Usuario): Call<Usuario>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/aluno/validacao")

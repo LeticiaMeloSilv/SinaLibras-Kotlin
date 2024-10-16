@@ -45,11 +45,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.model.Usuario
-import br.senai.sp.jandira.sinalibras.model.Result
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Response
 
 @Composable
 fun Login(controleDeNavegacao: NavHostController) {

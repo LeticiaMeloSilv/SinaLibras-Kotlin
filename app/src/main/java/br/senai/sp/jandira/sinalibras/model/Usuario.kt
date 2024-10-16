@@ -9,9 +9,3 @@ data class Usuario(
     val data_nascimento:String="",
     val foto_perfil:String=""
 )
-
-data class AlunoResponse(
-    val id_aluno: Int,
-    val status: String,
-    val message: String
-)

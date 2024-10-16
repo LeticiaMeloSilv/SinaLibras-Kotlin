@@ -1,3 +1,5 @@
 package br.senai.sp.jandira.sinalibras.model
 
-data class Alternativas()
+data class Alternativas(
+    val alternativas:List<Alternativa>
+)

@@ -17,6 +17,20 @@ class RetrofitFactory {
         return retrofitFactory.create(UsuarioService::class.java)
     }
 
+    fun  getQuizService(): QuizService{
+        return retrofitFactory.create(QuizService::class.java)
+    }
+
+    private val BASE_URL_EMAIL = "https://api.captainverify.com/v2/"
+    private val retrofitFactoryEmail = Retrofit
+        .Builder()
+        .baseUrl(BASE_URL_EMAIL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    fun  getEmailValidoService(): EmailValidoService{
+        return retrofitFactoryEmail.create(EmailValidoService::class.java)
+    }
 
 
 

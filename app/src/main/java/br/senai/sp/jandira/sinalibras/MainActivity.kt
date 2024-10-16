@@ -37,13 +37,19 @@ class MainActivity : ComponentActivity() {
                     val controleDeNavegacao = rememberNavController()
                     NavHost(
                         navController = controleDeNavegacao,
-                        startDestination = "perfil/12"
+                        startDestination = "cadastro"
                     ) {
                         composable(route = "cadastro") { Cadastro(controleDeNavegacao) }
                         composable(route = "inicio") { Inicio(controleDeNavegacao) }
                         composable(route = "login") { Login(controleDeNavegacao) }
                         composable(route = "escolha"){ Escolha(controleDeNavegacao) }
-                        composable(route = "quiz"){ Quiz(controleDeNavegacao) }
+                        composable(
+                            "quiz/{email}",
+                            arguments = listOf(navArgument("email") { type = NavType.StringType }) // Change to StringType
+                        ) { backStackEntry ->
+                            val email = backStackEntry.arguments?.getString("email") ?: "" // Provide default if null
+                            Quiz(controleDeNavegacao, email = email)
+                        }
                         composable(
                             "perfil/{userId}",
                             arguments = listOf(navArgument("userId") { type =

@@ -1,6 +1,5 @@
 package br.senai.sp.jandira.sinalibras
 
-import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,7 +43,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import br.senai.sp.jandira.sinalibras.model.AlunoResponse
+import br.senai.sp.jandira.sinalibras.model.Email
 import br.senai.sp.jandira.sinalibras.model.Usuario
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
 import retrofit2.Call
@@ -53,12 +52,16 @@ import retrofit2.Callback
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import retrofit2.Response
 
 @Composable
 fun Cadastro(controleDeNavegacao: NavHostController) {
 
     var nomeState = remember {
         mutableStateOf("")
+    }
+    var emailValido by remember {
+        mutableStateOf(Email())
     }
 //pegando data atual
     val currentDate: LocalDate = LocalDate.now()
@@ -313,78 +316,100 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
             Spacer(modifier = Modifier.height(82.dp))
             Button(
                 onClick = {
-                    val nascimento = nascimentoState.value
-                    var dataNascimento = ""
-                    if (nascimento.contains("/")) {
-                        //arruma o estilo da data pra mandar ela bonitinha pro back
-                        val partes = nascimento.split("/")
-                        val dia = partes[0]
-                        val mes = partes[1]
-                        val ano = partes[2]
-                        dataNascimento = "$ano-$mes-$dia"
-                        Log.i("323",dataNascimento)
-                    } else {
-                        mensagemErroState.value =
-                            "O formato do campo data de nascimento está incorreto"
-                        umError.value = true
-                    }
-                    if (emailState.value == "" || nomeState.value == "" || nascimentoState.value == "" || senhaState.value == "" || confirmaSenhaState.value == "") {
-                        mensagemErroState.value = "Todos os campos devem ser preenchidos"
-                        umError.value = true
-                    } else if (senhaState.value != confirmaSenhaState.value) {
-                        mensagemErroState.value = "Sua senha não confere"
-                        umError.value = true
-                    } else if (senhaState.value.length > 8 || confirmaSenhaState.value.length > 8) {
-                        mensagemErroState.value = "Sua senha deve ter 8 caracteres"
-                        umError.value = true
-                    } else if (nascimentoState.value.length > 10 || nascimentoState.value.length > 10) {
-                        mensagemErroState.value =
-                            "O formato do campo data de nascimento está incorreto"
-                        umError.value = true
-                    } else {
-                        Log.i("NOME", nomeState.value)
-                        Log.i("EMAIL", emailState.value)
-                        Log.i("SENHA", nomeState.value)
-                        Log.i("DATA_NASCIMENTO", dataNascimento)
+                    val callEmail = RetrofitFactory()
+                        .getEmailValidoService().getEmailValido(emailState.value.lowercase())
 
-                        val callUsuarios = RetrofitFactory()
-                            .getUsuarioService().save(
-                                usuario = Usuario(
-                                    nome = nomeState.value,
-                                    email = emailState.value.lowercase(),
-                                    senha = senhaState.value,
-                                    data_nascimento = dataNascimento,
-                                    foto_perfil = fotoState.value,
-                                    data_cadastro = currentDate.toString()
-                                )
-                            )
-                        callUsuarios.enqueue(object : Callback<AlunoResponse> {
-                            override fun onResponse(
-                                p0: Call<AlunoResponse>,
-                                p1: retrofit2.Response<AlunoResponse>
-                            ) {
-                                val usuarioSalvo = p1.body()?.id_aluno
-                                Log.i("USUARIOSALVO", usuarioSalvo.toString())
-                                if (usuarioSalvo == null) {
+                    callEmail.enqueue(object : Callback<Email> {
+                        override fun onResponse(p0: Call<Email>, p1: Response<Email>) {
+                            emailValido=p1.body()!!
+//                            if (emailValido.credits.toString()=="0"){
+//                                Log.i("EMAIL_CREDITS", emailValido.credits.toString())
+//                                mensagemErroState.value="Ocorreu um erro por parte do servidor, favor constatar a equipe"
+//                            }
+//                            else if(emailValido.result=="invalid"){
+//                                mensagemErroState.value="Endereço de email invalido, verifique se preencheu corretamente"
+//                            }
+//                            else if (emailValido.result=="valid"){
+                                val nascimento = nascimentoState.value
+                                var dataNascimento = ""
+                                if (nascimento.contains("/")) {
+                                    //arruma o estilo da data pra mandar ela bonitinha pro back
+                                    val partes = nascimento.split("/")
+                                    val dia = partes[0]
+                                    val mes = partes[1]
+                                    val ano = partes[2]
+                                    dataNascimento = "$ano-$mes-$dia"
+                                    Log.i("323",dataNascimento)
+                                } else {
                                     mensagemErroState.value =
-                                        "Algo deu errado :(, favor verificar se os campos foram preenchidos corretamente"
+                                        "O formato do campo data de nascimento está incorreto"
+                                    umError.value = true
+                                }
+                                if (emailState.value == "" || nomeState.value == "" || nascimentoState.value == "" || senhaState.value == "" || confirmaSenhaState.value == "") {
+                                    mensagemErroState.value = "Todos os campos devem ser preenchidos"
+                                    umError.value = true
+                                } else if (senhaState.value != confirmaSenhaState.value) {
+                                    mensagemErroState.value = "Sua senha não confere"
+                                    umError.value = true
+                                } else if (senhaState.value.length > 8 || confirmaSenhaState.value.length > 8) {
+                                    mensagemErroState.value = "Sua senha deve ter 8 caracteres"
+                                    umError.value = true
+                                } else if (nascimentoState.value.length > 10 || nascimentoState.value.length > 10) {
+                                    mensagemErroState.value =
+                                        "O formato do campo data de nascimento está incorreto"
                                     umError.value = true
                                 } else {
-                                    Log.d("IDDDDDDD",usuarioSalvo.toString())
-                                    controleDeNavegacao.navigate("perfil/${usuarioSalvo}")
+                                    val callUsuarios = RetrofitFactory()
+                                        .getUsuarioService().save(
+                                            usuario = Usuario(
+                                                nome = nomeState.value,
+                                                email = emailState.value.lowercase(),
+                                                senha = senhaState.value,
+                                                data_nascimento = dataNascimento,
+                                                foto_perfil = fotoState.value,
+                                                data_cadastro = currentDate.toString()
+                                            )
+                                        )
+                                    callUsuarios.enqueue(object : Callback<Usuario> {
+                                        override fun onResponse(
+                                            p0: Call<Usuario>,
+                                            p1: Response<Usuario>
+                                        ) {
+                                            val usuarioSalvo = p1.body()
+                                            if (usuarioSalvo == null) {
+                                                Log.i("ERROOOOOOOOOO", p1.errorBody().toString())
+                                                Log.i("ERROOOOOOOOOO", p1.body().toString())
+
+                                                mensagemErroState.value =
+                                                    "Algo deu errado :(, favor verificar se os campos foram preenchidos corretamente"
+                                                umError.value = true
+                                            } else {
+                                                Log.d("IDDDDDDD",usuarioSalvo.toString())
+                                                controleDeNavegacao.navigate("perfil/${usuarioSalvo.id_aluno}")
+                                            }
+
+                                        }
+
+                                        override fun onFailure(p0: Call<Usuario>, p1: Throwable) {
+                                            Log.i("ERRO_CADASTRO", p1.toString())
+                                            mensagemErroState.value =
+                                                "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+
+                                        }
+
+                                    })
                                 }
+                            //}
+                        }
 
-                            }
+                        override fun onFailure(p0: Call<Email>, p1: Throwable) {
+                            mensagemErroState.value="Ocorreu um erro por parte do servidor, favor constatar a equipe"
+                            Log.i("ERRO_EMAIL_ESCOLHA", p1.toString())
 
-                            override fun onFailure(p0: Call<AlunoResponse>, p1: Throwable) {
-                                Log.i("ERRO_CADASTRO", p1.toString())
-                                mensagemErroState.value =
-                                    "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+                        }
+                    })
 
-                            }
 
-                        })
-                    }
                 },
                 colors = ButtonDefaults
                     .buttonColors(
@@ -395,7 +420,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 shape = RoundedCornerShape(size = 8.dp)
             ) {
                 Text(
-                    text = "ENTRAR", color = Color(0xff3459DE),
+                    text = "CRIAR", color = Color(0xff3459DE),
                     fontSize = 24.sp, fontWeight = FontWeight.Bold
                 )
             }
