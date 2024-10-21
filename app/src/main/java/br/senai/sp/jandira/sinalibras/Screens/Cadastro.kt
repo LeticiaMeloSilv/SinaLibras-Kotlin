@@ -44,18 +44,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.model.Email
-import br.senai.sp.jandira.sinalibras.model.Usuario
+import br.senai.sp.jandira.sinalibras.model.ResultAluno
+import br.senai.sp.jandira.sinalibras.model.Aluno
+import br.senai.sp.jandira.sinalibras.model.Professor
+import br.senai.sp.jandira.sinalibras.model.ResultProfessor
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 //import java.time.LocalDate
 import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import retrofit2.Response
 
 @Composable
-fun Cadastro(controleDeNavegacao: NavHostController) {
+fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
 
     var nomeState = remember {
         mutableStateOf("")
@@ -65,12 +67,12 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
     }
 //pegando data atual
     val currentDate: LocalDate = LocalDate.now()
-    val currentDateTime: LocalDateTime = LocalDateTime.now()
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
-    val formattedDateTime: String = currentDateTime.format(formatter)
 
     var emailState = remember {
         mutableStateOf("")
+    }
+    if (emailProfessor !== "") {
+        emailState.value = emailProfessor
     }
     var senhaState = remember {
         mutableStateOf("")
@@ -191,6 +193,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 ),
                 modifier = Modifier.fillMaxWidth(),
                 isError = umError.value,
+                enabled = emailProfessor == "",
                 colors = TextFieldDefaults
                     .colors(
                         focusedContainerColor = Color.Transparent,
@@ -321,7 +324,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
 
                     callEmail.enqueue(object : Callback<Email> {
                         override fun onResponse(p0: Call<Email>, p1: Response<Email>) {
-                            emailValido=p1.body()!!
+                            emailValido = p1.body()!!
 //                            if (emailValido.credits.toString()=="0"){
 //                                Log.i("EMAIL_CREDITS", emailValido.credits.toString())
 //                                mensagemErroState.value="Ocorreu um erro por parte do servidor, favor constatar a equipe"
@@ -330,38 +333,39 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
 //                                mensagemErroState.value="Endereço de email invalido, verifique se preencheu corretamente"
 //                            }
 //                            else if (emailValido.result=="valid"){
-                                val nascimento = nascimentoState.value
-                                var dataNascimento = ""
-                                if (nascimento.contains("/")) {
-                                    //arruma o estilo da data pra mandar ela bonitinha pro back
-                                    val partes = nascimento.split("/")
-                                    val dia = partes[0]
-                                    val mes = partes[1]
-                                    val ano = partes[2]
-                                    dataNascimento = "$ano-$mes-$dia"
-                                    Log.i("323",dataNascimento)
-                                } else {
-                                    mensagemErroState.value =
-                                        "O formato do campo data de nascimento está incorreto"
-                                    umError.value = true
-                                }
-                                if (emailState.value == "" || nomeState.value == "" || nascimentoState.value == "" || senhaState.value == "" || confirmaSenhaState.value == "") {
-                                    mensagemErroState.value = "Todos os campos devem ser preenchidos"
-                                    umError.value = true
-                                } else if (senhaState.value != confirmaSenhaState.value) {
-                                    mensagemErroState.value = "Sua senha não confere"
-                                    umError.value = true
-                                } else if (senhaState.value.length > 8 || confirmaSenhaState.value.length > 8) {
-                                    mensagemErroState.value = "Sua senha deve ter 8 caracteres"
-                                    umError.value = true
-                                } else if (nascimentoState.value.length > 10 || nascimentoState.value.length > 10) {
-                                    mensagemErroState.value =
-                                        "O formato do campo data de nascimento está incorreto"
-                                    umError.value = true
-                                } else {
+                            val nascimento = nascimentoState.value
+                            var dataNascimento = ""
+                            if (nascimento.contains("/")) {
+                                //arruma o estilo da data pra mandar ela bonitinha pro back
+                                val partes = nascimento.split("/")
+                                val dia = partes[0]
+                                val mes = partes[1]
+                                val ano = partes[2]
+                                dataNascimento = "$ano-$mes-$dia"
+                                Log.i("323", dataNascimento)
+                            } else {
+                                mensagemErroState.value =
+                                    "O formato do campo data de nascimento está incorreto"
+                                umError.value = true
+                            }
+                            if (emailState.value == "" || nomeState.value == "" || nascimentoState.value == "" || senhaState.value == "" || confirmaSenhaState.value == "") {
+                                mensagemErroState.value = "Todos os campos devem ser preenchidos"
+                                umError.value = true
+                            } else if (senhaState.value != confirmaSenhaState.value) {
+                                mensagemErroState.value = "Sua senha não confere"
+                                umError.value = true
+                            } else if (senhaState.value.length > 8 || confirmaSenhaState.value.length > 8) {
+                                mensagemErroState.value = "Sua senha deve ter 8 caracteres"
+                                umError.value = true
+                            } else if (nascimentoState.value.length > 10 || nascimentoState.value.length > 10) {
+                                mensagemErroState.value =
+                                    "O formato do campo data de nascimento está incorreto"
+                                umError.value = true
+                            } else {
+                                if (emailProfessor == "") {
                                     val callUsuarios = RetrofitFactory()
-                                        .getUsuarioService().save(
-                                            usuario = Usuario(
+                                        .getUsuarioService().setSalvarAluno(
+                                            usuario = Aluno(
                                                 nome = nomeState.value,
                                                 email = emailState.value.lowercase(),
                                                 senha = senhaState.value,
@@ -370,27 +374,35 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                                 data_cadastro = currentDate.toString()
                                             )
                                         )
-                                    callUsuarios.enqueue(object : Callback<Usuario> {
+                                    callUsuarios.enqueue(object : Callback<ResultAluno> {
                                         override fun onResponse(
-                                            p0: Call<Usuario>,
-                                            p1: Response<Usuario>
+                                            p0: Call<ResultAluno>,
+                                            p1: Response<ResultAluno>
                                         ) {
                                             val usuarioSalvo = p1.body()
-                                            if (usuarioSalvo == null) {
-                                                Log.i("ERROOOOOOOOOO", p1.errorBody().toString())
-                                                Log.i("ERROOOOOOOOOO", p1.body().toString())
+                                            Log.i("DEUERRO", p1.body().toString())
 
-                                                mensagemErroState.value =
-                                                    "Algo deu errado :(, favor verificar se os campos foram preenchidos corretamente"
-                                                umError.value = true
+                                            if (p1.isSuccessful) {
+                                                Log.d("IDDDDDDD", usuarioSalvo.toString())
+                                                controleDeNavegacao.navigate("perfil/${usuarioSalvo?.aluno?.id_aluno}*aluno")
+
                                             } else {
-                                                Log.d("IDDDDDDD",usuarioSalvo.toString())
-                                                controleDeNavegacao.navigate("perfil/${usuarioSalvo.id_aluno}")
+                                                val errorBody = p1.errorBody()?.string()
+                                                val gson = Gson()
+                                                val usuarioSalvo = gson.fromJson(
+                                                    errorBody,
+                                                    ResultAluno::class.java
+                                                )
+                                                mensagemErroState.value = usuarioSalvo.message
+                                                umError.value = true
                                             }
-
                                         }
 
-                                        override fun onFailure(p0: Call<Usuario>, p1: Throwable) {
+
+                                        override fun onFailure(
+                                            p0: Call<ResultAluno>,
+                                            p1: Throwable
+                                        ) {
                                             Log.i("ERRO_CADASTRO", p1.toString())
                                             mensagemErroState.value =
                                                 "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
@@ -399,11 +411,54 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
 
                                     })
                                 }
+                                else{
+                                    val callUsuarios = RetrofitFactory()
+                                        .getUsuarioService().setSalvarProfessor(
+                                            usuario = Professor(
+                                                nome = nomeState.value,
+                                                email = emailState.value.lowercase(),
+                                                senha = senhaState.value,
+                                                data_nascimento = dataNascimento,
+                                                foto_perfil = fotoState.value,
+                                                data_cadastro = currentDate.toString()
+                                            )
+                                        )
+                                    callUsuarios.enqueue(object : Callback<ResultProfessor> {
+                                        override fun onResponse(
+                                            p0: Call<ResultProfessor>,
+                                            p1: Response<ResultProfessor>
+                                        ) {
+                                            val usuarioSalvo = p1.body()
+                                            if (p1.isSuccessful) {
+                                                Log.d("IDDDDDDD", usuarioSalvo.toString())
+                                                controleDeNavegacao.navigate("perfil/${usuarioSalvo?.professor?.id_professor}*professor")
+                                            }
+                                            else {
+                                                val errorBody = p1.errorBody()?.string()
+                                                val gson = Gson()
+                                                val usuarioSalvo = gson.fromJson(errorBody, ResultAluno::class.java)
+                                                mensagemErroState.value = usuarioSalvo.message
+                                                umError.value = true
+                                            }
+                                        }
+
+
+                                        override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
+                                            Log.i("ERRO_CADASTRO", p1.toString())
+                                            mensagemErroState.value =
+                                                "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+
+                                        }
+
+                                    })
+                                }
+                            }
                             //}
                         }
 
                         override fun onFailure(p0: Call<Email>, p1: Throwable) {
-                            mensagemErroState.value="Ocorreu um erro por parte do servidor, favor constatar a equipe"
+                            mensagemErroState.value =
+                                "Ocorreu um erro por parte do servidor, favor constatar a equipe"
                             Log.i("ERRO_EMAIL_ESCOLHA", p1.toString())
 
                         }

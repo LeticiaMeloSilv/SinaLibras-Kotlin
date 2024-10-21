@@ -123,9 +123,6 @@
 //    }
 
 
-
-
-
 package br.senai.sp.jandira.sinalibras.Screens
 
 import android.util.Log
@@ -143,19 +140,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -178,7 +168,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 import br.senai.sp.jandira.sinalibras.model.Email
+import br.senai.sp.jandira.sinalibras.model.ResultUsuarioTeste
+import br.senai.sp.jandira.sinalibras.model.Aluno
+import br.senai.sp.jandira.sinalibras.model.Professor
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
+import org.threeten.bp.LocalDate
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -196,9 +190,11 @@ fun Escolha(controleDeNavegacao: NavHostController) {
     var mensagemErroState = remember {
         mutableStateOf("")
     }
-    var focusTela= remember {
-        mutableStateOf(false
-        ) }
+    var focusTela = remember {
+        mutableStateOf(
+            false
+        )
+    }
 
     var emailValido by remember {
         mutableStateOf(Email())
@@ -210,11 +206,11 @@ fun Escolha(controleDeNavegacao: NavHostController) {
         end = Offset(0f, Float.POSITIVE_INFINITY)
     )
 
-    Column (
+    Column(
         modifier = Modifier
             .background(brush = gradientBrush)
             .fillMaxSize(),
-    ){
+    ) {
         Spacer(modifier = Modifier.height(32.dp))
         Button(
             onClick = {
@@ -233,15 +229,17 @@ fun Escolha(controleDeNavegacao: NavHostController) {
                 modifier = Modifier.size(20.dp)
             )
         }
-        Column (
+        Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Text(text = "Escolha como você pretende participar",
+        ) {
+            Text(
+                text = "Escolha como você pretende participar",
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
                 color = Color(0xFF345ADE),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(20.dp)
 
             )
             Spacer(modifier = Modifier.height(32.dp))
@@ -289,7 +287,7 @@ fun Escolha(controleDeNavegacao: NavHostController) {
                         if (focusTela.value) {
 
                         } else {
-                            controleDeNavegacao.navigate("cadastro")
+                            controleDeNavegacao.navigate("cadastro/")
                         }
                     }
                     .border(
@@ -323,15 +321,16 @@ fun Escolha(controleDeNavegacao: NavHostController) {
             }
         }
     }
-    if (focusTela.value){
-        Column (modifier = Modifier
-            .offset(x = 0.dp, y = 0.dp)
-            .background(color = Color(0x663A3D46))
-            .fillMaxSize(),
+    if (focusTela.value) {
+        Column(
+            modifier = Modifier
+                .offset(x = 0.dp, y = 0.dp)
+                .background(color = Color(0x663A3D46))
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Column (
+        ) {
+            Column(
                 modifier = Modifier
                     .background(color = Color(0xffffffff))
                     .size(height = 600.dp, width = 300.dp)
@@ -341,12 +340,12 @@ fun Escolha(controleDeNavegacao: NavHostController) {
                         shape = RoundedCornerShape(size = 2.dp),
                         color = Color.Transparent
                     )
-            ){
+            ) {
                 Button(
                     onClick = {
-                        focusTela.value=false
-                        emailState.value=""
-                        mensagemErroState.value=""
+                        focusTela.value = false
+                        emailState.value = ""
+                        mensagemErroState.value = ""
                     },
                     colors = ButtonColors(
                         Color.Transparent,
@@ -409,14 +408,17 @@ fun Escolha(controleDeNavegacao: NavHostController) {
                             focusedLabelColor = Color(0xff22367C)
                         )
                 )
-                Text(text = mensagemErroState.value, color = Color.Red, modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text(
+                    text = mensagemErroState.value,
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
                     onClick = {
-                        if (emailState.value==""){
-                            mensagemErroState.value="Preencha este campo primeiro"
-                        }
-                        else{
+                        if (emailState.value == "") {
+                            mensagemErroState.value = "Preencha este campo primeiro"
+                        } else {
 //                            val callEmail = RetrofitFactory()
 //                                .getEmailValidoService().getEmailValido(emailState.value)
 //
@@ -432,8 +434,48 @@ fun Escolha(controleDeNavegacao: NavHostController) {
 //                                    }
 //                                    else if (emailValido.result=="valid"){
 //                                        Log.i( "DEU",emailValido.email)
-                            val email=emailState.value
-                                        controleDeNavegacao.navigate("quiz/${email}")
+                            val currentDate: LocalDate = LocalDate.now()
+                            val email = emailState.value
+
+                            val callUsuarios = RetrofitFactory()
+                                .getUsuarioService().setSalvarUsuarioTemporario(
+                                    usuario = Professor(
+                                        email = email.lowercase(),
+                                        data_cadastro = currentDate.toString()
+                                    )
+                                )
+
+                            callUsuarios.enqueue(object : Callback<ResultUsuarioTeste> {
+                                override fun onResponse(
+                                    p0: Call<ResultUsuarioTeste>,
+                                    p1: Response<ResultUsuarioTeste>
+                                ) {
+                                    val resposta = p1.body()
+                                    if (resposta == null) {
+                                        Log.i("ERROOOOOOOOOO", p1.toString())
+                                        Log.i("ERROOOOOOOOOO", p1.body().toString())
+
+                                        mensagemErroState.value =
+                                            "Algo deu errado :(, favor verificar se os campos foram preenchidos corretamente"
+                                        umError.value = true
+                                    } else {
+                                        Log.i("ACERTO", p1.body().toString())
+                                        Log.i("CARA", resposta.usuario.id_usuario_teste.toString())
+                                        controleDeNavegacao.navigate("quiz/${resposta.usuario.id_usuario_teste}*${email}")
+                                    }
+                                }
+
+                                override fun onFailure(
+                                    p0: Call<ResultUsuarioTeste>,
+                                    p1: Throwable
+                                ) {
+                                    Log.i("ERRO_CADASTRO", p1.toString())
+                                    mensagemErroState.value =
+                                        "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+                                }
+
+                            })
+
 //                                    }
 //                                }
 //

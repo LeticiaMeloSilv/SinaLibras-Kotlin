@@ -35,7 +35,10 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 
 @Composable
-fun EditarPerfil(controleDeNavegacao: NavHostController, id:Int) {
+fun EditarPerfil(controleDeNavegacao: NavHostController, recebido:String) {
+    val partes = recebido.split("*")
+    val id = partes[0]
+    val tipoUsuario = partes[1]
     Scaffold(
         modifier = Modifier
             .fillMaxSize()

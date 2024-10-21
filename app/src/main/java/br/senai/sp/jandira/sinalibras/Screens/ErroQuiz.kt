@@ -33,7 +33,7 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 
 @Composable
-fun ErroQuiz(controleDeNavegacao: NavHostController, porcentagem:Int?) {
+fun ErroQuiz(controleDeNavegacao: NavHostController, porcentagem: Int?) {
     Column(
         modifier = Modifier
             .background(color = Color(0xFFC7E2FE))

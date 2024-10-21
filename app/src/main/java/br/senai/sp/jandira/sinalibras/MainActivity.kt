@@ -34,42 +34,53 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+
                     val controleDeNavegacao = rememberNavController()
                     NavHost(
                         navController = controleDeNavegacao,
-                        startDestination = "cadastro"
+                        startDestination = "inicio"
                     ) {
-                        composable(route = "cadastro") { Cadastro(controleDeNavegacao) }
                         composable(route = "inicio") { Inicio(controleDeNavegacao) }
                         composable(route = "login") { Login(controleDeNavegacao) }
                         composable(route = "escolha"){ Escolha(controleDeNavegacao) }
                         composable(
-                            "quiz/{email}",
-                            arguments = listOf(navArgument("email") { type = NavType.StringType }) // Change to StringType
+                            "cadastro/{emailProfessor}",
+                            arguments = listOf(navArgument("emailProfessor") { type = NavType.StringType }) // Change to StringType
                         ) { backStackEntry ->
-                            val email = backStackEntry.arguments?.getString("email") ?: "" // Provide default if null
-                            Quiz(controleDeNavegacao, email = email)
+                            val idFornecido = backStackEntry.arguments?.getString("emailProfessor") ?: ""
+                            Cadastro(controleDeNavegacao, emailProfessor = idFornecido)
+                        }
+
+                            composable(
+                            "quiz/{recebido}",
+                            arguments = listOf(navArgument("recebido") { type = NavType.StringType }) // Change to StringType
+                        ) { backStackEntry ->
+                            val idFornecido = backStackEntry.arguments?.getString("recebido") ?: ""
+                            Quiz(controleDeNavegacao, recebido = idFornecido)
+                        }
+
+                        composable(
+                            "perfil/{recebido}",
+                            arguments = listOf(navArgument("recebido") { type =
+                                NavType.StringType })
+                        ) { backStackEntry ->
+                            backStackEntry.arguments?.getString("recebido")
+                                ?.let { Perfil(controleDeNavegacao,recebido = it) }
                         }
                         composable(
-                            "perfil/{userId}",
-                            arguments = listOf(navArgument("userId") { type =
-                                NavType.IntType })
+                            "editaPerfil/{recebido}",
+                            arguments = listOf(navArgument("recebido") { type =
+                                NavType.StringType })
                         ) { backStackEntry ->
-                            Perfil(controleDeNavegacao,id = backStackEntry.arguments!!.getInt("userId"))
+                            backStackEntry.arguments!!.getString("recebido")
+                                ?.let { EditarPerfil(controleDeNavegacao, recebido = it) }
                         }
                         composable(
-                            "editaPerfil/{userId}",
-                            arguments = listOf(navArgument("userId") { type =
-                                NavType.IntType })
+                            "acerto/{recebido}",
+                            arguments = listOf(navArgument("recebido") { type =
+                                NavType.StringType })
                         ) { backStackEntry ->
-                            EditarPerfil(controleDeNavegacao,id = backStackEntry.arguments!!.getInt("userId"))
-                        }
-                        composable(
-                            "acerto/{porcentagem}",
-                            arguments = listOf(navArgument("porcentagem") { type =
-                                NavType.IntType })
-                        ) { backStackEntry ->
-                            AcertoQuiz(controleDeNavegacao,porcentagem = backStackEntry.arguments?.getInt("porcentagem"))
+                            AcertoQuiz(controleDeNavegacao, recebido = backStackEntry.arguments?.getString("recebido"))
                         }
                         composable(
                             "erro/{porcentagem}",

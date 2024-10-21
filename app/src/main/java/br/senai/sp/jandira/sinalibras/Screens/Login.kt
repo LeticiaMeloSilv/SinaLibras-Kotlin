@@ -44,10 +44,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.navigation.NavHostController
-import br.senai.sp.jandira.sinalibras.model.Usuario
+import br.senai.sp.jandira.sinalibras.model.ResultAluno
+import br.senai.sp.jandira.sinalibras.model.Aluno
+import br.senai.sp.jandira.sinalibras.model.Professor
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
 fun Login(controleDeNavegacao: NavHostController) {
@@ -193,7 +197,11 @@ fun Login(controleDeNavegacao: NavHostController) {
                     )
             )
         }
-        Text(text = mensagemErroState.value, color = Color.Red, modifier = Modifier.align(Alignment.CenterHorizontally))
+        Text(
+            text = mensagemErroState.value,
+            color = Color.Red,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
         Spacer(modifier = Modifier.height(50.dp))
         Button(
             onClick = {
@@ -202,34 +210,59 @@ fun Login(controleDeNavegacao: NavHostController) {
                     umError.value = true
                 }
                 val callUsuarios = RetrofitFactory()
-                    .getUsuarioService().validaEntrada(
-                        usuario = Usuario(
+                    .getUsuarioService().setValidarEntradaAluno(
+                        usuario = Aluno(
                             email = emailState.value,
                             senha = senhaState.value
                         )
                     )
-                callUsuarios.enqueue(object : Callback<Usuario> {
+                callUsuarios.enqueue(object : Callback<Aluno> {
                     override fun onResponse(
-                        p0: Call<Usuario>,
-                        p1: retrofit2.Response<Usuario>
+                        p0: Call<Aluno>,
+                        p1: retrofit2.Response<Aluno>
                     ) {
-                        Log.i("RICKcerto", "onResponse:${p1}")
-
                         val alunoList = p1.body()
-                        Log.i("RICKcerto", "onResponse:${p1.body()?.id_aluno} ")
-                        Log.i("AAAAAAAAAAAAAAAAAAA", p1.errorBody().toString())
-                        if(alunoList==null){
-                            mensagemErroState.value =
-                                "Algo deu errado :("
-                            umError.value = true
+
+                        if(p1.isSuccessful){
+                                controleDeNavegacao.navigate("perfil/${alunoList!!.id_aluno}")
                         }
                         else{
-                                    controleDeNavegacao.navigate("perfil/${alunoList.id_aluno}")
+                            val callUsuarios = RetrofitFactory()
+                                .getUsuarioService().setValidarEntradaProfessor(
+                                    usuario = Professor(
+                                        email = emailState.value,
+                                        senha = senhaState.value
+                                    )
+                                )
+                            callUsuarios.enqueue(object : Callback<Professor> {
+                                override fun onResponse(p0: Call<Professor>, p1: Response<Professor>) {
+                                    val professorList = p1.body()
+
+                                    if(p1.isSuccessful){
+                                        controleDeNavegacao.navigate("perfil/${professorList!!.id_professor}")
+                                    }
+                                    else{
+                                        val errorBody = p1.errorBody()?.string()
+                                        val gson = Gson()
+                                        val usuarioSalvo = gson.fromJson(errorBody, ResultAluno::class.java)
+                                        mensagemErroState.value = usuarioSalvo.message
+                                        umError.value = true
+
+                                    }                                }
+
+                                override fun onFailure(p0: Call<Professor>, p1: Throwable) {
+                                    Log.i("ERRO_LOGIN", p1.toString())
+                                    mensagemErroState.value =
+                                        "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"                                }
+
+                            })
                         }
+
+
 
                     }
 
-                    override fun onFailure(p0: Call<Usuario>, p1: Throwable) {
+                    override fun onFailure(p0: Call<Aluno>, p1: Throwable) {
                         Log.i("ERRO_LOGIN", p1.toString())
                         mensagemErroState.value =
                             "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"

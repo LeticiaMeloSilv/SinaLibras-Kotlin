@@ -1,6 +1,6 @@
 package br.senai.sp.jandira.sinalibras.model
 
-data class Usuario(
+data class Aluno(
     val id_aluno:Long=0,
     val nome:String="",
     val data_cadastro:String="",

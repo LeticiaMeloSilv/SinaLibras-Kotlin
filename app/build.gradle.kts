@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.foundation.layout.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -78,5 +79,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core:...")
     implementation("androidx.compose.material:material-icons-extended:...")
 
+//EXOPLAYER, para videos
+    implementation("androidx.media3:media3-exoplayer:1.0.0-alpha03") // ou versão mais recente
+    implementation("androidx.media3:media3-ui:1.0.0-alpha03")
 
 }

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
 
         android:networkSecurityConfig="@xml/network_security_config"
@@ -21,6 +22,7 @@
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.SinaLibras">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

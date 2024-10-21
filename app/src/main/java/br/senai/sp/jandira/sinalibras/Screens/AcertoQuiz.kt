@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,8 +33,10 @@ import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.sinalibras.R
 
 @Composable
-fun AcertoQuiz(controleDeNavegacao: NavHostController, porcentagem:Int?) {
-    Log.i("AAAAAAAAAAAAAAAAAAAAA", "AcertoQuiz: $porcentagem")
+fun AcertoQuiz(controleDeNavegacao: NavHostController, recebido: String?) {
+    val partes = recebido?.split("*")
+    val porcentagem = partes?.get(0)
+    val emailFornecido = partes?.get(1)
     Column(
         modifier = Modifier
             .background(color = Color(0xFFC7E2FE))
@@ -52,7 +55,7 @@ fun AcertoQuiz(controleDeNavegacao: NavHostController, porcentagem:Int?) {
                 horizontalAlignment = Alignment.CenterHorizontally // Centraliza dentro da Column
             ) {
                 Image(
-                    painter = painterResource(id =  R.drawable.logo),
+                    painter = painterResource(id = R.drawable.logo),
                     contentDescription = "perfil",
                     modifier = Modifier
                         .size(width = 170.dp, height = 170.dp)
@@ -112,7 +115,14 @@ fun AcertoQuiz(controleDeNavegacao: NavHostController, porcentagem:Int?) {
                     .width(180.dp)
                     .height(50.dp)
             ) {
-                Text(text = "Criar Conta", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "Criar Conta",
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        controleDeNavegacao.navigate("cadastro/${emailFornecido}")
+                    })
             }
         }
 
