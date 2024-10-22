@@ -47,6 +47,7 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.model.ResultAluno
 import br.senai.sp.jandira.sinalibras.model.Aluno
 import br.senai.sp.jandira.sinalibras.model.Professor
+import br.senai.sp.jandira.sinalibras.model.ResultProfessor
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
 import com.google.gson.Gson
 import retrofit2.Call
@@ -209,37 +210,35 @@ fun Login(controleDeNavegacao: NavHostController) {
                     mensagemErroState.value = "Todos os campos devem ser preenchidos"
                     umError.value = true
                 }
-                val callUsuarios = RetrofitFactory()
+                val callAluno = RetrofitFactory()
                     .getUsuarioService().setValidarEntradaAluno(
                         usuario = Aluno(
                             email = emailState.value,
                             senha = senhaState.value
                         )
                     )
-                callUsuarios.enqueue(object : Callback<Aluno> {
+                callAluno.enqueue(object : Callback<ResultAluno> {
                     override fun onResponse(
-                        p0: Call<Aluno>,
-                        p1: retrofit2.Response<Aluno>
+                        p0: Call<ResultAluno>,
+                        p1: Response<ResultAluno>
                     ) {
                         val alunoList = p1.body()
-
                         if(p1.isSuccessful){
-                                controleDeNavegacao.navigate("perfil/${alunoList!!.id_aluno}")
+                                controleDeNavegacao.navigate("perfil/${alunoList!!.aluno?.id_aluno}*aluno")
                         }
                         else{
-                            val callUsuarios = RetrofitFactory()
+                            val callProfessor = RetrofitFactory()
                                 .getUsuarioService().setValidarEntradaProfessor(
                                     usuario = Professor(
                                         email = emailState.value,
                                         senha = senhaState.value
                                     )
                                 )
-                            callUsuarios.enqueue(object : Callback<Professor> {
-                                override fun onResponse(p0: Call<Professor>, p1: Response<Professor>) {
+                            callProfessor.enqueue(object : Callback<ResultProfessor> {
+                                override fun onResponse(p0: Call<ResultProfessor>, p1: Response<ResultProfessor>) {
                                     val professorList = p1.body()
-
                                     if(p1.isSuccessful){
-                                        controleDeNavegacao.navigate("perfil/${professorList!!.id_professor}")
+                                        controleDeNavegacao.navigate("perfil/${professorList!!.professor?.id_professor}*professor")
                                     }
                                     else{
                                         val errorBody = p1.errorBody()?.string()
@@ -248,21 +247,21 @@ fun Login(controleDeNavegacao: NavHostController) {
                                         mensagemErroState.value = usuarioSalvo.message
                                         umError.value = true
 
-                                    }                                }
+                                    }
+                                                                }
 
-                                override fun onFailure(p0: Call<Professor>, p1: Throwable) {
+                                override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
                                     Log.i("ERRO_LOGIN", p1.toString())
                                     mensagemErroState.value =
                                         "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"                                }
 
                             })
-                        }
-
+ }
 
 
                     }
 
-                    override fun onFailure(p0: Call<Aluno>, p1: Throwable) {
+                    override fun onFailure(p0: Call<ResultAluno>, p1: Throwable) {
                         Log.i("ERRO_LOGIN", p1.toString())
                         mensagemErroState.value =
                             "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"

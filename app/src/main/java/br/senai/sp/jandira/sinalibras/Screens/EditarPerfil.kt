@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.sinalibras.Screens
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.Image
@@ -35,108 +36,106 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 
 @Composable
-fun EditarPerfil(controleDeNavegacao: NavHostController, recebido:String) {
+fun EditarPerfil(controleDeNavegacao: NavHostController, recebido: String) {
     val partes = recebido.split("*")
-    val id = partes[0]
+    Log.i("USUARIO", recebido)
+    val dadosUsuario = partes[0]
     val tipoUsuario = partes[1]
-    Scaffold(
+
+    Row(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFE1F5FE)),
-        topBar = {
-            Row(
+            .fillMaxWidth()
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.ArrowBackIosNew,
+            contentDescription = "BackArrow",
+            tint = Color.Black
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            modifier = Modifier.padding(horizontal = 85.dp),
+            text = "Editar Perfil",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .background(color = Color(0xFFC7E2FE))
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Imagem de perfil
+        Box(
+            modifier = Modifier
+                .size(180.dp)
+                .padding(16.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo), // Coloque o ID correto da imagem
+                contentDescription = "Foto de Perfil",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBackIosNew,
-                    contentDescription = "BackArrow",
-                    tint = Color.Black
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    modifier = Modifier.padding(horizontal = 85.dp),
-                    text = "Editar Perfil",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-            }
-        },
-        content = { padding ->
-            Column(
-                modifier = Modifier
-                    .background(color = Color(0xFFC7E2FE))
-                    .padding(padding)
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Imagem de perfil
-                Box(
-                    modifier = Modifier
-                        .size(180.dp)
-                        .padding(16.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo), // Coloque o ID correto da imagem
-                        contentDescription = "Foto de Perfil",
-                        modifier = Modifier
-                            .size(150.dp)
-                            .align(Alignment.Center)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Nome
-                EditarCampoPerfil("Nome", "Abracadabra Souza")
-
-                // Data de Nascimento com Ícone de calendário
-                EditarCampoPerfil(
-                    label = "Data de Nascimento",
-                    placeholder = "08/17/2023",
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.CalendarMonth,
-                            contentDescription = "BackArrow"
-                        )
-                    }
-                )
-
-                // Email
-                EditarCampoPerfil("Email", "abracadabraSouza@gmail.com")
-
-                // Altera Senha
-                EditarCampoPerfil(
-                    label = "",
-                    placeholder = "Alterar Senha",
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.ArrowForward,
-                            contentDescription = "Alterar Senha"
-                        )
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Botão de Salvar Alterações
-                Button(
-                    onClick = { /* Ação do botão */ },
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .height(100.dp)
-                        .padding(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F3E96)),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(text = "Salvar Alterações", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                }
-            }
+                    .size(150.dp)
+                    .align(Alignment.Center)
+            )
         }
-    )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Nome
+        EditarCampoPerfil("Nome", "Abracadabra Souza")
+
+        // Data de Nascimento com Ícone de calendário
+        EditarCampoPerfil(
+            label = "Data de Nascimento",
+            placeholder = "08/17/2023",
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.CalendarMonth,
+                    contentDescription = "BackArrow"
+                )
+            }
+        )
+
+        // Email
+        EditarCampoPerfil("Email", "abracadabraSouza@gmail.com")
+
+        // Altera Senha
+        EditarCampoPerfil(
+            label = "",
+            placeholder = "Alterar Senha",
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.ArrowForward,
+                    contentDescription = "Alterar Senha"
+                )
+            }
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Botão de Salvar Alterações
+        Button(
+            onClick = { /* Ação do botão */ },
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(100.dp)
+                .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F3E96)),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(
+                text = "Salvar Alterações",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
 }
 
 @Composable
@@ -150,7 +149,12 @@ fun EditarCampoPerfil(
             .fillMaxWidth(0.9f)
             .padding(8.dp)
     ) {
-        Text(text = label, color = Color(0xFF8C8C8C), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = label,
+            color = Color(0xFF8C8C8C),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()

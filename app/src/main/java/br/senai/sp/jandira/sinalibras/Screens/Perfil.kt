@@ -55,8 +55,8 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
     val partes = recebido.split("*")
     val id = partes[0].toInt()
     val tipoUsuario = partes[1]
+    Log.i("IDDD", id.toString())
 
-    Log.i("ID", id.toString())
 //    var dadosPerfil by remember {
 //        mutableStateOf(Result())
 //    }
@@ -70,36 +70,36 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
         mutableStateOf(false)
     }
     if (tipoUsuario=="aluno") {
-        val callCharacterById = RetrofitFactory().getUsuarioService().getAlunoId(id)
-        callCharacterById.enqueue(object : Callback<ResultAluno> {
+        val callAlunoById = RetrofitFactory().getUsuarioService().getAlunoId(id)
+        callAlunoById.enqueue(object : Callback<ResultAluno> {
             override fun onResponse(p0: Call<ResultAluno>, p1: Response<ResultAluno>) {
                 val alunoResponse = p1.body()
                 if (p1.isSuccessful) {
 
                     dadosPerfilAluno = alunoResponse?.aluno!!
+                    Log.i("CALMA",dadosPerfilAluno.toString())
 
                     funcionouState = true
 
                 } else {
-                    Log.i("API Error", "Null response body")
+                    Log.i("CALMA",alunoResponse?.message!!.toString())
                 }
             }
 
             override fun onFailure(p0: Call<ResultAluno>, p1: Throwable) {
                 Log.i("ERRO_PERFIL", p1.toString())
             }
-
-
         })
     }
     else{
-        val callCharacterById = RetrofitFactory().getUsuarioService().getProfessorId(id)
-        callCharacterById.enqueue(object : Callback<ResultProfessor> {
+        Log.i("ID",id.toString())
+        val callProfessorById = RetrofitFactory().getUsuarioService().getProfessorId(id)
+        callProfessorById.enqueue(object : Callback<ResultProfessor> {
             override fun onResponse(p0: Call<ResultProfessor>, p1: Response<ResultProfessor>) {
-                val alunoResponse = p1.body()
+                val professorResponse = p1.body()
                 if (p1.isSuccessful) {
 
-                    dadosPerfilProfessor = alunoResponse?.professor!!
+                    dadosPerfilProfessor = professorResponse?.professor!!
 
                     funcionouState = true
 
@@ -119,7 +119,7 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
         if(tipoUsuario=="aluno"){
         val aluno = dadosPerfilAluno
 
-        val painter: Painter = if (aluno.foto_perfil.isNotEmpty()) {
+        val painter: Painter = if (aluno.foto_perfil!= null && aluno.foto_perfil!= "null" && aluno.foto_perfil.isNotEmpty()) {
             rememberAsyncImagePainter(model = aluno.foto_perfil)
         } else {
             painterResource(id = R.drawable.perfil)
@@ -138,7 +138,8 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Button(
                         onClick = {
@@ -161,34 +162,52 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
                         text = "Perfil",
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
-                        fontSize = 26.sp
+                        fontSize = 26.sp,
+                        modifier = Modifier.weight(1f)
                     )
+                    Button(
+                        onClick = {
+                            controleDeNavegacao.navigate("editarPerfil/${aluno}*aluno")
+                        },
+                        colors = ButtonColors(
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent
+                        )
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.configuracoes),
+                            contentDescription = "Botao Configurações de conta",
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
                 }
                 Image(
 
                     painter = painter,
-                    contentDescription = "perfil",
+                    contentDescription = "foto de Perfil",
                     modifier = Modifier
                         .size(width = 170.dp, height = 170.dp)
                         .align(Alignment.CenterHorizontally)
                 )
-
+Spacer(modifier=Modifier.height(20.dp))
                 Text(
+                    text = aluno.nome.uppercase(),
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(bottom = 45.dp),
-                    text = aluno!!.nome,
+                        .align(Alignment.CenterHorizontally),
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                     fontSize = 26.sp
                 )
-
+                Spacer(modifier=Modifier.height(20.dp))
                 Image(
-                    painter = painterResource(id = R.drawable.aluno),
+                    painter = painterResource(id = R.drawable.selo_aluno),
                     contentDescription = "tag",
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .size(height = 33.dp, width = 151.dp)
+                        .height(32.dp)
+
                 )
 
             }
@@ -319,9 +338,9 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
         }
     }
         else{
-            val professor = dadosPerfilAluno
+            val professor = dadosPerfilProfessor
 
-            val painter: Painter = if (professor.foto_perfil.isNotEmpty()) {
+            val painter: Painter = if (professor.foto_perfil!= null && professor.foto_perfil!= "null" && professor.foto_perfil.isNotEmpty()) {
                 rememberAsyncImagePainter(model = professor.foto_perfil)
             } else {
                 painterResource(id = R.drawable.perfil)
@@ -340,7 +359,8 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.CenterHorizontally),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Button(
                             onClick = {
@@ -363,34 +383,52 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
                             text = "Perfil",
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
-                            fontSize = 26.sp
+                            fontSize = 26.sp,
+                            modifier = Modifier.weight(1f)
                         )
+                        Button(
+                            onClick = {
+                                controleDeNavegacao.navigate("editarPerfil/${professor}*professor")
+                            },
+                            colors = ButtonColors(
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent
+                            )
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.configuracoes),
+                                contentDescription = "Botao Configurações de conta",
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
                     }
                     Image(
 
                         painter = painter,
-                        contentDescription = "perfil",
+                        contentDescription = "foto de Perfil",
                         modifier = Modifier
                             .size(width = 170.dp, height = 170.dp)
                             .align(Alignment.CenterHorizontally)
                     )
-
+                    Spacer(modifier=Modifier.height(20.dp))
                     Text(
+                        text = professor.nome.uppercase(),
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 45.dp),
-                        text = professor!!.nome,
+                            .align(Alignment.CenterHorizontally),
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
                         fontSize = 26.sp
                     )
-
+                    Spacer(modifier=Modifier.height(20.dp))
                     Image(
-                        painter = painterResource(id = R.drawable.aluno),
+                        painter = painterResource(id = R.drawable.selo_professor),
                         contentDescription = "tag",
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .size(height = 33.dp, width = 151.dp)
+                            .height(32.dp)
+
                     )
 
                 }
@@ -518,9 +556,6 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
                         }
                     }
                 }
-            }
-
-        }
-        }
+            }}}
     else{}
 }

@@ -55,6 +55,7 @@ import retrofit2.Callback
 //import java.time.LocalDate
 import org.threeten.bp.LocalDate
 import retrofit2.Response
+import kotlin.text.subSequence
 
 @Composable
 fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
@@ -100,7 +101,15 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
     var confirmaSenhaVisivel by remember { mutableStateOf(false) }
     val textoOcultoConfirmaSenha =
         if (confirmaSenhaVisivel) VisualTransformation.None else PasswordVisualTransformation()
-
+//bloquear caracteres especiais(pro nome, vou adicionai essa regra no data nascimento tbm, só q dai só autorizando numeros e /)
+//    val filter = InputFilter { source, start, end, dest, dstart, dend ->
+//        val regex = Regex("[^a-zA-Z0-9 ]")
+//        if (regex.containsMatchIn(source.subSequence(start, end))) {
+//            ""
+//        } else {
+//            null
+//        }
+//    }
 
     //gradiente do background
     val gradientBrush = Brush.linearGradient(
@@ -164,7 +173,8 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Nome Completo") },
                 isError = umError.value,
-                colors = TextFieldDefaults
+                //filters = arrayOf(filter),
+                        colors = TextFieldDefaults
                     .colors(
                         focusedContainerColor = Color.Transparent,
                         focusedTextColor = Color(0xff334EAC),
@@ -380,10 +390,8 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                                             p1: Response<ResultAluno>
                                         ) {
                                             val usuarioSalvo = p1.body()
-                                            Log.i("DEUERRO", p1.body().toString())
 
                                             if (p1.isSuccessful) {
-                                                Log.d("IDDDDDDD", usuarioSalvo.toString())
                                                 controleDeNavegacao.navigate("perfil/${usuarioSalvo?.aluno?.id_aluno}*aluno")
 
                                             } else {
@@ -430,7 +438,6 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                                         ) {
                                             val usuarioSalvo = p1.body()
                                             if (p1.isSuccessful) {
-                                                Log.d("IDDDDDDD", usuarioSalvo.toString())
                                                 controleDeNavegacao.navigate("perfil/${usuarioSalvo?.professor?.id_professor}*professor")
                                             }
                                             else {

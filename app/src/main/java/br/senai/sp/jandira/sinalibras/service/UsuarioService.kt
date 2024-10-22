@@ -48,10 +48,10 @@ interface UsuarioService {
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/aluno/validacao")
-    fun setValidarEntradaAluno(@Body usuario: Aluno): Call<Aluno>
+    fun setValidarEntradaAluno(@Body usuario: Aluno): Call<ResultAluno>
 
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/professor/validacao")
-    fun setValidarEntradaProfessor(@Body usuario: Professor): Call<Professor>
+    fun setValidarEntradaProfessor(@Body usuario: Professor): Call<ResultProfessor>
 }
