@@ -55,6 +55,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -67,7 +68,7 @@ var respostasUsuario = mutableListOf<RespostaUsuario>()
 
 @OptIn(UnstableApi::class)
 @Composable
-fun VideoPlayerScreen(videoUri: Uri) {
+fun PlayerQuizVideo(videoUri: Uri) {
     val context = LocalContext.current
     val playerView = remember { PlayerView(context) }
 
@@ -131,7 +132,7 @@ fun QuizCard(quiz: Quiz, id: Int) {
 
             val videoUri = Uri.parse(quiz.video)
             Box(modifier = Modifier.height(200.dp)) {
-                VideoPlayerScreen(videoUri)
+                PlayerQuizVideo(videoUri)
             }
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -290,6 +291,49 @@ fun Quiz(controleDeNavegacao: NavHostController, recebido: String) {
 
         }
     }
+    else{
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFD0E6FF))
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+
+                Image(
+                    painter = painterResource(id = R.drawable.erro),
+                    contentDescription = "logo",
+                    modifier = Modifier
+
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+
+                Text(
+                    text = "ERRO!!",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+
+                Text(
+                    text = "mande uma\nmensagem para o\ntime de suporte",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+
+
 }
 
 

@@ -13,13 +13,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import br.senai.sp.jandira.sinalibras.Screens.AcertoQuiz
+import br.senai.sp.jandira.sinalibras.Screens.ChatEspecifico
+import br.senai.sp.jandira.sinalibras.Screens.Configuracoes
 import br.senai.sp.jandira.sinalibras.Screens.EditarPerfil
+import br.senai.sp.jandira.sinalibras.Screens.EditarSenha
 import br.senai.sp.jandira.sinalibras.Screens.ErroQuiz
 import br.senai.sp.jandira.sinalibras.Screens.Escolha
 import br.senai.sp.jandira.sinalibras.Screens.Inicio
 import br.senai.sp.jandira.sinalibras.Screens.Login
 import br.senai.sp.jandira.sinalibras.Screens.Perfil
 import br.senai.sp.jandira.sinalibras.Screens.Quiz
+import br.senai.sp.jandira.sinalibras.Screens.VideoInfo
 import br.senai.sp.jandira.sinalibras.ui.theme.SinaLibrasTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 
@@ -38,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     val controleDeNavegacao = rememberNavController()
                     NavHost(
                         navController = controleDeNavegacao,
-                        startDestination = "inicio"
+                        startDestination = "chatEspecifico/1"
                     ) {
                         composable(route = "inicio") { Inicio(controleDeNavegacao) }
                         composable(route = "login") { Login(controleDeNavegacao) }
@@ -68,6 +72,22 @@ class MainActivity : ComponentActivity() {
                                 ?.let { Perfil(controleDeNavegacao,recebido = it) }
                         }
                         composable(
+                            "configuracoes/{recebido}",
+                            arguments = listOf(navArgument("recebido") { type =
+                                NavType.StringType })
+                        ) { backStackEntry ->
+                            backStackEntry.arguments!!.getString("recebido")
+                                ?.let { Configuracoes(controleDeNavegacao, recebido = it) }
+                        }
+                        composable(
+                            "sobreNos/{recebido}",
+                            arguments = listOf(navArgument("recebido") { type =
+                                NavType.StringType })
+                        ) { backStackEntry ->
+                            backStackEntry.arguments!!.getString("recebido")
+                                ?.let { Configuracoes(controleDeNavegacao, recebido = it) }
+                        }
+                        composable(
                             "editaPerfil/{recebido}",
                             arguments = listOf(navArgument("recebido") { type =
                                 NavType.StringType })
@@ -75,6 +95,15 @@ class MainActivity : ComponentActivity() {
                             backStackEntry.arguments!!.getString("recebido")
                                 ?.let { EditarPerfil(controleDeNavegacao, recebido = it) }
                         }
+                        composable(
+                            "editarSenha/{recebido}",
+                            arguments = listOf(navArgument("recebido") { type =
+                                NavType.StringType })
+                        ) { backStackEntry ->
+                            backStackEntry.arguments!!.getString("recebido")
+                                ?.let { EditarSenha(controleDeNavegacao, recebido = it) }
+                        }
+
                         composable(
                             "acerto/{recebido}",
                             arguments = listOf(navArgument("recebido") { type =
@@ -88,6 +117,20 @@ class MainActivity : ComponentActivity() {
                                 NavType.IntType })
                         ) { backStackEntry ->
                             ErroQuiz(controleDeNavegacao,porcentagem = backStackEntry.arguments?.getInt("porcentagem"))
+                        }
+                        composable(
+                            "chatEspecifico/{id}",
+                            arguments = listOf(navArgument("id") { type = NavType.StringType }) // Change to StringType
+                        ) { backStackEntry ->
+                            val idFornecido = backStackEntry.arguments?.getString("id") ?: ""
+                            ChatEspecifico(controleDeNavegacao, id = idFornecido)
+                        }
+                        composable(
+                            "videoInfo/{id}",
+                            arguments = listOf(navArgument("id") { type = NavType.StringType }) // Change to StringType
+                        ) { backStackEntry ->
+                            val idFornecido = backStackEntry.arguments?.getString("id") ?: ""
+                            VideoInfo(controleDeNavegacao, id = idFornecido)
                         }
 
 

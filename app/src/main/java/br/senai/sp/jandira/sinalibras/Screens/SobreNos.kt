@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -19,10 +20,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 
 @Composable
-fun Sobre() {
+fun SobreNos(controleDeNavegacao:NavHostController,recebido:String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,11 +37,23 @@ fun Sobre() {
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.btn_voltar),
-                contentDescription = "Back",
-                modifier = Modifier.size(24.dp)
-            )
+            Button(
+                onClick = {
+                    controleDeNavegacao.navigate("configuracoes/${recebido}")
+                },
+                colors = ButtonColors(
+                    Color.Transparent,
+                    Color.Transparent,
+                    Color.Transparent,
+                    Color.Transparent
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.btn_voltar),
+                    contentDescription = "Botao Voltar",
+                    modifier = Modifier.size(20.dp)
+                )
+            }
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "Sobre Nós",
@@ -144,5 +158,6 @@ fun Sobre() {
                     .align(Alignment.BottomCenter)
             )
         }
+
     }
 }

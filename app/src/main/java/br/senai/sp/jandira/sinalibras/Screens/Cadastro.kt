@@ -55,7 +55,6 @@ import retrofit2.Callback
 //import java.time.LocalDate
 import org.threeten.bp.LocalDate
 import retrofit2.Response
-import kotlin.text.subSequence
 
 @Composable
 fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {

@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.sinalibras.R
@@ -167,7 +168,7 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
                     )
                     Button(
                         onClick = {
-                            controleDeNavegacao.navigate("editarPerfil/${aluno}*aluno")
+                            controleDeNavegacao.navigate("Configuracoes/${aluno}*aluno")
                         },
                         colors = ButtonColors(
                             Color.Transparent,
@@ -557,5 +558,43 @@ Spacer(modifier=Modifier.height(20.dp))
                     }
                 }
             }}}
-    else{}
+    else{
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFD0E6FF))
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+
+            Image(
+                painter = painterResource(id = R.drawable.erro),
+                contentDescription = "logo",
+                modifier = Modifier
+
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            Text(
+                text = "ERRO!!",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+
+            Text(
+                text = "mande uma\nmensagem para o\ntime de suporte",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
 }

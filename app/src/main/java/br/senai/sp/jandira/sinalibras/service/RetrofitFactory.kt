@@ -1,6 +1,8 @@
 package br.senai.sp.jandira.sinalibras.service
 
 import br.senai.sp.jandira.service.UsuarioService
+import br.senai.sp.jandira.service.VideoAulaService
+import br.senai.sp.jandira.sinalibras.model.VideoAula
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -17,6 +19,10 @@ class RetrofitFactory {
         return retrofitFactory.create(UsuarioService::class.java)
     }
 
+    fun  getVideoAulaService(): VideoAulaService {
+        return retrofitFactory.create(VideoAulaService::class.java)
+    }
+
     fun  getQuizService(): QuizService{
         return retrofitFactory.create(QuizService::class.java)
     }
@@ -31,7 +37,6 @@ class RetrofitFactory {
     fun  getEmailValidoService(): EmailValidoService{
         return retrofitFactoryEmail.create(EmailValidoService::class.java)
     }
-
 
 
 
