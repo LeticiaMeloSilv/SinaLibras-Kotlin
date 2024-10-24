@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     val controleDeNavegacao = rememberNavController()
                     NavHost(
                         navController = controleDeNavegacao,
-                        startDestination = "perfil/1"
+                        startDestination = "perfil/1*aluno"
                     ) {
                         composable(route = "inicio") { Inicio(controleDeNavegacao) }
                         composable(route = "login") { Login(controleDeNavegacao) }

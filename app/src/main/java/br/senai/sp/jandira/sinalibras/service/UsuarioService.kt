@@ -11,6 +11,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface UsuarioService {
@@ -19,7 +20,6 @@ interface UsuarioService {
     //Call<t>(retrofit2) o tipo de call que temos que escolher ao usar o retrofit
     //Result do nosso pacote (br.senai..)
     // A URL é padrão na API tod, na requisição colocamos apenas o diferente na URL, no caso da url abaixo né a palvra character
-    //https://rickandmortyapi.com/api/character
     @GET("/v1/sinalibras/alunos")
     fun getAllAlunos(): Call<ResultAluno>
 
@@ -29,6 +29,10 @@ interface UsuarioService {
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/aluno")
     fun setSalvarAluno(@Body usuario: Aluno): Call<ResultAluno>
+
+    @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
+    @PUT("/v1/sinalibras/aluno")
+    fun setAtualizarAluno(@Path("id")id:Int,@Body usuario: Aluno): Call<ResultAluno>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/aluno/validacao")
@@ -59,6 +63,10 @@ interface UsuarioService {
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/professor")
     fun setSalvarProfessor(@Body usuario: Professor): Call<ResultProfessor>
+
+    @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
+    @PUT("/v1/sinalibras/professor")
+    fun setAtualizarProfessor(@Path("id")id:Int,@Body usuario: Professor): Call<ResultProfessor>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/professor/validacao")

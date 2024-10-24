@@ -52,11 +52,10 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
+fun Perfil(controleDeNavegacao: NavHostController, recebido: String) {
     val partes = recebido.split("*")
     val id = partes[0].toInt()
     val tipoUsuario = partes[1]
-    Log.i("IDDD", id.toString())
 
 //    var dadosPerfil by remember {
 //        mutableStateOf(Result())
@@ -70,7 +69,10 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
     var funcionouState by remember {
         mutableStateOf(false)
     }
-    if (tipoUsuario=="aluno") {
+
+    if (tipoUsuario == "aluno") {
+        Log.i("CALMA","CALMA")
+
         val callAlunoById = RetrofitFactory().getUsuarioService().getAlunoId(id)
         callAlunoById.enqueue(object : Callback<ResultAluno> {
             override fun onResponse(p0: Call<ResultAluno>, p1: Response<ResultAluno>) {
@@ -78,12 +80,12 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
                 if (p1.isSuccessful) {
 
                     dadosPerfilAluno = alunoResponse?.aluno!!
-                    Log.i("CALMA",dadosPerfilAluno.toString())
+                    Log.i("CALMA", dadosPerfilAluno.toString())
 
                     funcionouState = true
 
                 } else {
-                    Log.i("CALMA",alunoResponse?.message!!.toString())
+                    Log.i("CALMA", alunoResponse?.message!!.toString())
                 }
             }
 
@@ -91,9 +93,8 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
                 Log.i("ERRO_PERFIL", p1.toString())
             }
         })
-    }
-    else{
-        Log.i("ID",id.toString())
+    } else {
+        Log.i("ID", id.toString())
         val callProfessorById = RetrofitFactory().getUsuarioService().getProfessorId(id)
         callProfessorById.enqueue(object : Callback<ResultProfessor> {
             override fun onResponse(p0: Call<ResultProfessor>, p1: Response<ResultProfessor>) {
@@ -115,237 +116,20 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido:String) {
 
 
         })
+
     }
+
+
     if (funcionouState) {
-        if(tipoUsuario=="aluno"){
-        val aluno = dadosPerfilAluno
+        if (tipoUsuario == "aluno") {
+            val aluno = dadosPerfilAluno
 
-        val painter: Painter = if (aluno.foto_perfil!= null && aluno.foto_perfil!= "null" && aluno.foto_perfil.isNotEmpty()) {
-            rememberAsyncImagePainter(model = aluno.foto_perfil)
-        } else {
-            painterResource(id = R.drawable.perfil)
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color(0xFFC7E2FE))
-        ) {
-
-
-            Column {
-                Spacer(modifier = Modifier.height(20.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(
-                        onClick = {
-                            controleDeNavegacao.navigate("inicio")
-                        },
-                        colors = ButtonColors(
-                            Color.Transparent,
-                            Color.Transparent,
-                            Color.Transparent,
-                            Color.Transparent
-                        )
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.btn_voltar),
-                            contentDescription = "Botao Voltar",
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                    Text(
-                        text = "Perfil",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        fontSize = 26.sp,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Button(
-                        onClick = {
-                            controleDeNavegacao.navigate("Configuracoes/${aluno}*aluno")
-                        },
-                        colors = ButtonColors(
-                            Color.Transparent,
-                            Color.Transparent,
-                            Color.Transparent,
-                            Color.Transparent
-                        )
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.configuracoes),
-                            contentDescription = "Botao Configurações de conta",
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
+            val painter: Painter =
+                if (aluno.foto_perfil != null && aluno.foto_perfil != "null" && aluno.foto_perfil.isNotEmpty()) {
+                    rememberAsyncImagePainter(model = aluno.foto_perfil)
+                } else {
+                    painterResource(id = R.drawable.perfil)
                 }
-                Image(
-
-                    painter = painter,
-                    contentDescription = "foto de Perfil",
-                    modifier = Modifier
-                        .size(width = 170.dp, height = 170.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-Spacer(modifier=Modifier.height(20.dp))
-                Text(
-                    text = aluno.nome.uppercase(),
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    fontSize = 26.sp
-                )
-                Spacer(modifier=Modifier.height(20.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.selo_aluno),
-                    contentDescription = "tag",
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .height(32.dp)
-
-                )
-
-            }
-
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp)
-                    .height(330.dp)
-            ) {
-
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = CardDefaults.cardElevation(8.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFFFF)) // Cor de fundo azul claro
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-// Ícone de "like"
-                        Image(
-                            painter = painterResource(id = R.drawable.logo),
-                            contentDescription = "perfil",
-                            modifier = Modifier
-                                .size(width = 60.dp, height = 70.dp)
-
-                        )
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-// Título
-                            Text(
-                                text = "NÚMEROS",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-// Botões de Vídeos e Atividades
-                            Row {
-                                Button(
-                                    onClick = { /* TODO: Ação dos Vídeos */ },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(
-                                            0x00FFFFFF
-                                        )
-                                    ),
-                                    modifier = Modifier
-                                        .padding(end = 8.dp)
-                                        .border(
-                                            border = BorderStroke(2.dp, Color(0xFF345ADE)),
-                                            shape = RoundedCornerShape(16.dp)
-                                        ),
-                                    contentPadding = PaddingValues(
-                                        horizontal = 12.dp,
-                                        vertical = 4.dp
-                                    )
-                                ) {
-                                    Text(
-                                        text = "4 Vídeos",
-                                        color = Color(0xFF345ADE),
-                                        fontSize = 12.sp
-                                    )
-                                }
-
-                                Button(
-                                    modifier = Modifier.border(
-                                        border = BorderStroke(2.dp, Color(0xFFFEC608)),
-                                        shape = RoundedCornerShape(16.dp)
-                                    ),
-                                    onClick = { /* TODO: Ação das Atividades */ },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(
-                                            0x00FFFFFF
-                                        )
-                                    ),
-
-                                    contentPadding = PaddingValues(
-                                        horizontal = 5.dp,
-                                        vertical = 4.dp
-                                    )
-                                ) {
-                                    Text(
-                                        text = "2 Atividades",
-                                        color = Color(0xFFFEC608),
-                                        fontSize = 12.sp
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.size(48.dp)
-                        ) {
-                            CircularProgressIndicator(
-                                progress = 0.65f,
-                                modifier = Modifier.fillMaxSize(),
-                                color = Color(0xFF4CAF50),
-                                strokeWidth = 6.dp
-                            )
-
-                            Text(
-                                text = "65%",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-        else{
-            val professor = dadosPerfilProfessor
-
-            val painter: Painter = if (professor.foto_perfil!= null && professor.foto_perfil!= "null" && professor.foto_perfil.isNotEmpty()) {
-                rememberAsyncImagePainter(model = professor.foto_perfil)
-            } else {
-                painterResource(id = R.drawable.perfil)
-            }
 
             Column(
                 modifier = Modifier
@@ -365,7 +149,7 @@ Spacer(modifier=Modifier.height(20.dp))
                     ) {
                         Button(
                             onClick = {
-                                controleDeNavegacao.navigate("inicio")
+                                controleDeNavegacao.navigate("feed")
                             },
                             colors = ButtonColors(
                                 Color.Transparent,
@@ -389,7 +173,7 @@ Spacer(modifier=Modifier.height(20.dp))
                         )
                         Button(
                             onClick = {
-                                controleDeNavegacao.navigate("editarPerfil/${professor}*professor")
+                                controleDeNavegacao.navigate("configuracoes/${aluno}*aluno")
                             },
                             colors = ButtonColors(
                                 Color.Transparent,
@@ -413,18 +197,18 @@ Spacer(modifier=Modifier.height(20.dp))
                             .size(width = 170.dp, height = 170.dp)
                             .align(Alignment.CenterHorizontally)
                     )
-                    Spacer(modifier=Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = professor.nome.uppercase(),
+                        text = aluno.nome.uppercase(),
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
                         fontSize = 26.sp
                     )
-                    Spacer(modifier=Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                     Image(
-                        painter = painterResource(id = R.drawable.selo_professor),
+                        painter = painterResource(id = R.drawable.selo_aluno),
                         contentDescription = "tag",
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
@@ -557,44 +341,266 @@ Spacer(modifier=Modifier.height(20.dp))
                         }
                     }
                 }
-            }}}
-    else{
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFD0E6FF))
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+            }
+        } else {
+            val professor = dadosPerfilProfessor
 
-            Image(
-                painter = painterResource(id = R.drawable.erro),
-                contentDescription = "logo",
+            val painter: Painter =
+                if (professor.foto_perfil != null && professor.foto_perfil != "null" && professor.foto_perfil.isNotEmpty()) {
+                    rememberAsyncImagePainter(model = professor.foto_perfil)
+                } else {
+                    painterResource(id = R.drawable.perfil)
+                }
+
+            Column(
                 modifier = Modifier
-
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-
-            Text(
-                text = "ERRO!!",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
+                    .fillMaxSize()
+                    .background(color = Color(0xFFC7E2FE))
+            ) {
 
 
-            Text(
-                text = "mande uma\nmensagem para o\ntime de suporte",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.Black,
-                textAlign = TextAlign.Center
-            )
+                Column {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(
+                            onClick = {
+                                controleDeNavegacao.navigate("inicio")
+                            },
+                            colors = ButtonColors(
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent
+                            )
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.btn_voltar),
+                                contentDescription = "Botao Voltar",
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        Text(
+                            text = "Perfil",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            fontSize = 26.sp,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Button(
+                            onClick = {
+                                controleDeNavegacao.navigate("editarPerfil/${professor}*professor")
+                            },
+                            colors = ButtonColors(
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent
+                            )
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.configuracoes),
+                                contentDescription = "Botao Configurações de conta",
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    }
+                    Image(
+
+                        painter = painter,
+                        contentDescription = "foto de Perfil",
+                        modifier = Modifier
+                            .size(width = 170.dp, height = 170.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = professor.nome.uppercase(),
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        fontSize = 26.sp
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.selo_professor),
+                        contentDescription = "tag",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .height(32.dp)
+
+                    )
+
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp)
+                        .height(330.dp)
+                ) {
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(8.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFFFF)) // Cor de fundo azul claro
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+// Ícone de "like"
+                            Image(
+                                painter = painterResource(id = R.drawable.logo),
+                                contentDescription = "perfil",
+                                modifier = Modifier
+                                    .size(width = 60.dp, height = 70.dp)
+
+                            )
+
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+// Título
+                                Text(
+                                    text = "NÚMEROS",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+// Botões de Vídeos e Atividades
+                                Row {
+                                    Button(
+                                        onClick = { /* TODO: Ação dos Vídeos */ },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(
+                                                0x00FFFFFF
+                                            )
+                                        ),
+                                        modifier = Modifier
+                                            .padding(end = 8.dp)
+                                            .border(
+                                                border = BorderStroke(2.dp, Color(0xFF345ADE)),
+                                                shape = RoundedCornerShape(16.dp)
+                                            ),
+                                        contentPadding = PaddingValues(
+                                            horizontal = 12.dp,
+                                            vertical = 4.dp
+                                        )
+                                    ) {
+                                        Text(
+                                            text = "4 Vídeos",
+                                            color = Color(0xFF345ADE),
+                                            fontSize = 12.sp
+                                        )
+                                    }
+
+                                    Button(
+                                        modifier = Modifier.border(
+                                            border = BorderStroke(2.dp, Color(0xFFFEC608)),
+                                            shape = RoundedCornerShape(16.dp)
+                                        ),
+                                        onClick = { /* TODO: Ação das Atividades */ },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(
+                                                0x00FFFFFF
+                                            )
+                                        ),
+
+                                        contentPadding = PaddingValues(
+                                            horizontal = 5.dp,
+                                            vertical = 4.dp
+                                        )
+                                    ) {
+                                        Text(
+                                            text = "2 Atividades",
+                                            color = Color(0xFFFEC608),
+                                            fontSize = 12.sp
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.size(48.dp)
+                            ) {
+                                CircularProgressIndicator(
+                                    progress = 0.65f,
+                                    modifier = Modifier.fillMaxSize(),
+                                    color = Color(0xFF4CAF50),
+                                    strokeWidth = 6.dp
+                                )
+
+                                Text(
+                                    text = "65%",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
-    }
-}
+        } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(0xFFD0E6FF))
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    Image(
+                        painter = painterResource(id = R.drawable.erro),
+                        contentDescription = "logo",
+                        modifier = Modifier
+
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+                    Text(
+                        text = "ERRO!!",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+
+                    Text(
+                        text = "Ocorreu um erro inesperado. Contate o time de suporte",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+        }

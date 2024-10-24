@@ -50,7 +50,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @androidx.annotation.OptIn(UnstableApi::class)
-@OptIn(UnstableApi::class)
 @Composable
 fun PlayerVideo(videoUri: Uri) {
     val context = LocalContext.current
