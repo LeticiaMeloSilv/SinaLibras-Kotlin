@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     val controleDeNavegacao = rememberNavController()
                     NavHost(
                         navController = controleDeNavegacao,
-                        startDestination = "chatEspecifico/1"
+                        startDestination = "perfil/1"
                     ) {
                         composable(route = "inicio") { Inicio(controleDeNavegacao) }
                         composable(route = "login") { Login(controleDeNavegacao) }
@@ -119,18 +119,18 @@ class MainActivity : ComponentActivity() {
                             ErroQuiz(controleDeNavegacao,porcentagem = backStackEntry.arguments?.getInt("porcentagem"))
                         }
                         composable(
-                            "chatEspecifico/{id}",
-                            arguments = listOf(navArgument("id") { type = NavType.StringType }) // Change to StringType
+                            "chatEspecifico/{recebido}",
+                            arguments = listOf(navArgument("recebido") { type = NavType.StringType }) // Change to StringType
                         ) { backStackEntry ->
-                            val idFornecido = backStackEntry.arguments?.getString("id") ?: ""
-                            ChatEspecifico(controleDeNavegacao, id = idFornecido)
+                            val recebido = backStackEntry.arguments?.getString("recebido") ?: ""
+                            ChatEspecifico(controleDeNavegacao, recebido = recebido)
                         }
                         composable(
-                            "videoInfo/{id}",
-                            arguments = listOf(navArgument("id") { type = NavType.StringType }) // Change to StringType
+                            "videoInfo/{recebido}",
+                            arguments = listOf(navArgument("recebido") { type = NavType.StringType }) // Change to StringType
                         ) { backStackEntry ->
-                            val idFornecido = backStackEntry.arguments?.getString("id") ?: ""
-                            VideoInfo(controleDeNavegacao, id = idFornecido)
+                            val idFornecido = backStackEntry.arguments?.getString("recebido") ?: ""
+                            VideoInfo(controleDeNavegacao, recebido = idFornecido)
                         }
 
 

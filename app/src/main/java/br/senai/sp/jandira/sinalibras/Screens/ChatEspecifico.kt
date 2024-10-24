@@ -23,7 +23,11 @@ import br.senai.sp.jandira.sinalibras.R
 
 
 @Composable
-fun ChatEspecifico(controleDeNavegacao:NavHostController, id:String) {
+fun ChatEspecifico(controleDeNavegacao:NavHostController, recebido:String) {
+    val partes = recebido.split("*")
+    val idDoOutroUsuario = partes[0].toInt()
+    val usuario = partes[1]
+    val tipoUsuario = partes[2]
     Column(
         modifier = Modifier
             .fillMaxSize()

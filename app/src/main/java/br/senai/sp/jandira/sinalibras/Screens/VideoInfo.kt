@@ -1,95 +1,99 @@
-//package br.senai.sp.jandira.sinalibras.Screens
-//
-//import android.net.Uri
-//import android.util.Log
-//import androidx.compose.foundation.Image
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.layout.Arrangement
-//import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.Row
-//import androidx.compose.foundation.layout.Spacer
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.foundation.layout.fillMaxWidth
-//import androidx.compose.foundation.layout.height
-//import androidx.compose.foundation.layout.padding
-//import androidx.compose.foundation.layout.size
-//import androidx.compose.foundation.layout.width
-//import androidx.compose.material3.Icon
-//import androidx.compose.material3.MaterialTheme
-//import androidx.compose.material3.Text
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.DisposableEffect
-//import androidx.compose.runtime.LaunchedEffect
-//import androidx.compose.runtime.getValue
-//import androidx.compose.runtime.mutableStateOf
-//import androidx.compose.runtime.remember
-//import androidx.compose.runtime.setValue
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.draw.drawBehind
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.platform.LocalContext
-//import androidx.compose.ui.res.painterResource
-//import androidx.compose.ui.text.font.FontWeight
-//import androidx.compose.ui.text.style.TextAlign
-//import androidx.compose.ui.unit.dp
-//import androidx.compose.ui.unit.sp
-//import androidx.compose.ui.viewinterop.AndroidView
-//import androidx.media3.common.MediaItem
-//import androidx.media3.common.util.UnstableApi
-//import androidx.media3.exoplayer.ExoPlayer
-//import androidx.media3.ui.PlayerView
-//import androidx.navigation.NavHostController
-//import br.senai.sp.jandira.sinalibras.R
-//import br.senai.sp.jandira.sinalibras.model.Aluno
-//import br.senai.sp.jandira.sinalibras.model.ResultAluno
-//import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
-//import retrofit2.Call
-//import retrofit2.Callback
-//import retrofit2.Response
-//
-//@androidx.annotation.OptIn(UnstableApi::class)
-//@OptIn(UnstableApi::class)
-//@Composable
-//fun PlayerVideo(videoUri: Uri) {
-//    val context = LocalContext.current
-//    val playerView = remember { PlayerView(context) }
-//
-//    val player = remember { ExoPlayer.Builder(context).build() }
-//    playerView.player = player
-//    val id = videoUri.toString().substringAfter("/d/").substringBefore("/view")
-//    val downloadLink = "https://drive.google.com/uc?export=download&id=$id"
-//
-//    player.volume = 0f
-//
-//    val mediaItem = MediaItem.fromUri(Uri.parse(downloadLink))
-//    player.setMediaItem(mediaItem)
-//    player.prepare()
-//    player.play()
-//    LaunchedEffect(mediaItem) {
-//        player.setMediaItem(mediaItem)
-//        player.prepare()
-//        player.play()
-//    }
-//
-//    DisposableEffect(player) {
-//        onDispose {
-//            player.release()
-//        }
-//    }
-//
-//    AndroidView(factory = { playerView })
-//}
-//@Composable
-//fun VideoInfo(controleDeNavegacao:NavHostController,id:String) {
+package br.senai.sp.jandira.sinalibras.Screens
+
+import android.net.Uri
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
+import androidx.navigation.NavHostController
+import br.senai.sp.jandira.sinalibras.R
+import br.senai.sp.jandira.sinalibras.model.Aluno
+import br.senai.sp.jandira.sinalibras.model.ResultVideo
+import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+@androidx.annotation.OptIn(UnstableApi::class)
+@OptIn(UnstableApi::class)
+@Composable
+fun PlayerVideo(videoUri: Uri) {
+    val context = LocalContext.current
+    val playerView = remember { PlayerView(context) }
+
+    val player = remember { ExoPlayer.Builder(context).build() }
+    playerView.player = player
+    val id = videoUri.toString().substringAfter("/d/").substringBefore("/view")
+    val downloadLink = "https://drive.google.com/uc?export=download&id=$id"
+
+    player.volume = 0f
+
+    val mediaItem = MediaItem.fromUri(Uri.parse(downloadLink))
+    player.setMediaItem(mediaItem)
+    player.prepare()
+    player.play()
+    LaunchedEffect(mediaItem) {
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.play()
+    }
+
+    DisposableEffect(player) {
+        onDispose {
+            player.release()
+        }
+    }
+
+    AndroidView(factory = { playerView })
+}
+@Composable
+fun VideoInfo(controleDeNavegacao:NavHostController,recebido:String) {
+    val partes = recebido.split("*")
+    val idDoVideo = partes[0].toInt()
+    val usuario = partes[1]
+    val tipoUsuario = partes[2]
 //    var dadosVideoAula by remember {
 //        mutableStateOf(Aluno())
 //    }
 //    var funcionouState by remember {
 //        mutableStateOf(false)
 //    }
-//    val callVideoById = RetrofitFactory().getVideoAulaService().getVideoById(id)
+//    val callVideoById = RetrofitFactory().getVideoAulaService().getVideoById(idDoVideo)
 //    callVideoById.enqueue(object : Callback<ResultVideo> {
 //        override fun onResponse(p0: Call<ResultVideo>, p1: Response<ResultVideo>) {
 //            val videoResponse = p1.body()
@@ -308,4 +312,4 @@
 //        )
 //    }
 //    }
-//}
+}
