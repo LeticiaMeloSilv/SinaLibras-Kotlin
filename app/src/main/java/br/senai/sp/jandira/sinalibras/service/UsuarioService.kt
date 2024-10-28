@@ -31,7 +31,7 @@ interface UsuarioService {
     fun setSalvarAluno(@Body usuario: Aluno): Call<ResultAluno>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
-    @PUT("/v1/sinalibras/aluno")
+    @PUT("/v1/sinalibras/aluno/{id}")
     fun setAtualizarAluno(@Path("id")id:Int,@Body usuario: Aluno): Call<ResultAluno>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json

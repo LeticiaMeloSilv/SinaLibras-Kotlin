@@ -1,4 +1,4 @@
-package br.senai.sp.jandira.sinalibras
+package br.senai.sp.jandira.sinalibras.Screens
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -43,6 +43,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import br.senai.sp.jandira.sinalibras.R
 import br.senai.sp.jandira.sinalibras.model.Email
 import br.senai.sp.jandira.sinalibras.model.ResultAluno
 import br.senai.sp.jandira.sinalibras.model.Aluno
@@ -391,7 +392,9 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                                             val usuarioSalvo = p1.body()
 
                                             if (p1.isSuccessful) {
-                                                controleDeNavegacao.navigate("perfil/${usuarioSalvo?.aluno?.id_aluno}*aluno")
+                                                if (usuarioSalvo != null) {
+                                                    controleDeNavegacao.navigate("feed?id=${usuarioSalvo.aluno?.id_aluno}&tipoUsuario=aluno&fotoPerfil=${usuarioSalvo.aluno?.foto_perfil}")
+                                                }
 
                                             } else {
                                                 val errorBody = p1.errorBody()?.string()
@@ -437,7 +440,9 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                                         ) {
                                             val usuarioSalvo = p1.body()
                                             if (p1.isSuccessful) {
-                                                controleDeNavegacao.navigate("perfil/${usuarioSalvo?.professor?.id_professor}*professor")
+                                                if (usuarioSalvo != null) {
+                                                    controleDeNavegacao.navigate("feed?id=${usuarioSalvo.professor?.id_professor}&tipoUsuario=professor&fotoPerfil=${usuarioSalvo.professor?.foto_perfil}")
+                                                }
                                             }
                                             else {
                                                 val errorBody = p1.errorBody()?.string()

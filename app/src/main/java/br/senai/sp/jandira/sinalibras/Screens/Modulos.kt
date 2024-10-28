@@ -28,10 +28,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 
 @Composable
-fun Modulos() {
+fun Modulos(controleDeNavegacao: NavHostController, id: String, tipoUsuario: String) {
     Column(
         modifier = Modifier
             .background(color = Color(0xFFC7E2FE))

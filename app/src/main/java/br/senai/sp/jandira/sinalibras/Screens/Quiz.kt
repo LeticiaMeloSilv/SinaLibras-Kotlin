@@ -183,16 +183,13 @@ fun QuizScreen(quizList: List<Quiz>, idUsuario: Int) {
 }
 
 @Composable
-fun Quiz(controleDeNavegacao: NavHostController, recebido: String) {
+fun Quiz(controleDeNavegacao: NavHostController, emailFornecido: String, idFornecido: String) {
     var dadosPerfil by remember {
         mutableStateOf(ResultQuiz())
     }
     var funcionouState by remember {
         mutableStateOf(false)
     }
-    val partes = recebido.split("*")
-    val idFornecido = partes[0]
-    val emailFornecido = partes[1]
 
     val callQuestions = RetrofitFactory().getQuizService().getAllQuestoes()
     callQuestions.enqueue(object : Callback<ResultQuiz> {

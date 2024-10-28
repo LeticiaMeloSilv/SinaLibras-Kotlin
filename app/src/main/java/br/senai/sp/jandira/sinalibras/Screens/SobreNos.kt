@@ -24,7 +24,7 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 
 @Composable
-fun SobreNos(controleDeNavegacao:NavHostController,recebido:String) {
+fun SobreNos(controleDeNavegacao:NavHostController, id: String, email: String, nome: String, dataNascimento: String, fotoPerfil: String, tipoUsuario: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -39,7 +39,7 @@ fun SobreNos(controleDeNavegacao:NavHostController,recebido:String) {
         ) {
             Button(
                 onClick = {
-                    controleDeNavegacao.navigate("configuracoes/${recebido}")
+                    controleDeNavegacao.navigate("configuracoes?id=${id}&email=${email}&nome=${nome}&dataNascimento=${dataNascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")
                 },
                 colors = ButtonColors(
                     Color.Transparent,

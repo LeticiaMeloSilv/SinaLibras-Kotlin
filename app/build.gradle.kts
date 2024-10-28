@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -62,6 +63,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.play.services.cast)
+    implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -81,8 +83,22 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
 //EXOPLAYER, para videos
-    implementation(libs.androidx.media3.exoplayer.v100alpha03) // ou versão mais recente
+    implementation(libs.androidx.media3.exoplayer.v100alpha03)
     implementation(libs.androidx.media3.ui.v100alpha03)
-//PARA CRIAR O CARREGAMENTO DE TELA
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+//GOOGLE
+// Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+
+
+    // TODO: Add the dependencies for Firebase products you want to use
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation("com.google.firebase:firebase-analytics")
+
+
+    // Add the dependencies for any other desired Firebase products
+    // https://firebase.google.com/docs/android/setup#available-libraries
+    implementation("com.google.firebase:firebase-auth-ktx:21.1.0")
+
+
 }

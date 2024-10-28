@@ -1,6 +1,5 @@
 package br.senai.sp.jandira.sinalibras.Screens
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -33,10 +32,8 @@ import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.sinalibras.R
 
 @Composable
-fun AcertoQuiz(controleDeNavegacao: NavHostController, recebido: String?) {
-    val partes = recebido?.split("*")
-    val porcentagem = partes?.get(0)
-    val emailFornecido = partes?.get(1)
+fun AcertoQuiz(controleDeNavegacao: NavHostController, porcentagem: String, emailFornecido: String) {
+
     Column(
         modifier = Modifier
             .background(color = Color(0xFFC7E2FE))

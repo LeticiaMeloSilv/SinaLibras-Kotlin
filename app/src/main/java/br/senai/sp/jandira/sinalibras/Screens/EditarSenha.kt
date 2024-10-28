@@ -41,7 +41,13 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarSenha(controleDeNavegacao:NavHostController, recebido:String) {
+fun EditarSenha(
+    controleDeNavegacao: NavHostController,
+    id: String,
+    email: String,
+    fotoPerfil: String,
+    tipoUsuario: String,nome: String, dataNascimento: String
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,7 +56,7 @@ fun EditarSenha(controleDeNavegacao:NavHostController, recebido:String) {
     ) {
         Button(
             onClick = {
-                controleDeNavegacao.navigate("editarPerfil/$${recebido}")
+                controleDeNavegacao.navigate("editarPerfil?id=${id}&email=${email}&nome=${nome}&dataNascimento=${dataNascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")
             },
             colors = ButtonColors(
                 Color.Transparent,

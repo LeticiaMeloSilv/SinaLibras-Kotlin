@@ -52,10 +52,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun Perfil(controleDeNavegacao: NavHostController, recebido: String) {
-    val partes = recebido.split("*")
-    val id = partes[0].toInt()
-    val tipoUsuario = partes[1]
+fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: String) {
+
 
 //    var dadosPerfil by remember {
 //        mutableStateOf(Result())
@@ -69,11 +67,14 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido: String) {
     var funcionouState by remember {
         mutableStateOf(false)
     }
+    var erroState by remember{
+        mutableStateOf(false)
+    }
 
     if (tipoUsuario == "aluno") {
         Log.i("CALMA","CALMA")
 
-        val callAlunoById = RetrofitFactory().getUsuarioService().getAlunoId(id)
+        val callAlunoById = RetrofitFactory().getUsuarioService().getAlunoId(id.toInt())
         callAlunoById.enqueue(object : Callback<ResultAluno> {
             override fun onResponse(p0: Call<ResultAluno>, p1: Response<ResultAluno>) {
                 val alunoResponse = p1.body()
@@ -86,16 +87,18 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido: String) {
 
                 } else {
                     Log.i("CALMA", alunoResponse?.message!!.toString())
+                    erroState=true
                 }
             }
 
             override fun onFailure(p0: Call<ResultAluno>, p1: Throwable) {
                 Log.i("ERRO_PERFIL", p1.toString())
+                erroState=true
             }
         })
     } else {
         Log.i("ID", id.toString())
-        val callProfessorById = RetrofitFactory().getUsuarioService().getProfessorId(id)
+        val callProfessorById = RetrofitFactory().getUsuarioService().getProfessorId(id.toInt())
         callProfessorById.enqueue(object : Callback<ResultProfessor> {
             override fun onResponse(p0: Call<ResultProfessor>, p1: Response<ResultProfessor>) {
                 val professorResponse = p1.body()
@@ -106,11 +109,15 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido: String) {
                     funcionouState = true
 
                 } else {
+                    erroState=true
+
                     Log.i("API Error", "Null response body")
                 }
             }
 
             override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
+                erroState=true
+
                 Log.i("ERRO_PERFIL", p1.toString())
             }
 
@@ -119,13 +126,24 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido: String) {
 
     }
 
-
-    if (funcionouState) {
+if(!funcionouState&&!erroState){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFD0E6FF))
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        //implementar tela de carregamento
+    }
+    }
+    else if (funcionouState) {
         if (tipoUsuario == "aluno") {
             val aluno = dadosPerfilAluno
 
             val painter: Painter =
-                if (aluno.foto_perfil != null && aluno.foto_perfil != "null" && aluno.foto_perfil.isNotEmpty()) {
+                if (!aluno.foto_perfil.isNullOrEmpty()) {
                     rememberAsyncImagePainter(model = aluno.foto_perfil)
                 } else {
                     painterResource(id = R.drawable.perfil)
@@ -173,7 +191,9 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido: String) {
                         )
                         Button(
                             onClick = {
-                                controleDeNavegacao.navigate("configuracoes/${aluno}*aluno")
+                                //mn, eu deria pegar por id em todas as telas, mas nn é legal fzr varias requisicoes no banco, eu poderia enviar diretamente o usuario aluno, mas dai, pra conseguir pegar as informacoes, eu teria que criar tres variaveis só pra pegar o valor de cada item, poderia usar viewmodel mas nmo tempo de tcc que tenho sobrano, é melhor não gastar aprendendo, por esse motivo, vou apelar para o q na minha cabeca é mais facil, e vou anotar o q é cada um
+                                //id,email,nome,dataDeNascimento,fotoDeOPerfil,tipoDeUsuario
+                                controleDeNavegacao.navigate("configuracoes?id=${aluno.id_aluno}&email=${aluno.email}&nome=${aluno.nome}&dataNascimento=${aluno.data_nascimento}&fotoPerfil=${aluno.foto_perfil}&tipoUsuario=${tipoUsuario}")
                             },
                             colors = ButtonColors(
                                 Color.Transparent,
@@ -346,7 +366,7 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido: String) {
             val professor = dadosPerfilProfessor
 
             val painter: Painter =
-                if (professor.foto_perfil != null && professor.foto_perfil != "null" && professor.foto_perfil.isNotEmpty()) {
+                if (professor.foto_perfil != "" && professor.foto_perfil != "null" && professor.foto_perfil.isNotEmpty()) {
                     rememberAsyncImagePainter(model = professor.foto_perfil)
                 } else {
                     painterResource(id = R.drawable.perfil)
@@ -370,7 +390,7 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido: String) {
                     ) {
                         Button(
                             onClick = {
-                                controleDeNavegacao.navigate("inicio")
+                                controleDeNavegacao.navigate("feed")
                             },
                             colors = ButtonColors(
                                 Color.Transparent,
@@ -394,7 +414,7 @@ fun Perfil(controleDeNavegacao: NavHostController, recebido: String) {
                         )
                         Button(
                             onClick = {
-                                controleDeNavegacao.navigate("editarPerfil/${professor}*professor")
+                                controleDeNavegacao.navigate("configuracoes?id=${professor.id_professor}&email=${professor.email}&nome=${professor.nome}&dataNascimento=${professor.data_nascimento}&fotoPerfil=${professor.foto_perfil}&tipoUsuario=${tipoUsuario}")
                             },
                             colors = ButtonColors(
                                 Color.Transparent,

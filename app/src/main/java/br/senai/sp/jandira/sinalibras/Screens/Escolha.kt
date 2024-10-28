@@ -461,7 +461,7 @@ fun Escolha(controleDeNavegacao: NavHostController) {
                                     } else {
                                         Log.i("ACERTO", p1.body().toString())
                                         Log.i("CARA", resposta.usuario.id_usuario_teste.toString())
-                                        controleDeNavegacao.navigate("quiz/${resposta.usuario.id_usuario_teste}*${email}")
+                                        controleDeNavegacao.navigate("quiz/idFornecido=${resposta.usuario.id_usuario_teste}&emailFornecido=${email}")
                                     }
                                 }
 

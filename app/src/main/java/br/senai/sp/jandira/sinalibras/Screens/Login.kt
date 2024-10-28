@@ -223,8 +223,12 @@ fun Login(controleDeNavegacao: NavHostController) {
                         p1: Response<ResultAluno>
                     ) {
                         val alunoList = p1.body()
+                        Log.i("CARA",p0.toString())
+                        Log.i("CARA",alunoList.toString())
                         if(p1.isSuccessful){
-                                controleDeNavegacao.navigate("perfil/${alunoList!!.aluno?.id_aluno}*aluno")
+                            if (alunoList != null) {
+                                controleDeNavegacao.navigate("feed?id=${alunoList.aluno?.id_aluno}&tipoUsuario=aluno&fotoPerfil=${alunoList.aluno?.foto_perfil}")
+                            }
                         }
                         else{
                             val callProfessor = RetrofitFactory()
@@ -237,8 +241,12 @@ fun Login(controleDeNavegacao: NavHostController) {
                             callProfessor.enqueue(object : Callback<ResultProfessor> {
                                 override fun onResponse(p0: Call<ResultProfessor>, p1: Response<ResultProfessor>) {
                                     val professorList = p1.body()
+                                    Log.i("CARA",p0.toString())
+                                    Log.i("CARA",professorList.toString())
                                     if(p1.isSuccessful){
-                                        controleDeNavegacao.navigate("perfil/${professorList!!.professor?.id_professor}*professor")
+                                        if (professorList != null) {
+                                            controleDeNavegacao.navigate("feed?id=${professorList.professor?.id_professor}&tipoUsuario=professor&fotoPerfil=${professorList.professor?.foto_perfil}")
+                                        }
                                     }
                                     else{
                                         val errorBody = p1.errorBody()?.string()
