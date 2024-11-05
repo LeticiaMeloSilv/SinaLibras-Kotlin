@@ -1,10 +1,6 @@
 package br.senai.sp.jandira.sinalibras.Screens
 
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.SupportAgent
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -37,14 +33,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PostVideo() {
+fun PostVideo(
+    controleDeNavegacao: NavHostController,
+    id: String,
+    tipoUsuario: String,
+    fotoPerfil: String,
+    dataNascimento: String,
+    nome: String,
+    email: String
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,7 +78,7 @@ fun PostVideo() {
             contentAlignment = Alignment.Center
         ) {
             Image(
-                imageVector = Icons.Default.Up,
+                imageVector = Icons.Default.Upload,
                 contentDescription = "Upload Video",
                 modifier = Modifier.size(40.dp)
             )

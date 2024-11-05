@@ -342,7 +342,7 @@ fun Configuracoes(
 
                     Icon(
                         Icons.Default.Delete,
-                        contentDescription = "Ir para Meu Perfil",
+                        contentDescription = "deletar conta",
                         tint = Color.Black
                     )
                 }
@@ -383,11 +383,13 @@ fun Configuracoes(
                         width = 0.dp,
                         shape = RoundedCornerShape(size = 16.dp),
                         color = Color.Transparent
+
                     )
             ) {
                 Button(
                     onClick = {
                         focusTela.value = false
+                        focusTelaSegundaConfirmacao.value = false
                     },
                     colors = ButtonColors(
                         Color.Transparent,
@@ -409,21 +411,22 @@ fun Configuracoes(
                     color = Color(0xff081F5C),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.SemiBold,
-                    // modifier = Modifier.offset(x = 0.dp, y = -10.dp)
                 )
                 Text(
                     text = "Essa ação não pode ser revertida",
                     fontSize = 16.sp,
                     color = Color(0xff081F5C),
                     textAlign = TextAlign.Center,
-                    //modifier = Modifier.offset(x = 0.dp, y = -10.dp)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Row {
+                Row (
+                    modifier=Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
                     Button(
                         onClick = {
                             focusTelaSegundaConfirmacao.value = true
-
                         },
                         colors = ButtonColors(
                             Color.Transparent,
@@ -432,7 +435,6 @@ fun Configuracoes(
                             Color.Transparent
                         ),
                         modifier = Modifier
-                            .offset(x = -20.dp, y = -10.dp)
                             .border(
                                 width = 2.dp,
                                 shape = RoundedCornerShape(size = 32.dp),
@@ -443,28 +445,25 @@ fun Configuracoes(
                             text = "Sim",
                             fontSize = 16.sp,
                             color = Color(0xff081F5C),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.offset(x = 0.dp, y = -10.dp)
+                            textAlign = TextAlign.Center
                         )
                     }
                     Button(
                         onClick = {
                             focusTela.value = false
-                        },
+                            focusTelaSegundaConfirmacao.value = false                        },
                         colors = ButtonColors(
                             Color.Transparent,
                             Color.Transparent,
                             Color.Transparent,
                             Color.Transparent
                         ),
-                        modifier = Modifier.offset(x = -20.dp, y = -10.dp)
                     ) {
                         Text(
                             text = "Não",
                             fontSize = 16.sp,
                             color = Color(0xff081F5C),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.offset(x = 0.dp, y = -10.dp)
                         )
                     }
                 }
@@ -493,15 +492,15 @@ fun Configuracoes(
             ) {
                 Button(
                     onClick = {
+
                         focusTela.value = false
-                    },
+                        focusTelaSegundaConfirmacao.value = false                    },
                     colors = ButtonColors(
                         Color.Transparent,
                         Color.Transparent,
                         Color.Transparent,
                         Color.Transparent
                     ),
-                    modifier = Modifier.offset(x = -20.dp, y = -10.dp)
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.btn_cancelar),
@@ -522,7 +521,6 @@ fun Configuracoes(
                     fontSize = 16.sp,
                     color = Color(0xff081F5C),
                     textAlign = TextAlign.Center,
-                    //modifier = Modifier.offset(x = 0.dp, y = -10.dp)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 TextField(
@@ -558,7 +556,11 @@ fun Configuracoes(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Row {
+                Row (
+                    modifier=Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
                     Button(
                         onClick = {
                             if (emailState.value == "") {
@@ -614,8 +616,7 @@ fun Configuracoes(
                                         ) {
                                             val professorResponse = p1.body()
                                             if (p1.isSuccessful) {
-                                                controleDeNavegacao.navigate("inicial")
-
+                                                controleDeNavegacao.navigate("inicio")
                                                 Log.i("CALMA", professorResponse.toString())
 
                                             } else {
@@ -654,7 +655,6 @@ fun Configuracoes(
                             Color.Transparent
                         ),
                         modifier = Modifier
-                            .offset(x = -20.dp, y = -10.dp)
                             .border(
                                 width = 2.dp,
                                 shape = RoundedCornerShape(size = 32.dp),
@@ -666,7 +666,6 @@ fun Configuracoes(
                             fontSize = 16.sp,
                             color = Color(0xff081F5C),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.offset(x = 0.dp, y = -10.dp)
                         )
                     }
                     Button(
@@ -680,14 +679,12 @@ fun Configuracoes(
                             Color.Transparent,
                             Color.Transparent
                         ),
-                        modifier = Modifier.offset(x = -20.dp, y = -10.dp)
                     ) {
                         Text(
                             text = "Não",
                             fontSize = 16.sp,
                             color = Color(0xff081F5C),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.offset(x = 0.dp, y = -10.dp)
                         )
                     }
                 }

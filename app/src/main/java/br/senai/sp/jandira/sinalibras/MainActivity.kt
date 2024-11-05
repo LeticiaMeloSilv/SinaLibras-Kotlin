@@ -39,6 +39,9 @@ import br.senai.sp.jandira.sinalibras.Screens.Chat
 import br.senai.sp.jandira.sinalibras.Screens.Feed
 import br.senai.sp.jandira.sinalibras.Screens.Modulos
 import br.senai.sp.jandira.sinalibras.Screens.PerfilOutroUsuario
+import br.senai.sp.jandira.sinalibras.Screens.PostPostagem
+import br.senai.sp.jandira.sinalibras.Screens.PostVideo
+import br.senai.sp.jandira.sinalibras.Screens.Suporte
 import com.google.firebase.FirebaseApp
 import com.jakewharton.threetenabp.AndroidThreeTen
 
@@ -523,6 +526,115 @@ class MainActivity : ComponentActivity() {
                                 fotoPerfil = fotoPerfil
                             )
                         }
+
+                        composable(
+                            "suporte?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
+                            arguments = listOf(
+                                navArgument("id") { type = NavType.StringType },
+                                navArgument("email") { type = NavType.StringType },
+                                navArgument("nome") { type = NavType.StringType },
+                                navArgument("dataNascimento") { type = NavType.StringType },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
+                                navArgument("tipoUsuario") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val email = backStackEntry.arguments?.getString("email") ?: ""
+                            val nome = backStackEntry.arguments?.getString("nome") ?: ""
+                            val dataNascimento =
+                                backStackEntry.arguments?.getString("dataNascimento") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+
+                            Suporte(
+                                controleDeNavegacao = controleDeNavegacao,
+                                id = id,
+                                email = email,
+                                nome = nome,
+                                dataNascimento = dataNascimento,
+                                fotoPerfil = fotoPerfil,
+                                tipoUsuario = tipoUsuario
+                            )
+                        }
+
+
+
+                        composable(
+                            "configuracoes?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
+                            arguments = listOf(
+                                navArgument("id") { type = NavType.StringType },
+                                navArgument("email") { type = NavType.StringType },
+                                navArgument("nome") { type = NavType.StringType },
+                                navArgument("dataNascimento") { type = NavType.StringType },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
+                                navArgument("tipoUsuario") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val email = backStackEntry.arguments?.getString("email") ?: ""
+                            val nome = backStackEntry.arguments?.getString("nome") ?: ""
+                            val dataNascimento =
+                                backStackEntry.arguments?.getString("dataNascimento") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+
+                            PostPostagem(
+                                controleDeNavegacao = controleDeNavegacao,
+                                id = id,
+                                email = email,
+                                nome = nome,
+                                dataNascimento = dataNascimento,
+                                fotoPerfil = fotoPerfil,
+                                tipoUsuario = tipoUsuario
+                            )
+                        }
+
+
+
+
+                        composable(
+                            "configuracoes?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
+                            arguments = listOf(
+                                navArgument("id") { type = NavType.StringType },
+                                navArgument("email") { type = NavType.StringType },
+                                navArgument("nome") { type = NavType.StringType },
+                                navArgument("dataNascimento") { type = NavType.StringType },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
+                                navArgument("tipoUsuario") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val email = backStackEntry.arguments?.getString("email") ?: ""
+                            val nome = backStackEntry.arguments?.getString("nome") ?: ""
+                            val dataNascimento =
+                                backStackEntry.arguments?.getString("dataNascimento") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+
+                            PostVideo(
+                                controleDeNavegacao = controleDeNavegacao,
+                                id = id,
+                                email = email,
+                                nome = nome,
+                                dataNascimento = dataNascimento,
+                                fotoPerfil = fotoPerfil,
+                                tipoUsuario = tipoUsuario
+                            )
+                        }
+
+
+
+
+
                     }
                 }
 
