@@ -22,54 +22,82 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatEspecifico(
     controleDeNavegacao: NavHostController,
-    idDoOutroUsuario: String,
+    idOutroUsuario: String,
     id: String,
-    tipoUsuario: String
+    tipoUsuario: String,
+    fotoPerfil: String,
+    tipoOutroUsuario: String
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFB2C8E2))
     ) {
-        ChatHeader()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Image(
+                painter = painterResource(R.drawable.perfil),
+                contentDescription = "Avatar",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = "JAMES SMITH", fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.Phone, contentDescription = "Chamada")
+            }
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.MoreVert, contentDescription = "Mais opções")
+            }
+        }
+        ChatBubble("aaa",true)
+        ChatBubble("concordo",false)
         Spacer(modifier = Modifier.weight(1f))
-        MessageInputField()
-    }
+        var message by remember { mutableStateOf("") }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextField(
+                value = message,
+                onValueChange = { message = it },
+                placeholder = { Text("Mensagem...", color = Color(0xFFFFFFFF)) },
+                modifier = Modifier
+                    .weight(1f)
+                    .border(
+                        BorderStroke(1.dp, Color(0xFF04509C)),
+                        shape = RoundedCornerShape(24.dp)
+                    ),
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color(0xFFFFFFF),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.Send, contentDescription = "Enviar")
+            }
+        }    }
 }
 
-@Composable
-fun ChatHeader() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = { }) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-        Image(
-            painter = painterResource(R.drawable.perfil),
-            contentDescription = "Avatar",
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "JAMES SMITH", fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = { }) {
-            Icon(Icons.Default.Phone, contentDescription = "Chamada")
-        }
-        IconButton(onClick = { }) {
-            Icon(Icons.Default.MoreVert, contentDescription = "Mais opções")
-        }
-    }
-}
 
 @Composable
 fun ChatBubble(text: String, isSentByUser: Boolean) {
@@ -87,40 +115,6 @@ fun ChatBubble(text: String, isSentByUser: Boolean) {
                 .padding(12.dp)
         ) {
             Text(text = text, color = textColor)
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MessageInputField() {
-    var message by remember { mutableStateOf("") }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        TextField(
-            value = message,
-            onValueChange = { message = it },
-            placeholder = { Text("Mensagem...", color = Color(0xFFFFFFFF)) },
-            modifier = Modifier
-                .weight(1f)
-                .border(
-                    BorderStroke(1.dp, Color(0xFF04509C)),
-                    shape = RoundedCornerShape(24.dp)
-                ),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0xFFFFFFF),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            )
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        IconButton(onClick = { }) {
-            Icon(Icons.Default.Send, contentDescription = "Enviar")
         }
     }
 }

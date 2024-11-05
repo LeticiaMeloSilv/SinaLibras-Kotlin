@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitFactory {
-    private val BASE_URL = "http://192.168.15.5:8080/"//troquei o localhost pro ip do meu pc para conseguir testar a aplicação no meu celular
+    private val BASE_URL = "http://192.168.41.26:8080/"
 
     private val retrofitFactory = Retrofit
         .Builder()

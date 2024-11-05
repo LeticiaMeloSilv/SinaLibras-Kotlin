@@ -38,9 +38,11 @@ import br.senai.sp.jandira.sinalibras.Screens.Aulas
 import br.senai.sp.jandira.sinalibras.Screens.Chat
 import br.senai.sp.jandira.sinalibras.Screens.Feed
 import br.senai.sp.jandira.sinalibras.Screens.Modulos
+import br.senai.sp.jandira.sinalibras.Screens.PerfilOutroUsuario
 import com.google.firebase.FirebaseApp
 import com.jakewharton.threetenabp.AndroidThreeTen
 
+//caso mude o ipv4 do note, muda o ip configumado no res/xml/network_security_config e no retrofit
 class MainActivity : ComponentActivity() {
     private lateinit var getContent: ActivityResultLauncher<String>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +58,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-    setContent {
+        setContent {
             SinaLibrasTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -69,16 +71,33 @@ class MainActivity : ComponentActivity() {
                         navController = controleDeNavegacao,
                         startDestination = "inicio"
                     ) {
+
+
+
                         composable(route = "inicio") { Inicio(controleDeNavegacao) }
+
+
+
                         composable(route = "login") { Login(controleDeNavegacao) }
-                        composable(route = "escolha"){ Escolha(controleDeNavegacao) }
+
+
+
+                        composable(route = "escolha") { Escolha(controleDeNavegacao) }
+
+
+
                         composable(
                             "cadastro/{emailProfessor}",
-                            arguments = listOf(navArgument("emailProfessor") { type = NavType.StringType })
+                            arguments = listOf(navArgument("emailProfessor") {
+                                type = NavType.StringType
+                            })
                         ) { backStackEntry ->
-                            val emailProfessor = backStackEntry.arguments?.getString("emailProfessor") ?: ""
+                            val emailProfessor =
+                                backStackEntry.arguments?.getString("emailProfessor") ?: ""
                             Cadastro(controleDeNavegacao, emailProfessor = emailProfessor)
                         }
+
+
 
                         composable(
                             "quiz?idFornecido={idFornecido}&emailFornecido={emailFornecido}",
@@ -86,10 +105,12 @@ class MainActivity : ComponentActivity() {
                                 navArgument("idFornecido") { type = NavType.StringType },
                                 navArgument("emailFornecido") { type = NavType.StringType },
 
-                            )
+                                )
                         ) { backStackEntry ->
-                            val idFornecido = backStackEntry.arguments?.getString("idFornecido") ?: ""
-                            val emailFornecido = backStackEntry.arguments?.getString("emailFornecido") ?: ""
+                            val idFornecido =
+                                backStackEntry.arguments?.getString("idFornecido") ?: ""
+                            val emailFornecido =
+                                backStackEntry.arguments?.getString("emailFornecido") ?: ""
 
                             Quiz(
                                 controleDeNavegacao = controleDeNavegacao,
@@ -97,6 +118,8 @@ class MainActivity : ComponentActivity() {
                                 emailFornecido = emailFornecido
                             )
                         }
+
+
 
                         composable(
                             "perfil?id={id}&tipoUsuario={tipoUsuario}",
@@ -107,7 +130,8 @@ class MainActivity : ComponentActivity() {
                                 )
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
 
                             Perfil(
                                 controleDeNavegacao = controleDeNavegacao,
@@ -115,6 +139,43 @@ class MainActivity : ComponentActivity() {
                                 tipoUsuario = tipoUsuario
                             )
                         }
+
+
+                        composable(
+                            "outroPerfil?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}&idOutroUsuario={idOutroUsuario}&tipoOutroUsuario={tipoOutroUsuario}",
+                            arguments = listOf(
+                                navArgument("id") { type = NavType.StringType },
+                                navArgument("tipoUsuario") { type = NavType.StringType },
+                                navArgument("idOutroUsuario") { type = NavType.StringType },
+                                navArgument("tipoOutroUsuario") { type = NavType.StringType },
+                                navArgument("fotoPerfil") { type = NavType.StringType },
+
+
+                                )
+                        ) { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+
+                            val idOutroUsuario = backStackEntry.arguments?.getString("id") ?: ""
+                            val tipoOutroUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+
+
+                            PerfilOutroUsuario(
+                                controleDeNavegacao = controleDeNavegacao,
+                                id = id,
+                                idOutroUsuario = idOutroUsuario,
+                                fotoPerfil = fotoPerfil,
+                                tipoUsuario = tipoUsuario,
+                                        tipoOutroUsuario = tipoOutroUsuario
+
+                            )
+                        }
+
+
+
                         composable(
                             "configuracoes?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
@@ -122,16 +183,20 @@ class MainActivity : ComponentActivity() {
                                 navArgument("email") { type = NavType.StringType },
                                 navArgument("nome") { type = NavType.StringType },
                                 navArgument("dataNascimento") { type = NavType.StringType },
-                                navArgument("fotoPerfil") { type = NavType.StringType;nullable=true },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
                                 navArgument("tipoUsuario") { type = NavType.StringType }
                             )
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val email = backStackEntry.arguments?.getString("email") ?: ""
                             val nome = backStackEntry.arguments?.getString("nome") ?: ""
-                            val dataNascimento = backStackEntry.arguments?.getString("dataNascimento") ?: ""
+                            val dataNascimento =
+                                backStackEntry.arguments?.getString("dataNascimento") ?: ""
                             val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
 
                             Configuracoes(
                                 controleDeNavegacao = controleDeNavegacao,
@@ -144,6 +209,8 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+
+
                         composable(
                             "sobreNos?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
@@ -151,16 +218,20 @@ class MainActivity : ComponentActivity() {
                                 navArgument("email") { type = NavType.StringType },
                                 navArgument("nome") { type = NavType.StringType },
                                 navArgument("dataNascimento") { type = NavType.StringType },
-                                navArgument("fotoPerfil") { type = NavType.StringType;nullable=true },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
                                 navArgument("tipoUsuario") { type = NavType.StringType }
                             )
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val email = backStackEntry.arguments?.getString("email") ?: ""
                             val nome = backStackEntry.arguments?.getString("nome") ?: ""
-                            val dataNascimento = backStackEntry.arguments?.getString("dataNascimento") ?: ""
+                            val dataNascimento =
+                                backStackEntry.arguments?.getString("dataNascimento") ?: ""
                             val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
 
                             SobreNos(
                                 controleDeNavegacao = controleDeNavegacao,
@@ -173,6 +244,8 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+
+
                         composable(
                             "editarPerfil?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
@@ -180,16 +253,20 @@ class MainActivity : ComponentActivity() {
                                 navArgument("email") { type = NavType.StringType },
                                 navArgument("nome") { type = NavType.StringType },
                                 navArgument("dataNascimento") { type = NavType.StringType },
-                                navArgument("fotoPerfil") { type = NavType.StringType;nullable=true },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
                                 navArgument("tipoUsuario") { type = NavType.StringType }
                             )
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val email = backStackEntry.arguments?.getString("email") ?: ""
                             val nome = backStackEntry.arguments?.getString("nome") ?: ""
-                            val dataNascimento = backStackEntry.arguments?.getString("dataNascimento") ?: ""
+                            val dataNascimento =
+                                backStackEntry.arguments?.getString("dataNascimento") ?: ""
                             val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
 
                             EditarPerfil(
                                 controleDeNavegacao = controleDeNavegacao,
@@ -204,6 +281,8 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+
+
                         composable(
                             "editarSenha?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
@@ -211,16 +290,20 @@ class MainActivity : ComponentActivity() {
                                 navArgument("email") { type = NavType.StringType },
                                 navArgument("nome") { type = NavType.StringType },
                                 navArgument("dataNascimento") { type = NavType.StringType },
-                                navArgument("fotoPerfil") { type = NavType.StringType ;nullable=true},
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
                                 navArgument("tipoUsuario") { type = NavType.StringType }
                             )
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val email = backStackEntry.arguments?.getString("email") ?: ""
                             val nome = backStackEntry.arguments?.getString("nome") ?: ""
-                            val dataNascimento = backStackEntry.arguments?.getString("dataNascimento") ?: ""
+                            val dataNascimento =
+                                backStackEntry.arguments?.getString("dataNascimento") ?: ""
                             val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
 
                             EditarSenha(
                                 controleDeNavegacao = controleDeNavegacao,
@@ -233,16 +316,20 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+
+
                         composable(
-                            "acerto?percentagem={porcentagem}&emailFornecido={emailFornecido}",
+                            "acerto?porcentagem={porcentagem}&emailFornecido={emailFornecido}",
                             arguments = listOf(
                                 navArgument("porcentagem") { type = NavType.StringType },
                                 navArgument("emailFornecido") { type = NavType.StringType },
 
                                 )
                         ) { backStackEntry ->
-                            val porcentagem = backStackEntry.arguments?.getString("porcentagem") ?: ""
-                            val emailFornecido = backStackEntry.arguments?.getString("emailFornecido") ?: ""
+                            val porcentagem =
+                                backStackEntry.arguments?.getString("porcentagem") ?: ""
+                            val emailFornecido =
+                                backStackEntry.arguments?.getString("emailFornecido") ?: ""
 
                             AcertoQuiz(
                                 controleDeNavegacao = controleDeNavegacao,
@@ -251,75 +338,111 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+
+
                         composable(
-                            "erro/{porcentagem}",
-                            arguments = listOf(navArgument("porcentagem") { type =
-                                NavType.IntType })
+                            "erro?porcentagem={porcentagem}&tempoRestante={tempoRestante}",
+                            arguments = listOf(
+                                navArgument("porcentagem") { type = NavType.StringType },
+                                navArgument("tempoRestante") { type = NavType.StringType },)
                         ) { backStackEntry ->
-                            ErroQuiz(controleDeNavegacao,porcentagem = backStackEntry.arguments?.getInt("porcentagem"))
+                            val porcentagem =
+                                backStackEntry.arguments?.getString("porcentagem") ?: ""
+                            val tempoRestante =
+                                backStackEntry.arguments?.getString("tempoRestante") ?: ""
+
+                            ErroQuiz(
+                                controleDeNavegacao = controleDeNavegacao,
+                                porcentagem = porcentagem,
+                                tempoRestante = tempoRestante
+                            )
                         }
 
-                        composable(
-                            "chatEspecifico?idDoOutroUsuario={idDoOutroUsuario}}&id={id}&tipoUsuario={tipoUsuario}",
-                            arguments = listOf(
-                                navArgument("idDoOutroUsuario") { type = NavType.StringType },
-                                navArgument("tipoUsuario") { type = NavType.StringType },
-                                navArgument("id") { type = NavType.StringType },
 
+
+                        composable(
+                            "chatEspecifico?idOutroUsuario={idOutroUsuario}}&id={id}&tipoUsuario={tipoUsuario}&tipoOutroUsuario={tipoOutroUsuario}&fotoPerfil={fotoPerfil}",
+                            arguments = listOf(
+                                navArgument("idOutroUsuario") { type = NavType.StringType },
+                                navArgument("tipoUsuario") { type = NavType.StringType },
+                                navArgument("tipoOutroUsuario") { type = NavType.StringType },
+                                navArgument("id") { type = NavType.StringType },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
 
                                 )
                         ) { backStackEntry ->
-                            val idDoOutroUsuario = backStackEntry.arguments?.getString("idDoOutroUsuario") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val idOutroUsuario =
+                                backStackEntry.arguments?.getString("idDoOutroUsuario") ?: ""
+                            val tipoOutroUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
                             val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+
 
                             ChatEspecifico(
                                 controleDeNavegacao = controleDeNavegacao,
-                                idDoOutroUsuario = idDoOutroUsuario,
+                                idOutroUsuario = idOutroUsuario,
                                 id = id,
-                                tipoUsuario = tipoUsuario
+                                tipoUsuario = tipoUsuario,
+                                fotoPerfil = fotoPerfil,
+                                tipoOutroUsuario=tipoOutroUsuario
                             )
                         }
                         composable(
-                            "video?idDoVideo={idDoVideo}}&id={id}&tipoUsuario={tipoUsuario}",
+                            "video?idDoVideo={idDoVideo}&idModulo={idModulo}&nomeModulo={nomeModulo}&id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
                             arguments = listOf(
                                 navArgument("idDoVideo") { type = NavType.StringType },
                                 navArgument("tipoUsuario") { type = NavType.StringType },
                                 navArgument("id") { type = NavType.StringType },
-
-
-                                )
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
+                                navArgument("idModulo") { type = NavType.StringType },
+                                navArgument("nomeModulo") { type = NavType.StringType },
+                            )
                         ) { backStackEntry ->
                             val idDoVideo = backStackEntry.arguments?.getString("idDoVideo") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
                             val id = backStackEntry.arguments?.getString("id") ?: ""
-
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+                            val idModulo = backStackEntry.arguments?.getString("idModulo") ?: ""
+                            val nomeModulo = backStackEntry.arguments?.getString("nomeModulo") ?: ""
                             VideoInfo(
                                 controleDeNavegacao = controleDeNavegacao,
                                 idDoVideo = idDoVideo,
+                                idModulo = idModulo,
+                                nomeModulo = nomeModulo,
                                 id = id,
-                                tipoUsuario = tipoUsuario
+                                tipoUsuario = tipoUsuario,
+                                fotoPerfil = fotoPerfil
                             )
                         }
 
                         composable(
-                            "aulas?idModulo={idModulo}&id={id}&tipoUsuario={tipoUsuario}",
+                            "modulos?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
+
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
-                                navArgument("idModulo") { type = NavType.StringType },
                                 navArgument("tipoUsuario") { type = NavType.StringType },
-                                )
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
+                            )
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
-                            val idModulo = backStackEntry.arguments?.getString("idModulo") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
-
-                            Aulas(
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+                            Modulos(
                                 controleDeNavegacao = controleDeNavegacao,
                                 id = id,
-                                idModulo = idModulo,
-                                tipoUsuario = tipoUsuario
-
+                                tipoUsuario = tipoUsuario,
+                                fotoPerfil = fotoPerfil
                             )
                         }
 
@@ -328,13 +451,16 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
                                 navArgument("tipoUsuario") { type = NavType.StringType },
-                                navArgument("fotoPerfil") { type = NavType.StringType;nullable=true},
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
 
 
                                 )
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
                             val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
 
 
@@ -347,45 +473,63 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            "modulos?id={id}&tipoUsuario={tipoUsuario}",
+                            "aulas?idModulo={idModulo}&nomeModulo={nomeModulo}&id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
                                 navArgument("tipoUsuario") { type = NavType.StringType },
+                                navArgument("idModulo") { type = NavType.StringType },
+                                navArgument("nomeModulo") { type = NavType.StringType },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
                             )
                         ) { backStackEntry ->
+                            val idModulo = backStackEntry.arguments?.getString("idModulo") ?: ""
+                            val nomeModulo = backStackEntry.arguments?.getString("nomeModulo") ?: ""
                             val id = backStackEntry.arguments?.getString("id") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
-
-                            Modulos(
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+                            Aulas(
                                 controleDeNavegacao = controleDeNavegacao,
                                 id = id,
-                                tipoUsuario = tipoUsuario
-
+                                tipoUsuario = tipoUsuario,
+                                idModulo = idModulo,
+                                nomeModulo = nomeModulo,
+                                fotoPerfil = fotoPerfil
                             )
                         }
                         composable(
-                            "chat?id={id}&tipoUsuario={tipoUsuario}",
+                            "chat?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
                                 navArgument("tipoUsuario") { type = NavType.StringType },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
                             )
+
+
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
-                            val tipoUsuario = backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
 
                             Chat(
                                 controleDeNavegacao = controleDeNavegacao,
                                 id = id,
-                                tipoUsuario = tipoUsuario
+                                tipoUsuario = tipoUsuario,
+                                fotoPerfil = fotoPerfil
                             )
                         }
                     }
-                    }
-
                 }
+
             }
         }
     }
+}
 
 
 //usei esse no AndroidManifest para ter acesso a internet

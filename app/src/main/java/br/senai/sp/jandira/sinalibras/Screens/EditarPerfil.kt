@@ -34,11 +34,13 @@ import br.senai.sp.jandira.sinalibras.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,12 +57,26 @@ import retrofit2.Response
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-var link=""
+
+var link = ""
 
 @Composable
-fun EditarPerfil(controleDeNavegacao: NavHostController, id: String, email: String, nome: String, dataNascimento: String, fotoPerfil: String, tipoUsuario: String, getContent: () -> Unit,initialImageUri: Uri?) {
+fun EditarPerfil(
+    controleDeNavegacao: NavHostController,
+    id: String,
+    email: String,
+    nome: String,
+    dataNascimento: String,
+    fotoPerfil: String,
+    tipoUsuario: String,
+    getContent: () -> Unit,
+    initialImageUri: Uri?
+) {
 
     val data_nascimento = dataNascimento.take(10)
     val data = data_nascimento.split("-")
@@ -93,7 +109,7 @@ fun EditarPerfil(controleDeNavegacao: NavHostController, id: String, email: Stri
     LaunchedEffect(initialImageUri) {
         imageUri = initialImageUri
         imageUri?.let { uploadFile(it) }
-        fotoState.value= imageUri.toString()
+        fotoState.value = imageUri.toString()
     }
 
 
@@ -105,7 +121,7 @@ fun EditarPerfil(controleDeNavegacao: NavHostController, id: String, email: Stri
                 placeholder = painterResource(id = R.drawable.perfil),
                 error = painterResource(id = R.drawable.erro)
             )
-        } else if (fotoPerfil!=""&&fotoPerfil != "null" && fotoPerfil.isNotEmpty()) {
+        } else if (fotoPerfil != "" && fotoPerfil != "null" && fotoPerfil.isNotEmpty()) {
             rememberAsyncImagePainter(
                 model = fotoPerfil,
                 placeholder = painterResource(id = R.drawable.perfil),
@@ -190,6 +206,8 @@ fun EditarPerfil(controleDeNavegacao: NavHostController, id: String, email: Stri
                     .clickable {
                         getContent()
                     }
+                    .clip(CircleShape), // Aplica a forma circular
+                contentScale = ContentScale.Crop
             )
 
             Box(
@@ -212,11 +230,67 @@ fun EditarPerfil(controleDeNavegacao: NavHostController, id: String, email: Stri
         OutlinedTextField(
             value = nomeState.value,
             onValueChange = { nomeState.value = it },
-            label = { Text("Nome") },
+            label = { Text("Nome", color = Color.Black) },
             isError = umError.value,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .padding(bottom = 8.dp),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldColors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                disabledTextColor = Color.Black,
+                errorTextColor = Color.Red,
+                textSelectionColors = TextSelectionColors(Color.Black, Color.Black),
+
+                focusedLabelColor = Color.Black,
+                unfocusedLabelColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                errorLabelColor = Color.Red,
+
+                focusedContainerColor = Color.Unspecified,
+                unfocusedContainerColor = Color.Unspecified,
+                disabledContainerColor = Color.Unspecified,
+                errorContainerColor = Color.Unspecified,
+
+                cursorColor = Color.Black,
+                errorCursorColor = Color.Unspecified,
+
+                focusedIndicatorColor = Color(0xff334EAC),
+                unfocusedIndicatorColor = Color(0xff334EAC),
+                disabledIndicatorColor = Color(0xff334EAC),
+                errorIndicatorColor = Color.Red,
+
+                focusedLeadingIconColor = Color.Unspecified,
+                unfocusedLeadingIconColor = Color.Unspecified,
+                disabledLeadingIconColor = Color.Unspecified,
+                errorLeadingIconColor = Color.Red,
+
+                focusedTrailingIconColor = Color.Unspecified,
+                unfocusedTrailingIconColor = Color.Unspecified,
+                disabledTrailingIconColor = Color.Unspecified,
+                errorTrailingIconColor = Color.Red,
+
+                focusedPlaceholderColor = Color.Unspecified,
+                unfocusedPlaceholderColor = Color.Unspecified,
+                disabledPlaceholderColor = Color.Unspecified,
+                errorPlaceholderColor = Color.Red,
+
+                focusedSupportingTextColor = Color.Unspecified,
+                unfocusedSupportingTextColor = Color.Unspecified,
+                disabledSupportingTextColor = Color.Unspecified,
+                errorSupportingTextColor = Color.Red,
+
+                focusedPrefixColor = Color.Unspecified,
+                unfocusedPrefixColor = Color.Unspecified,
+                disabledPrefixColor = Color.Unspecified,
+                errorPrefixColor = Color.Red,
+
+                focusedSuffixColor = Color.Unspecified,
+                unfocusedSuffixColor = Color.Unspecified,
+                disabledSuffixColor = Color.Unspecified,
+                errorSuffixColor = Color.Red
+            )
         )
 
         OutlinedTextField(
@@ -229,7 +303,63 @@ fun EditarPerfil(controleDeNavegacao: NavHostController, id: String, email: Stri
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .padding(bottom = 8.dp),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldColors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                disabledTextColor = Color.Black,
+                errorTextColor = Color.Red,
+                textSelectionColors = TextSelectionColors(Color.Black, Color.Black),
+
+                focusedLabelColor = Color.Black,
+                unfocusedLabelColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                errorLabelColor = Color.Red,
+
+                focusedContainerColor = Color.Unspecified,
+                unfocusedContainerColor = Color.Unspecified,
+                disabledContainerColor = Color.Unspecified,
+                errorContainerColor = Color.Unspecified,
+
+                cursorColor = Color.Black,
+                errorCursorColor = Color.Unspecified,
+
+                focusedIndicatorColor = Color(0xff334EAC),
+                unfocusedIndicatorColor = Color(0xff334EAC),
+                disabledIndicatorColor = Color(0xff334EAC),
+                errorIndicatorColor = Color.Red,
+
+                focusedLeadingIconColor = Color.Unspecified,
+                unfocusedLeadingIconColor = Color.Unspecified,
+                disabledLeadingIconColor = Color.Unspecified,
+                errorLeadingIconColor = Color.Red,
+
+                focusedTrailingIconColor = Color.Unspecified,
+                unfocusedTrailingIconColor = Color.Unspecified,
+                disabledTrailingIconColor = Color.Unspecified,
+                errorTrailingIconColor = Color.Red,
+
+                focusedPlaceholderColor = Color.Unspecified,
+                unfocusedPlaceholderColor = Color.Unspecified,
+                disabledPlaceholderColor = Color.Unspecified,
+                errorPlaceholderColor = Color.Red,
+
+                focusedSupportingTextColor = Color.Unspecified,
+                unfocusedSupportingTextColor = Color.Unspecified,
+                disabledSupportingTextColor = Color.Unspecified,
+                errorSupportingTextColor = Color.Red,
+
+                focusedPrefixColor = Color.Unspecified,
+                unfocusedPrefixColor = Color.Unspecified,
+                disabledPrefixColor = Color.Unspecified,
+                errorPrefixColor = Color.Red,
+
+                focusedSuffixColor = Color.Unspecified,
+                unfocusedSuffixColor = Color.Unspecified,
+                disabledSuffixColor = Color.Unspecified,
+                errorSuffixColor = Color.Red
+            )
         )
 
         OutlinedTextField(
@@ -239,14 +369,70 @@ fun EditarPerfil(controleDeNavegacao: NavHostController, id: String, email: Stri
             label = { Text("Email") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .padding(bottom = 8.dp),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldColors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                disabledTextColor = Color.Black,
+                errorTextColor = Color.Red,
+                textSelectionColors = TextSelectionColors(Color.Black, Color.Black),
+
+                focusedLabelColor = Color.Black,
+                unfocusedLabelColor = Color.Black,
+                disabledLabelColor = Color.Black,
+                errorLabelColor = Color.Red,
+
+                focusedContainerColor = Color.Unspecified,
+                unfocusedContainerColor = Color.Unspecified,
+                disabledContainerColor = Color.Unspecified,
+                errorContainerColor = Color.Unspecified,
+
+                cursorColor = Color.Black,
+                errorCursorColor = Color.Unspecified,
+
+                focusedIndicatorColor = Color(0xff334EAC),
+                unfocusedIndicatorColor = Color(0xff334EAC),
+                disabledIndicatorColor = Color(0xff334EAC),
+                errorIndicatorColor = Color.Red,
+
+                focusedLeadingIconColor = Color.Unspecified,
+                unfocusedLeadingIconColor = Color.Unspecified,
+                disabledLeadingIconColor = Color.Unspecified,
+                errorLeadingIconColor = Color.Red,
+
+                focusedTrailingIconColor = Color.Unspecified,
+                unfocusedTrailingIconColor = Color.Unspecified,
+                disabledTrailingIconColor = Color.Unspecified,
+                errorTrailingIconColor = Color.Red,
+
+                focusedPlaceholderColor = Color.Unspecified,
+                unfocusedPlaceholderColor = Color.Unspecified,
+                disabledPlaceholderColor = Color.Unspecified,
+                errorPlaceholderColor = Color.Red,
+
+                focusedSupportingTextColor = Color.Unspecified,
+                unfocusedSupportingTextColor = Color.Unspecified,
+                disabledSupportingTextColor = Color.Unspecified,
+                errorSupportingTextColor = Color.Red,
+
+                focusedPrefixColor = Color.Unspecified,
+                unfocusedPrefixColor = Color.Unspecified,
+                disabledPrefixColor = Color.Unspecified,
+                errorPrefixColor = Color.Red,
+
+                focusedSuffixColor = Color.Unspecified,
+                unfocusedSuffixColor = Color.Unspecified,
+                disabledSuffixColor = Color.Unspecified,
+                errorSuffixColor = Color.Red
+            )
         )
 
         Card(
             modifier = Modifier
                 .border(
                     width = 2.dp,
-                    color = Color(0xFF65558F),
+                    color = Color(0xff334EAC),
                     shape = RoundedCornerShape(16.dp)
                 )
                 .background(Color.Transparent)
@@ -264,94 +450,111 @@ fun EditarPerfil(controleDeNavegacao: NavHostController, id: String, email: Stri
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Alterar Senha", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(text = "Alterar Senha", fontSize = 16.sp, fontWeight = FontWeight.Medium,color=Color.Black )
                 Icon(Icons.Default.ArrowForward, contentDescription = "Alterar Senha")
             }
         }
 
-        Spacer(modifier = Modifier.height(224.dp))
+        Spacer(modifier = Modifier.height(200.dp))
 
+        Text(text = mensagemErroState.value, color = Color.Red)
 
         Button(
             onClick = {
-
                 val partesDataMandar = nascimentoState.value.split("/")
                 val diaMandar = partesDataMandar[0]
                 val mesMandar = partesDataMandar[1]
                 val anoMandar = partesDataMandar[2]
                 val dataNascimentoMandar = "$anoMandar-$mesMandar-$diaMandar"
-if(link==""||nomeState.value==""||emailState.value==""||nascimentoState.value==""){
-    mensagemErroState.value =
-        "Todos os campos devem estar preenchidos"
-    umError.value = true
-}else if (nascimentoState.value.length > 10 || nascimentoState.value.length > 10) {
-    mensagemErroState.value =
-        "O formato do campo data de nascimento está incorreto"
-    umError.value = true
-} else {
-                if (tipoUsuario == "aluno") {
-                    val callAtualizarAluno =
-                        RetrofitFactory().getUsuarioService().setAtualizarAluno(
-                            id.toInt(),
-                            usuario = Aluno(
-                                nome = nomeState.value,
-                                email = emailState.value.lowercase(),
-                                data_nascimento = dataNascimentoMandar,
-                                foto_perfil = link,
-                            )
-                        )
-                    callAtualizarAluno.enqueue(object : Callback<ResultAluno> {
-                        override fun onResponse(p0: Call<ResultAluno>, p1: Response<ResultAluno>) {
-                            val alunoResponse = p1.body()
-                            Log.i("ALUNO",alunoResponse.toString())
-                            if (p1.isSuccessful) {
-                                if (alunoResponse != null) {
-                                    controleDeNavegacao.navigate(    "configuracoes?id=${alunoResponse.aluno?.id_aluno}&email=${alunoResponse.aluno?.email}&nome=${alunoResponse.aluno?.nome}&dataNascimento=${alunoResponse.aluno?.data_nascimento}&fotoPerfil=${alunoResponse.aluno?.foto_perfil}&tipoUsuario=aluno"
-                                    )
-                                }
 
-                            } else {
-                                Log.i("CALMA", alunoResponse?.message!!.toString())
-                            }
-                        }
+                Log.i( "calma",nomeState.value.toString())
+                Log.i( "calma",emailState.value.toString())
+                Log.i( "calma",dataNascimentoMandar.toString())
+                Log.i( "calma",link.toString())
 
-                        override fun onFailure(p0: Call<ResultAluno>, p1: Throwable) {
-                            Log.i("ERRO_EDITAR_PERFIL", p1.toString())
-                        }
-                    })
+
+                if (nomeState.value == "" || emailState.value == "" || nascimentoState.value == "") {
+                    mensagemErroState.value =
+                        "Todos os campos devem estar preenchidos"
+                    umError.value = true
+                } else if (nascimentoState.value.length > 10 || nascimentoState.value.length > 10) {
+                    mensagemErroState.value =
+                        "O formato do campo data de nascimento está incorreto"
+                    umError.value = true
                 } else {
-                    val callAtualizarProfessor =
-                        RetrofitFactory().getUsuarioService().setAtualizarProfessor(
-                            id.toInt(),
-                            usuario = Professor(
-                                nome = nomeState.value,
-                                email = emailState.value.lowercase(),
-                                data_nascimento = dataNascimentoMandar,
-                                foto_perfil = link,
+                    if (tipoUsuario == "aluno") {
+                        val callAtualizarAluno =
+                            RetrofitFactory().getUsuarioService().setAtualizarAluno(
+                                id.toInt(),
+                                usuario = Aluno(
+                                    nome = nomeState.value,
+                                    email = emailState.value.lowercase(),
+                                    data_nascimento = dataNascimentoMandar,
+                                    foto_perfil = link,
+                                    id_aluno=id.toLong()
+
+                                )
                             )
-                        )
-                    callAtualizarProfessor.enqueue(object : Callback<ResultProfessor> {
-                        override fun onResponse(
-                            p0: Call<ResultProfessor>,
-                            p1: Response<ResultProfessor>
-                        ) {
-                            val professorResponse = p1.body()
-                            if (p1.isSuccessful) {
-                                if (professorResponse != null) {
-                                    controleDeNavegacao.navigate("configuracoes/${professorResponse.professor?.id_professor}*${professorResponse.professor?.email}*${professorResponse.professor?.nome}*${professorResponse.professor?.data_nascimento}*${professorResponse.professor?.foto_perfil}*${tipoUsuario}")
+                        callAtualizarAluno.enqueue(object : Callback<ResultAluno> {
+                            override fun onResponse(
+                                p0: Call<ResultAluno>,
+                                p1: Response<ResultAluno>
+                            ) {
+                                val alunoResponse = p1.body()
+                                Log.i("ALUNO", alunoResponse.toString())
+                                if (p1.isSuccessful) {
+                                    if (alunoResponse != null) {
+                                        controleDeNavegacao.navigate(
+                                            "configuracoes?id=${alunoResponse.aluno?.id_aluno}&email=${alunoResponse.aluno?.email}&nome=${alunoResponse.aluno?.nome}&dataNascimento=${alunoResponse.aluno?.data_nascimento}&fotoPerfil=${alunoResponse.aluno?.foto_perfil}&tipoUsuario=${tipoUsuario}"
+                                        )
+                                    }
+
+                                } else {
+                                    Log.i("CALMA", alunoResponse?.message!!.toString())
                                 }
-
-                            } else {
-                                Log.i("CALMA", professorResponse?.message!!.toString())
                             }
-                        }
 
-                        override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
-                            Log.i("ERRO_EDITAR_PERFIL", p1.toString())
-                        }
-                    })
+                            override fun onFailure(p0: Call<ResultAluno>, p1: Throwable) {
+                                Log.i("ERRO_EDITAR_PERFIL", p1.toString())
+                            }
+                        })
+                    } else {
+                        val callAtualizarProfessor =
+                            RetrofitFactory().getUsuarioService().setAtualizarProfessor(
+                                id.toInt(),
+                                usuario = Professor(
+                                    nome = nomeState.value,
+                                    email = emailState.value.lowercase(),
+                                    data_nascimento = dataNascimentoMandar,
+                                    foto_perfil = link,
+                                    id_professor=id.toLong()
+                                )
+                            )
+                        callAtualizarProfessor.enqueue(object : Callback<ResultProfessor> {
+                            override fun onResponse(
+                                p0: Call<ResultProfessor>,
+                                p1: Response<ResultProfessor>
+                            ) {
+
+                                val professorResponse = p1.body()
+                                Log.i("calma",professorResponse.toString())
+                                if (p1.isSuccessful) {
+                                    if (professorResponse != null) {
+                                        controleDeNavegacao.navigate("configuracoes?id=${professorResponse.professor?.id_professor}&email=${professorResponse.professor?.email}&nome=${professorResponse.professor?.nome}&dataNascimento=${professorResponse.professor?.data_nascimento}&fotoPerfil=${professorResponse.professor?.foto_perfil}&tipoUsuario=${tipoUsuario}")
+                                    }
+                                    else{
+                                    Log.i("Calma", professorResponse?.message.toString())}
+
+                                } else {
+                                    Log.i("CALMA", professorResponse?.message!!.toString())
+                                }
+                            }
+                            override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
+                                Log.i("ERRO_EDITAR_PERFIL", p1.toString())
+                            }
+                        })
+                    }
                 }
-}
             },
             modifier = Modifier
                 .width(412.dp)
@@ -390,11 +593,11 @@ fun uploadFile(fileUri: Uri) {
         .addOnSuccessListener {
             fileRef.downloadUrl.addOnSuccessListener { uri ->
                 Log.i("CALMA", "URL de download: $uri")
-                link=uri.toString()
+                link = uri.toString()
             }
         }
         .addOnFailureListener { exception ->
-            link= ""
+            link = ""
             Log.i("CALMA", "Falha no upload: ${exception.message}")
         }
 }

@@ -261,7 +261,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                                 override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
                                     Log.i("ERRO_LOGIN", p1.toString())
                                     mensagemErroState.value =
-                                        "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"                                }
+                                        "Ocorreu um erro, o serviço pode estar indisponivel. Favor, verifique se está conectado a internet ou tente novamente mais tarde"}
 
                             })
  }

@@ -102,14 +102,10 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
     val textoOcultoConfirmaSenha =
         if (confirmaSenhaVisivel) VisualTransformation.None else PasswordVisualTransformation()
 //bloquear caracteres especiais(pro nome, vou adicionai essa regra no data nascimento tbm, só q dai só autorizando numeros e /)
-//    val filter = InputFilter { source, start, end, dest, dstart, dend ->
-//        val regex = Regex("[^a-zA-Z0-9 ]")
-//        if (regex.containsMatchIn(source.subSequence(start, end))) {
-//            ""
-//        } else {
-//            null
-//        }
-//    }
+    //arruma isso dps, está ao contrario, e só ta escrevendo uma letra
+      //  val filtroNome = Regex("[^a-zA-Z ]")
+   // val filtroData = Regex("[^0-9/]")
+
 
     //gradiente do background
     val gradientBrush = Brush.linearGradient(
@@ -168,12 +164,15 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
             TextField(
                 value = nomeState.value,
                 onValueChange = {
-                    nomeState.value = it
-                },
+                    nomeState.value=it
+//                        newText ->
+//                    if (filtroNome.matches(newText)) {
+//                        nomeState.value = newText
+//                    }
+                                },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text("Nome Completo") },
                 isError = umError.value,
-                //filters = arrayOf(filter),
                         colors = TextFieldDefaults
                     .colors(
                         focusedContainerColor = Color.Transparent,
@@ -302,8 +301,12 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
             TextField(
                 value = nascimentoState.value,
                 onValueChange = {
-                    nascimentoState.value = it
-                },
+                    nascimentoState.value =it
+//                        newText ->
+//                    if (filtroData.matches(newText)) {
+//                        nascimentoState.value = newText
+//                    }
+                                },
                 label = { Text("Data de nascimento") },
                 placeholder = { Text("ex: 00/00/0000") },
                 modifier = Modifier.fillMaxWidth(),

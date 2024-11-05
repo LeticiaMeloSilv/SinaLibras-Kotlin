@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,14 +21,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,118 +49,113 @@ fun Feed(
     fotoPerfil: String
 ) {
     val painter: Painter =
-        if (fotoPerfil !="" && fotoPerfil != "null" && fotoPerfil.isNotEmpty()) {
+        if (fotoPerfil != "" && fotoPerfil != "null" && fotoPerfil.isNotEmpty()) {
             rememberAsyncImagePainter(model = fotoPerfil)
         } else {
             painterResource(id = R.drawable.perfil)
         }
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE1ECF8))
-            .padding(16.dp)
+            .background(Color(0xFFD0E6FF))
     ) {
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(88.dp)
-                    .background(Color(0xFFE1ECF8))
-                    .padding(8.dp)
-            )
-
-            Image(
-                painter =painter,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(Color(0xFFE1ECF8), CircleShape)
-                    .padding(8.dp)
-                    .clickable {
-                        controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}")
-                    }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF73A7D4), shape = RoundedCornerShape(24.dp))
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(bottom = 55.dp, top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
             Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Filled.Search, contentDescription = "Buscar", tint = Color.Black)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Buscar", color = Color.Black)
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(88.dp)
+                )
+
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .background(Color(0xFFA5D1FF), CircleShape)
+                        .clickable {
+                            controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}")
+                        }
+                        .clip(CircleShape), // Aplica a forma circular
+                    contentScale = ContentScale.Crop
+                )
             }
 
-            Icon(
-                imageVector = Icons.Filled.List,
-                contentDescription = "Filtrar",
-                tint = Color.Black,
-                modifier = Modifier.size(24.dp)
-            )
-        }
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-        ) {
-
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Descrição da imagem",
+            Row(
                 modifier = Modifier
-                    .size(28    .dp)
-                    .padding(end = 8.dp)
-            )
+                    .fillMaxWidth()
+                    .background(Color(0xFFA5D1FF), shape = RoundedCornerShape(24.dp))
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Filled.Search, contentDescription = "Buscar", tint = Color.Black)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "Buscar", color = Color.Black)
+                }
+
+                Icon(
+                    imageVector = Icons.Filled.List,
+                    contentDescription = "Filtrar",
+                    tint = Color.Black,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFEAF4FF))
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+
+                    Image(
+                        painter = painterResource(id = R.drawable.perfil),
+                        contentDescription = "Descrição da imagem",
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(end = 8.dp)
+                    )
 
 
-            Text(
-                text = "Dicas bbbbbbbb",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+                    Text(
+                        text = "nome_do_usuario",
+                        fontSize = 18.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .background(Color(0xFF5CAF4C), shape = RoundedCornerShape(16.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                tint = Color(0xFF1D4FCF),
-                modifier = Modifier.size(64.dp)
-            )
-        }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .height(180.dp)//aq vai vim a capa do video
+                        .background(Color(0xFF5CAF4C), shape = RoundedCornerShape(16.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
 
-        Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .width(445.dp)
-                .height(436.dp)
-        ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -167,18 +166,15 @@ fun Feed(
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(16.dp),
                 ) {
-
                     Image(
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = "foto",
+                        painter = painterResource(id = R.drawable.perfil),
+                        contentDescription = "Descrição da imagem",
                         modifier = Modifier
-                            .size(28.dp)
-                            .background(Color(0xFFE1ECF8), CircleShape)
+                            .size(30.dp)
+                            .padding(end = 8.dp)
                     )
-
 
                     Column(
                         modifier = Modifier
@@ -186,8 +182,12 @@ fun Feed(
                             .padding(start = 8.dp),
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text(text = "José Silva")
-
+                        Text(
+                            text = "nome_do_usuario",
+                            fontSize = 18.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
                         Text(
                             text = "Dia internacional do surdo\n" +
                                     "Comunicação... Continuar lendo",
@@ -198,8 +198,154 @@ fun Feed(
                     }
                 }
             }
-        }
 
+
+        }
+        Card(
+            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter),
+            colors = CardColors(
+                containerColor = Color(0xFFA5D1FF),
+                contentColor = Color(0xFFA5D1FF),
+                disabledContentColor = Color(0xFFA5D1FF),
+                disabledContainerColor = Color(0xFFA5D1FF)
+            )
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 38.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable { controleDeNavegacao.navigate("chat?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}") }
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.chat),
+                        contentDescription = "Chat Icon",
+                        modifier = Modifier.size(25.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    Text(
+                        text = "Chat",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Light,
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable { controleDeNavegacao.navigate("implementacao?id=${id}&tipoUsuario=${tipoUsuario}") }
+
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.atividades),
+                        contentDescription = "Activities Icon",
+                        modifier = Modifier
+                            .size(25.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    Text(
+                        text = "Atividades",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Light,
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+
+                    )
+                }
+
+
+                Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFA5D1FF))
+                        .padding(horizontal = 10.dp, vertical = 5.dp)
+                ) {
+                    if (tipoUsuario == "aluno") {
+                        Image(
+                            painter = painterResource(
+                                id = R.drawable.rank
+                            ),
+                            contentDescription = "Profile Icon",
+                            modifier = Modifier
+                                .size(45.dp)
+                                .offset((-10).dp, 0.dp)
+                                .clickable { controleDeNavegacao.navigate("implementacao?id=${id}&tipoUsuario=${tipoUsuario}") },
+                            contentScale = ContentScale.Fit
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(
+                                id = R.drawable.mais
+                            ),
+                            contentDescription = "Profile Icon",
+                            modifier = Modifier
+                                .size(45.dp)
+                                .offset((-10).dp, 0.dp)
+                                .clickable { controleDeNavegacao.navigate("criar?id=${id}&tipoUsuario=${tipoUsuario}") },
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable {
+                            controleDeNavegacao.navigate("modulos?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                        }
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.videos),
+                        contentDescription = "Classes Icon",
+                        modifier = Modifier
+                            .size(25.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    Text(
+                        text = "Aulas",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Light,
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable {
+                            controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                        }
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.feed),
+                        contentDescription = "Menu Icon",
+                        modifier = Modifier
+                            .size(25.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    Text(
+                        text = "Feed",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Light,
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Box(modifier = Modifier
+                        .height(2.dp)
+                        .background(color = Color(0xff3459DE)))
+                }
+            }
+
+        }
     }
 }
 

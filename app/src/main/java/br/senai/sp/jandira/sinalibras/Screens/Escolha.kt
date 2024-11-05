@@ -171,8 +171,11 @@ import br.senai.sp.jandira.sinalibras.model.Email
 import br.senai.sp.jandira.sinalibras.model.ResultUsuarioTeste
 import br.senai.sp.jandira.sinalibras.model.Aluno
 import br.senai.sp.jandira.sinalibras.model.Professor
+import br.senai.sp.jandira.sinalibras.model.ResultAluno
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
+import com.google.gson.Gson
 import org.threeten.bp.LocalDate
+import org.threeten.bp.temporal.ChronoUnit
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -435,33 +438,151 @@ fun Escolha(controleDeNavegacao: NavHostController) {
 //                                    else if (emailValido.result=="valid"){
 //                                        Log.i( "DEU",emailValido.email)
                             val currentDate: LocalDate = LocalDate.now()
-                            val email = emailState.value
-
-                            val callUsuarios = RetrofitFactory()
-                                .getUsuarioService().setSalvarUsuarioTemporario(
-                                    usuario = Professor(
-                                        email = email.lowercase(),
-                                        data_cadastro = currentDate.toString()
-                                    )
-                                )
-
-                            callUsuarios.enqueue(object : Callback<ResultUsuarioTeste> {
+                            val email = emailState.value.lowercase()
+                            val callUsuarioByEmail =
+                                RetrofitFactory().getUsuarioService().getUsuarioEmail(email)
+                            callUsuarioByEmail.enqueue(object : Callback<ResultUsuarioTeste> {
                                 override fun onResponse(
                                     p0: Call<ResultUsuarioTeste>,
                                     p1: Response<ResultUsuarioTeste>
                                 ) {
-                                    val resposta = p1.body()
-                                    if (resposta == null) {
-                                        Log.i("ERROOOOOOOOOO", p1.toString())
-                                        Log.i("ERROOOOOOOOOO", p1.body().toString())
+                                    val dadoUsuario = p1.body()
+                                    if (p1.isSuccessful) {
+
+                                        if (dadoUsuario != null) {
+
+                                            if (dadoUsuario.status_code == 200) {
+                                                val dataUsuarioCadastrado =
+                                                    dadoUsuario.usuario.data_cadastro.take(10)
+                                                val data = dataUsuarioCadastrado.split("-")
+                                                val dia = data[2]
+                                                val mes = data[1]
+                                                val ano = data[0]
+                                                val dataInicial = LocalDate.of(
+                                                    ano.toInt(), mes.toInt(),
+                                                    dia.toInt()
+                                                )
+                                                val tempo = ChronoUnit.DAYS.between(
+                                                    dataInicial,
+                                                    currentDate
+                                                            )
+                                                val tempoRestante=30-tempo.toInt()
+                                                Log.i("data",tempoRestante.toString())
+
+                                                if (tempo.toInt() > 30) {
+                                                    val callUsuarios = RetrofitFactory()
+                                                        .getUsuarioService()
+                                                        .setSalvarUsuarioTemporario(
+                                                            usuario = Professor(
+                                                                email = email,
+                                                                data_cadastro = currentDate.toString()
+                                                            )
+                                                        )
+
+                                                    callUsuarios.enqueue(object :
+                                                        Callback<ResultUsuarioTeste> {
+                                                        override fun onResponse(
+                                                            p0: Call<ResultUsuarioTeste>,
+                                                            p1: Response<ResultUsuarioTeste>
+                                                        ) {
+                                                            val resposta = p1.body()
+                                                            if (resposta == null) {
+                                                                mensagemErroState.value =
+                                                                    "Algo deu errado :(, favor verificar se os campos foram preenchidos corretamente"
+                                                                umError.value = true
+
+                                                            } else {
+                                                                controleDeNavegacao.navigate(
+                                                                    "quiz?idFornecido=${resposta.usuario.id_usuario_teste}&emailFornecido=${email}"
+                                                                )
+                                                            }
+                                                        }
+
+                                                        override fun onFailure(
+                                                            p0: Call<ResultUsuarioTeste>,
+                                                            p1: Throwable
+                                                        ) {
+                                                            Log.i(
+                                                                "ERRO_CADASTRO",
+                                                                p1.toString()
+                                                            )
+                                                            mensagemErroState.value =
+                                                                "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+                                                        }
+
+                                                    })
+                                                } else {
+                                                    Log.i("data",tempoRestante.toString())
+                                                    controleDeNavegacao.navigate("erro?porcentagem=${dadoUsuario.usuario.porcentagem}&tempoRestante=${tempoRestante.toString()}")
+                                                }
+
+                                            }
+                                            else if (dadoUsuario.status_code == 404) {
+                                                val callUsuarios = RetrofitFactory()
+                                                    .getUsuarioService()
+                                                    .setSalvarUsuarioTemporario(
+                                                        usuario = Professor(
+                                                            email = email,
+                                                            data_cadastro = currentDate.toString()
+                                                        )
+                                                    )
+
+                                                callUsuarios.enqueue(object :
+                                                    Callback<ResultUsuarioTeste> {
+                                                    override fun onResponse(
+                                                        p0: Call<ResultUsuarioTeste>,
+                                                        p1: Response<ResultUsuarioTeste>
+                                                    ) {
+                                                        val resposta = p1.body()
+                                                        if (resposta == null) {
+
+                                                            mensagemErroState.value =
+                                                                "Algo deu errado :(, favor verificar se os campos foram preenchidos corretamente"
+                                                            umError.value = true
+                                                            Log.i("ERRO_CADASTRO", 5.toString())
+
+                                                        } else {
+                                                            controleDeNavegacao.navigate(
+                                                                "quiz?idFornecido=${resposta.usuario.id_usuario_teste}&emailFornecido=${email}"
+                                                            )
+                                                        }
+                                                    }
+
+                                                    override fun onFailure(
+                                                        p0: Call<ResultUsuarioTeste>,
+                                                        p1: Throwable
+                                                    ) {
+                                                        Log.i(
+                                                            "ERRO_CADASTRO",
+                                                            p1.toString()
+                                                        )
+                                                        mensagemErroState.value =
+                                                            "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+                                                    }
+
+                                                })
+                                            } else {
+                                                val errorBody = p1.errorBody()?.string()
+                                                val gson = Gson()
+                                                val usuarioSalvo = gson.fromJson(
+                                                    errorBody,
+                                                    ResultAluno::class.java
+                                                )
+                                                mensagemErroState.value = usuarioSalvo.message
+                                            }
+
+                                        } else {
+                                            Log.i("ERRO_CADASTRO", 572.toString())
+
+                                            mensagemErroState.value =
+                                                "Ocorreu um erro, o serviço pode estar indisponivel. Favor, tente novamente mais tarde"
+                                        }
+
+                                    } else {
+                                        Log.i("ERRO_CADASTRO", 579.toString())
 
                                         mensagemErroState.value =
-                                            "Algo deu errado :(, favor verificar se os campos foram preenchidos corretamente"
-                                        umError.value = true
-                                    } else {
-                                        Log.i("ACERTO", p1.body().toString())
-                                        Log.i("CARA", resposta.usuario.id_usuario_teste.toString())
-                                        controleDeNavegacao.navigate("quiz/idFornecido=${resposta.usuario.id_usuario_teste}&emailFornecido=${email}")
+                                            "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
                                     }
                                 }
 
@@ -470,11 +591,12 @@ fun Escolha(controleDeNavegacao: NavHostController) {
                                     p1: Throwable
                                 ) {
                                     Log.i("ERRO_CADASTRO", p1.toString())
+
                                     mensagemErroState.value =
                                         "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
                                 }
-
                             })
+
 
 //                                    }
 //                                }

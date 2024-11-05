@@ -50,7 +50,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
@@ -175,11 +178,16 @@ fun QuizCard(quiz: Quiz, id: Int) {
 
 @Composable
 fun QuizScreen(quizList: List<Quiz>, idUsuario: Int) {
-    LazyColumn {
-        items(quizList) { quiz ->
-            QuizCard(quiz, idUsuario)
-        }
+    val scrollState = rememberScrollState()
+
+    Column(
+    modifier = Modifier.verticalScroll(scrollState)
+){
+    quizList.forEach { quiz ->
+        QuizCard(quiz, idUsuario)
     }
+}
+
 }
 
 @Composable
@@ -190,13 +198,19 @@ fun Quiz(controleDeNavegacao: NavHostController, emailFornecido: String, idForne
     var funcionouState by remember {
         mutableStateOf(false)
     }
-
+    var erroState by remember {
+        mutableStateOf(false)
+    }
+    var mensagemErroState = remember {
+        mutableStateOf("")
+    }
     val callQuestions = RetrofitFactory().getQuizService().getAllQuestoes()
     callQuestions.enqueue(object : Callback<ResultQuiz> {
         override fun onResponse(p0: Call<ResultQuiz>, p1: Response<ResultQuiz>) {
             val alunoResponse = p1.body()
             if (alunoResponse == null) {
                 Log.i("ERRO_PERGUNTAS", p1.toString())
+                erroState=true
             } else {
                 Log.i("TAG", alunoResponse.toString())
                 funcionouState = true
@@ -205,6 +219,7 @@ fun Quiz(controleDeNavegacao: NavHostController, emailFornecido: String, idForne
         }
 
         override fun onFailure(p0: Call<ResultQuiz>, p1: Throwable) {
+            erroState=true
             Log.i("ERRO_PERFIL", p1.toString())
         }
 
@@ -216,6 +231,47 @@ fun Quiz(controleDeNavegacao: NavHostController, emailFornecido: String, idForne
         start = Offset.Zero,
         end = Offset(0f, Float.POSITIVE_INFINITY)
     )
+    if(!funcionouState&&!erroState){
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFFC7E2FE), Color(0xFF345ADE))
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Logotipo SinaLibras",
+                    modifier = Modifier.size(100.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "SinaLibras",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF3F51B5)
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                //isso q faz o circulo q roda
+                CircularProgressIndicator(
+                    color = Color(0xFF3F51B5),
+                    strokeWidth = 4.dp,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+        }
+    }
     if (funcionouState) {
         Column(
             modifier = Modifier
@@ -242,35 +298,46 @@ fun Quiz(controleDeNavegacao: NavHostController, emailFornecido: String, idForne
                     dadosPerfil.questoes?.let { QuizScreen(it, idFornecido.toInt()) }
                 }
             }
+            Text(text = mensagemErroState.value, color = Color.Red)
             Button(
                 onClick = {
 
                     val respostas = respostasUsuario
-                    var showErrorDialog by mutableStateOf(false)
+                    if(respostas.size!=10){
+mensagemErroState.value="Você deve responder a todas as perguntas para prosseguir."
+                    }
+                    else {
+                        val callQuestions =
+                            RetrofitFactory().getQuizService().salvarRespostas(respostas)
+                        callQuestions.enqueue(object : Callback<ResultRespostaUsuario> {
+                            override fun onResponse(
+                                p0: Call<ResultRespostaUsuario>,
+                                p1: Response<ResultRespostaUsuario>
+                            ) {
+                                val response = p1.body()
+                                if (response == null) {
+                                    Log.i("ERRO_RESPOSTAS", p1.toString())
+                                    mensagemErroState.value="Ocorreu um erro, contate o time de suporte."
+                                    respostasUsuario.clear()
+                                } else {
+                                    //SUBSTITUIR PELA PONTUAÇÃO CERTA
+                                    if(response.pontuacao.toInt()>=70) {
+                                        controleDeNavegacao.navigate("acerto?porcentagem=${response.pontuacao}&emailFornecido=${emailFornecido}")
+                                    }
+                                    else{
 
-                    val callQuestions =
-                        RetrofitFactory().getQuizService().salvarRespostas(respostas)
-                    callQuestions.enqueue(object : Callback<ResultRespostaUsuario> {
-                        override fun onResponse(
-                            p0: Call<ResultRespostaUsuario>,
-                            p1: Response<ResultRespostaUsuario>
-                        ) {
-                            val response = p1.body()
-                            if (response == null) {
-                                Log.i("ERRO_RESPOSTAS", p1.toString())
-                                showErrorDialog = true
-                            } else {
-                                //SUBSTITUIR PELA PONTUAÇÃO CERTA
-                                controleDeNavegacao.navigate("acerto/${70}*${emailFornecido}")
-                                Log.i("TAG", response.toString())
+                                        controleDeNavegacao.navigate("erro?porcentagem=${response.pontuacao}&tempoRestante=${30}")
+                                    }
+                                    Log.i("TAG", response.toString())
+                                }
                             }
-                        }
 
-                        override fun onFailure(p0: Call<ResultRespostaUsuario>, p1: Throwable) {
-                            Log.i("ERRO_RESPOSTAS", p1.toString())
-                        }
-                    })
-
+                            override fun onFailure(p0: Call<ResultRespostaUsuario>, p1: Throwable) {
+                                mensagemErroState.value="Ocorreu um erro, verifique sua conexão com a internet."
+                                Log.i("ERRO_RESPOSTAS", p1.toString())
+                            }
+                        })
+                    }
                 },
                 modifier = Modifier
                     .padding(16.dp)

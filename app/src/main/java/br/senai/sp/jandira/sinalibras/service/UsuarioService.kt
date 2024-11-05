@@ -49,13 +49,16 @@ interface UsuarioService {
     @POST("/v1/sinalibras/usuario")
     fun setSalvarUsuarioTemporario(@Body usuario: Professor): Call<ResultUsuarioTeste>
 
+    @GET("/v1/sinalibras/usuario/email/{email}")
+    fun getUsuarioEmail(@Path("email")email:String): Call<ResultUsuarioTeste>
+
 
 
 
 
 
     @GET("/v1/sinalibras/professores")
-    fun getAllProfessores(): Call<ResultAluno>
+    fun getAllProfessores(): Call<ResultProfessor>
 
     @GET("/v1/sinalibras/professor/{id}")
     fun getProfessorId(@Path("id")id:Int): Call<ResultProfessor>
@@ -65,7 +68,7 @@ interface UsuarioService {
     fun setSalvarProfessor(@Body usuario: Professor): Call<ResultProfessor>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
-    @PUT("/v1/sinalibras/professor")
+    @PUT("/v1/sinalibras/professor/{id}")
     fun setAtualizarProfessor(@Path("id")id:Int,@Body usuario: Professor): Call<ResultProfessor>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json

@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.sinalibras.Screens
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.Image
@@ -33,7 +34,8 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 
 @Composable
-fun ErroQuiz(controleDeNavegacao: NavHostController, porcentagem: Int?) {
+fun ErroQuiz(controleDeNavegacao: NavHostController, porcentagem: String, tempoRestante: String) {
+    Log.i("data",tempoRestante.toString())
     Column(
         modifier = Modifier
             .background(color = Color(0xFFC7E2FE))
@@ -58,7 +60,7 @@ fun ErroQuiz(controleDeNavegacao: NavHostController, porcentagem: Int?) {
                         .size(width = 170.dp, height = 170.dp)
                 )
                 Text(
-                    text = "Total de acertos: 70%",
+                    text = "Total de acertos: ${porcentagem}%",
                     fontSize = 26.sp,
                     color = Color.Blue,
                     fontWeight = FontWeight.Black,
@@ -86,11 +88,11 @@ fun ErroQuiz(controleDeNavegacao: NavHostController, porcentagem: Int?) {
                 Text(
                     text = "LAMENTAMOS!",
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 24.sp,
+                    fontSize = 28.sp,
                     color = Color(0xFF22367C)
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
                 Text(
                     text = "Infelizmente você não atingiu o nível desejado para ensinar outros estudantes na nossa plataforma :(",
@@ -101,7 +103,7 @@ fun ErroQuiz(controleDeNavegacao: NavHostController, porcentagem: Int?) {
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = "Mas não se preocupe!",
@@ -110,33 +112,33 @@ fun ErroQuiz(controleDeNavegacao: NavHostController, porcentagem: Int?) {
                     color = Color(0xFF22367C)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
 
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
-                    text = buildAnnotatedString {
-                        append("Você poderá realizar uma nova tentativa em ")
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.ExtraBold)) {
-                            append("30 DIAS")
-                        }
-                    },
+                    text = "Você poderá realizar uma nova tentativa em: ",
                     textAlign = TextAlign.Center,
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     color = Color(0xFF22367C),
                     modifier = Modifier.padding(horizontal = 55.dp)
+                )
+            Text(
+                text ="$tempoRestante DIAS" ,
+                fontWeight = FontWeight.ExtraBold, fontSize = 28.sp,
+                color = Color(0xFF22367C),
                 )
             }
 
             Spacer(modifier = Modifier.height(48.dp)) // Aumenta o espaço entre o texto e o botão
 
             Button(
-                onClick = { /* Ação do botão */ },
+                onClick = { controleDeNavegacao.navigate("inicio")},
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F3E96)),
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
-                    .width(160.dp)
-                    .height(50.dp)
+                    .width(180.dp)
+                    .height(70.dp)
             ) {
-                Text(text = "Retornar", color = Color.White, fontWeight = FontWeight.Bold)
+                Text(text = "Retornar", color = Color.White, fontWeight = FontWeight.Bold,fontSize=28.sp)
             }
         }
 

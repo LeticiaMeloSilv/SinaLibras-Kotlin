@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
@@ -34,13 +35,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,17 +55,40 @@ import br.senai.sp.jandira.sinalibras.R
 import br.senai.sp.jandira.sinalibras.model.ResultAluno
 import br.senai.sp.jandira.sinalibras.model.ResultProfessor
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Configuracoes(controleDeNavegacao: NavHostController, id: String, email: String, nome: String, dataNascimento: String, fotoPerfil: String, tipoUsuario: String) {
+fun Configuracoes(
+    controleDeNavegacao: NavHostController,
+    id: String,
+    email: String,
+    nome: String,
+    dataNascimento: String,
+    fotoPerfil: String,
+    tipoUsuario: String
+) {
     var focusTela = remember {
         mutableStateOf(
             false
         )
+    }
+    var focusTelaSegundaConfirmacao = remember {
+        mutableStateOf(
+            false
+        )
+    }
+    var emailState = remember {
+        mutableStateOf("")
+    }
+    var umError = remember {
+        mutableStateOf(false)
+    }
+    var mensagemErroState = remember {
+        mutableStateOf("")
     }
 
 
@@ -104,7 +133,8 @@ fun Configuracoes(controleDeNavegacao: NavHostController, id: String, email: Str
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .padding(horizontal = 60.dp)
-            )}
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -113,9 +143,8 @@ fun Configuracoes(controleDeNavegacao: NavHostController, id: String, email: Str
             value = "",
             onValueChange = {},
             leadingIcon = {
-                IconButton(onClick = { /* Ação exibir senha */ }) {
                     Icon(Icons.Default.Search, contentDescription = null, tint = Color.Black)
-                }
+
             },
             label = { Text("Pesquisar...", color = Color.Black, fontWeight = FontWeight.Medium) },
             modifier = Modifier
@@ -136,11 +165,12 @@ fun Configuracoes(controleDeNavegacao: NavHostController, id: String, email: Str
         )
         Spacer(modifier = Modifier.height(80.dp))
 
-        Box(modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .width(301.dp)
-            .height(436.dp)
-        ){
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .width(301.dp)
+                .height(436.dp)
+        ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -319,11 +349,14 @@ fun Configuracoes(controleDeNavegacao: NavHostController, id: String, email: Str
             }
 
 
-
         }
-        Box(modifier = Modifier.fillMaxWidth().height(120.dp)){
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+        ) {
             Image(
-                painter =painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.logo),
                 contentDescription = "logo",
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -345,10 +378,10 @@ fun Configuracoes(controleDeNavegacao: NavHostController, id: String, email: Str
                 modifier = Modifier
                     .background(color = Color(0xffffffff))
                     .size(height = 600.dp, width = 300.dp)
-                    .padding(10.dp)
+                    .padding(23.dp)
                     .border(
                         width = 0.dp,
-                        shape = RoundedCornerShape(size = 2.dp),
+                        shape = RoundedCornerShape(size = 16.dp),
                         color = Color.Transparent
                     )
             ) {
@@ -375,54 +408,22 @@ fun Configuracoes(controleDeNavegacao: NavHostController, id: String, email: Str
                     fontSize = 16.sp,
                     color = Color(0xff081F5C),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.offset(x = 0.dp, y = -10.dp)
+                    fontWeight = FontWeight.SemiBold,
+                    // modifier = Modifier.offset(x = 0.dp, y = -10.dp)
                 )
                 Text(
                     text = "Essa ação não pode ser revertida",
                     fontSize = 16.sp,
                     color = Color(0xff081F5C),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.offset(x = 0.dp, y = -10.dp)
+                    //modifier = Modifier.offset(x = 0.dp, y = -10.dp)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row {
                     Button(
                         onClick = {
-                            if (tipoUsuario=="aluno") {
-                                val callDellAluno = RetrofitFactory().getUsuarioService().setDellAluno(id.toInt())
-                                callDellAluno.enqueue(object : Callback<ResultAluno> {
-                                    override fun onResponse(p0: Call<ResultAluno>, p1: Response<ResultAluno>) {
-                                        val alunoResponse = p1.body()
-                                        if (p1.isSuccessful) {
-                                            Log.i("CALMA",alunoResponse.toString())
+                            focusTelaSegundaConfirmacao.value = true
 
-                                        } else {
-                                            Log.i("CALMA",alunoResponse?.message!!.toString())
-                                        }
-                                    }
-                                    override fun onFailure(p0: Call<ResultAluno>, p1: Throwable) {
-                                        Log.i("ERRO_DELETAR_PERFIL", p1.toString())
-                                    }
-                                })
-                            }
-                            else{
-                                val callDellProfessor = RetrofitFactory().getUsuarioService().setDellProfessor(id.toInt())
-                                callDellProfessor.enqueue(object : Callback<ResultProfessor> {
-                                    override fun onResponse(p0: Call<ResultProfessor>, p1: Response<ResultProfessor>) {
-                                        val professorResponse = p1.body()
-                                        if (p1.isSuccessful) {
-                                            Log.i("CALMA",professorResponse.toString())
-
-                                        } else {
-                                            Log.i("CALMA",professorResponse?.message!!.toString())
-                                        }
-                                    }
-
-                                    override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
-                                        Log.i("ERRO_DELETAR_PERFIL", p1.toString())
-                                    }
-                                })
-                            }
                         },
                         colors = ButtonColors(
                             Color.Transparent,
@@ -430,9 +431,16 @@ fun Configuracoes(controleDeNavegacao: NavHostController, id: String, email: Str
                             Color.Transparent,
                             Color.Transparent
                         ),
-                        modifier = Modifier.offset(x = -20.dp, y = -10.dp)) {
+                        modifier = Modifier
+                            .offset(x = -20.dp, y = -10.dp)
+                            .border(
+                                width = 2.dp,
+                                shape = RoundedCornerShape(size = 32.dp),
+                                color = Color(0xff081F5C)
+                            )
+                    ) {
                         Text(
-                            text = "Confirmar",
+                            text = "Sim",
                             fontSize = 16.sp,
                             color = Color(0xff081F5C),
                             textAlign = TextAlign.Center,
@@ -449,18 +457,241 @@ fun Configuracoes(controleDeNavegacao: NavHostController, id: String, email: Str
                             Color.Transparent,
                             Color.Transparent
                         ),
-                        modifier = Modifier.offset(x = -20.dp, y = -10.dp)) {
+                        modifier = Modifier.offset(x = -20.dp, y = -10.dp)
+                    ) {
                         Text(
-                            text = "Cancelar",
+                            text = "Não",
                             fontSize = 16.sp,
                             color = Color(0xff081F5C),
                             textAlign = TextAlign.Center,
                             modifier = Modifier.offset(x = 0.dp, y = -10.dp)
                         )
-                    }                    }
+                    }
+                }
             }
         }
     }
+    if (focusTelaSegundaConfirmacao.value) {
+        Column(
+            modifier = Modifier
+                .offset(x = 0.dp, y = 0.dp)
+                .background(color = Color(0x663A3D46))
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Column(
+                modifier = Modifier
+                    .background(color = Color(0xffffffff))
+                    .size(height = 600.dp, width = 300.dp)
+                    .padding(23.dp)
+                    .border(
+                        width = 0.dp,
+                        shape = RoundedCornerShape(size = 16.dp),
+                        color = Color.Transparent
+                    )
+            ) {
+                Button(
+                    onClick = {
+                        focusTela.value = false
+                    },
+                    colors = ButtonColors(
+                        Color.Transparent,
+                        Color.Transparent,
+                        Color.Transparent,
+                        Color.Transparent
+                    ),
+                    modifier = Modifier.offset(x = -20.dp, y = -10.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.btn_cancelar),
+                        contentDescription = "Botao cancelar ação",
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+                Text(
+                    text = "Escreva seu endereço de email no campo a baixo para confirmar e deletar a conta",
+                    fontSize = 16.sp,
+                    color = Color(0xff081F5C),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.SemiBold,
+                    // modifier = Modifier.offset(x = 0.dp, y = -10.dp)
+                )
+                Text(
+                    text = "Sua conta não poderá ser restaurada após a exclusão",
+                    fontSize = 16.sp,
+                    color = Color(0xff081F5C),
+                    textAlign = TextAlign.Center,
+                    //modifier = Modifier.offset(x = 0.dp, y = -10.dp)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                TextField(
+                    value = emailState.value,
+                    onValueChange = {
+                        emailState.value = it
+                    },
+                    label = { Text(text = "Email") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = umError.value,
+                    colors = TextFieldDefaults
+                        .colors(
+                            focusedContainerColor = Color.Transparent,
+                            focusedTextColor = Color(0xff334EAC),
+                            unfocusedContainerColor = Color.Transparent,
+                            unfocusedTextColor = Color(0xff334EAC),
+                            errorTextColor = Color(0xff334EAC),
+                            errorContainerColor = Color.Transparent,
+                            errorPlaceholderColor = Color(0xff334EAC),
+                            errorLabelColor = Color(0xff334EAC),
+                            focusedPlaceholderColor = Color(0xff334EAC),
+                            unfocusedPlaceholderColor = Color(0xff334EAC),
+                            unfocusedLabelColor = Color(0xff334EAC),
+                            focusedLabelColor = Color(0xff334EAC)
+                        )
+                )
+                Text(
+                    text = mensagemErroState.value,
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Row {
+                    Button(
+                        onClick = {
+                            if (emailState.value == "") {
+                                mensagemErroState.value = "Todos os campos devem ser preenchidos"
+                                umError.value = true
+                            } else if (emailState.value != email) {
+                                mensagemErroState.value =
+                                    "Verifique se preencheu corretamente seu endereço de email"
+                                umError.value = true
+                            } else {
+                                if (tipoUsuario == "aluno") {
+                                    val callDellAluno = RetrofitFactory().getUsuarioService()
+                                        .setDellAluno(id.toInt())
+                                    callDellAluno.enqueue(object : Callback<ResultAluno> {
+                                        override fun onResponse(
+                                            p0: Call<ResultAluno>,
+                                            p1: Response<ResultAluno>
+                                        ) {
+                                            val alunoResponse = p1.body()
+                                            if (p1.isSuccessful) {
+                                                Log.i("CALMA", alunoResponse.toString())
+                                                controleDeNavegacao.navigate("inicial")
+                                            } else {
+                                                val errorBody = p1.errorBody()?.string()
+                                                val gson = Gson()
+                                                val usuarioSalvo = gson.fromJson(
+                                                    errorBody,
+                                                    ResultAluno::class.java
+                                                )
+                                                mensagemErroState.value = usuarioSalvo.message
+                                                umError.value = true
+                                                Log.i("CALMA", alunoResponse?.message!!.toString())
+                                            }
+                                        }
 
+                                        override fun onFailure(
+                                            p0: Call<ResultAluno>,
+                                            p1: Throwable
+                                        ) {
+                                            mensagemErroState.value =
+                                                "Verifique se esta conectado a Internet ou tente novamente mais tarde"
+                                            umError.value = true
+                                            Log.i("ERRO_DELETAR_PERFIL", p1.toString())
+                                        }
+                                    })
+                                } else {
+                                    val callDellProfessor = RetrofitFactory().getUsuarioService()
+                                        .setDellProfessor(id.toInt())
+                                    callDellProfessor.enqueue(object : Callback<ResultProfessor> {
+                                        override fun onResponse(
+                                            p0: Call<ResultProfessor>,
+                                            p1: Response<ResultProfessor>
+                                        ) {
+                                            val professorResponse = p1.body()
+                                            if (p1.isSuccessful) {
+                                                controleDeNavegacao.navigate("inicial")
 
+                                                Log.i("CALMA", professorResponse.toString())
+
+                                            } else {
+                                                val errorBody = p1.errorBody()?.string()
+                                                val gson = Gson()
+                                                val usuarioSalvo = gson.fromJson(
+                                                    errorBody,
+                                                    ResultAluno::class.java
+                                                )
+                                                mensagemErroState.value = usuarioSalvo.message
+                                                umError.value = true
+                                                Log.i(
+                                                    "CALMA",
+                                                    professorResponse?.message!!.toString()
+                                                )
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            p0: Call<ResultProfessor>,
+                                            p1: Throwable
+                                        ) {
+                                            mensagemErroState.value =
+                                                "Verifique se esta conectado a Internet ou tente novamente mais tarde"
+                                            umError.value = true
+                                            Log.i("ERRO_DELETAR_PERFIL", p1.toString())
+                                        }
+                                    })
+                                }
+                            }
+                        },
+                        colors = ButtonColors(
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent
+                        ),
+                        modifier = Modifier
+                            .offset(x = -20.dp, y = -10.dp)
+                            .border(
+                                width = 2.dp,
+                                shape = RoundedCornerShape(size = 32.dp),
+                                color = Color(0xff081F5C)
+                            )
+                    ) {
+                        Text(
+                            text = "Sim",
+                            fontSize = 16.sp,
+                            color = Color(0xff081F5C),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.offset(x = 0.dp, y = -10.dp)
+                        )
+                    }
+                    Button(
+                        onClick = {
+                            focusTela.value = false
+                            focusTelaSegundaConfirmacao.value = false
+                        },
+                        colors = ButtonColors(
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent
+                        ),
+                        modifier = Modifier.offset(x = -20.dp, y = -10.dp)
+                    ) {
+                        Text(
+                            text = "Não",
+                            fontSize = 16.sp,
+                            color = Color(0xff081F5C),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.offset(x = 0.dp, y = -10.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
