@@ -77,19 +77,19 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(route = "inicio") { Inicio(controleDeNavegacao) }
+                        composable(route = "inicio") { Inicio(controleDeNavegacao) }//FEITO
 
 
 
-                        composable(route = "login") { Login(controleDeNavegacao) }
+                        composable(route = "login") { Login(controleDeNavegacao) }//FEITO
 
 
 
-                        composable(route = "escolha") { Escolha(controleDeNavegacao) }
+                        composable(route = "escolha") { Escolha(controleDeNavegacao) }//FEITO(TESTAR NOVAMENTE EMAIL PROFESSOR)
 
 
 
-                        composable(
+                        composable(//FEITO
                             "cadastro/{emailProfessor}",
                             arguments = listOf(navArgument("emailProfessor") {
                                 type = NavType.StringType
@@ -102,7 +102,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FEITO(MUDAR LOGICA DE PEGAR VIDEO)
                             "quiz?idFornecido={idFornecido}&emailFornecido={emailFornecido}",
                             arguments = listOf(
                                 navArgument("idFornecido") { type = NavType.StringType },
@@ -124,7 +124,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FEITO
                             "perfil?id={id}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -144,7 +144,7 @@ class MainActivity : ComponentActivity() {
                         }
 
 
-                        composable(
+                        composable(//FEITO(ACHO Q FEITO)
                             "outroPerfil?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}&idOutroUsuario={idOutroUsuario}&tipoOutroUsuario={tipoOutroUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -179,7 +179,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FEITO(VERIFICAR NAVEGAÇÃO)
                             "configuracoes?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -214,7 +214,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FEITO(INSERIR INFORMACOES REAIS)
                             "sobreNos?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -249,7 +249,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FEITO
                             "editarPerfil?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -286,7 +286,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FAZER
                             "editarSenha?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -321,7 +321,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FEITO
                             "acerto?porcentagem={porcentagem}&emailFornecido={emailFornecido}",
                             arguments = listOf(
                                 navArgument("porcentagem") { type = NavType.StringType },
@@ -343,7 +343,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FEITO
                             "erro?porcentagem={porcentagem}&tempoRestante={tempoRestante}",
                             arguments = listOf(
                                 navArgument("porcentagem") { type = NavType.StringType },
@@ -363,7 +363,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FAZER
                             "chatEspecifico?idOutroUsuario={idOutroUsuario}}&id={id}&tipoUsuario={tipoUsuario}&tipoOutroUsuario={tipoOutroUsuario}&fotoPerfil={fotoPerfil}",
                             arguments = listOf(
                                 navArgument("idOutroUsuario") { type = NavType.StringType },
@@ -385,7 +385,6 @@ class MainActivity : ComponentActivity() {
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
 
-
                             ChatEspecifico(
                                 controleDeNavegacao = controleDeNavegacao,
                                 idOutroUsuario = idOutroUsuario,
@@ -395,7 +394,10 @@ class MainActivity : ComponentActivity() {
                                 tipoOutroUsuario=tipoOutroUsuario
                             )
                         }
-                        composable(
+
+
+
+                        composable(//FEITO
                             "video?idDoVideo={idDoVideo}&idModulo={idModulo}&nomeModulo={nomeModulo}&id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
                             arguments = listOf(
                                 navArgument("idDoVideo") { type = NavType.StringType },
