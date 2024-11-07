@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,9 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
-import br.senai.sp.jandira.sinalibras.model.Professor
-import br.senai.sp.jandira.sinalibras.model.ResultProfessor
+import br.senai.sp.jandira.sinalibras.model.ResultProfessores
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
+import coil.compose.rememberAsyncImagePainter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,7 +60,7 @@ fun Chat(
     fotoPerfil: String
 ) {
     var dadosProfessores by remember {
-        mutableStateOf(Professor())
+        mutableStateOf(ResultProfessores())
     }
     var funcionouState by remember {
         mutableStateOf(false)
@@ -67,14 +68,14 @@ fun Chat(
     val callProfessores =
         RetrofitFactory().getUsuarioService().getAllProfessores()
 
-    callProfessores.enqueue(object : Callback<ResultProfessor> {
-        override fun onResponse(p0: Call<ResultProfessor>, p1: Response<ResultProfessor>) {
+    callProfessores.enqueue(object : Callback<ResultProfessores> {
+        override fun onResponse(p0: Call<ResultProfessores>, p1: Response<ResultProfessores>) {
             val professorResponse = p1.body()
             Log.i("ALUNO", professorResponse.toString())
             if (p1.isSuccessful) {
                 if (professorResponse != null) {
                     funcionouState = true
-                    dadosProfessores = professorResponse.professor!!
+                    dadosProfessores = professorResponse
                 }
 
             } else {
@@ -82,7 +83,7 @@ fun Chat(
             }
         }
 
-        override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
+        override fun onFailure(p0: Call<ResultProfessores>, p1: Throwable) {
             Log.i("ERRO_VIDEO", p1.toString())
         }
     })
@@ -143,100 +144,111 @@ fun Chat(
             LazyRow(
             ) {
                 //pegar todos os professores
-                items(5) { dadosProfessor ->
-                    Log.i("PROFESSOR", dadosProfessor.toString())
+                items(5) { count ->
+                    val professorPainter: Painter =
+                        if (funcionouState && !dadosProfessores.professores?.get(count)?.foto_perfil.isNullOrEmpty()) {
+                            rememberAsyncImagePainter(
+                                model = dadosProfessores.professores?.get(
+                                    count
+                                )?.foto_perfil
+                            )
+                        } else {
+                            painterResource(id = R.drawable.perfil)
+                        }
+                    Log.i("PROFESSOR", count.toString())
                     Card(
                         modifier = Modifier
                             .padding(end = 10.dp)
                             .size(width = 64.dp, height = 64.dp)
-                            .clickable{
-                                controleDeNavegacao.navigate("outroPerfil?id=${id}&idOutroUsuario=${tipoUsuario}&tipoUsuario=${tipoUsuario}&tipoOutroUsuario=${dadosProfessor}&fotoPerfil=${fotoPerfil}")
-                                      },
+                            .clickable {
+                                controleDeNavegacao.navigate(
+                                    "outroPerfil?id=${id}&idOutroUsuario=${
+                                        dadosProfessores.professores?.get(
+                                            count
+                                        )?.id_professor
+                                    }&tipoUsuario=${tipoUsuario}&tipoOutroUsuario=professor&fotoPerfil=${fotoPerfil}"
+                                )
+                            },
                         shape = CircleShape,
                         colors = CardDefaults
                             .cardColors(
                                 containerColor = Color(0xFFCF06F0)
                             )
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
+
+                        Image(
+                            painter = professorPainter,
+                            contentDescription = "foto de perfil do usuario${count}",
                             modifier = Modifier
-                                .fillMaxSize()
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.perfil),
-                                contentDescription = "foto de perfil do usuario${dadosProfessor}",
-                                modifier = Modifier
-                                    .size(25.dp),
-                                contentScale = ContentScale.Fit
-                            )
-                            Text(
-                                text = "primeiroNome",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 13.sp,
-                                color = Color.Black,
-                                modifier = Modifier.padding(horizontal = 8.dp)
-                            )
-                        }
+                                .size(25.dp),
+                            contentScale = ContentScale.Fit
+                        )
+
+                    }
+                    dadosProfessores.professores?.get(count)?.nome?.let {
+                        Text(
+                            text = it,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            color = Color.Black,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
                     }
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
-            Text(
-                text = "Recentes",
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 22.dp)
-            )
+        Text(
+            text = "Recentes",
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 22.dp)
+        )
 
-            Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
 
-            LazyColumn(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .width(319.dp)
-                    .height(349.dp)
-            ) {
-                //pegar todos os usuarios q o outro usuario ja mandou msg
-                items(5) { dadosUsuarios ->
-                    Card(
+        LazyColumn(
+            modifier = Modifier
+                .width(319.dp)
+                .height(349.dp)
+        ) {
+            //pegar todos os usuarios q o outro usuario ja mandou msg
+            items(5) { dadosUsuarios ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(54.dp)
+                        .clickable {
+                            controleDeNavegacao.navigate("chatEspecifico?idDoOutroUsuario=${dadosUsuarios}}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&tipoOutroUsuario=professor")
+                        },
+
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(54. dp)
-                            .clickable{
-                                controleDeNavegacao.navigate("chatEspecifico?idDoOutroUsuario=${dadosUsuarios}}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&tipoOutroUsuario=professor")
-                                      },
-
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White)
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
+                        Image(
+                            painter = painterResource(id = R.drawable.perfil),
+                            contentDescription = "foto de perfil do usuario${dadosUsuarios}",
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.perfil),
-                                contentDescription = "foto de perfil do usuario${dadosUsuarios}",
-                                modifier = Modifier
-                                    .size(38.dp),
-                                contentScale = ContentScale.Fit
-                            )
-                            Text(
-                                text = "nome do usuario",
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 18.sp,
-                                color = Color.Black,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(horizontal = 8.dp)
-                            )
-
-                        }
+                                .size(38.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                        Text(
+                            text = "nome do usuario",
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 18.sp,
+                            color = Color.Black,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 8.dp)
+                        )
                     }
                 }
             }
@@ -379,9 +391,11 @@ fun Chat(
                         color = Color.Black,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                    Box(modifier = Modifier
-                        .height(2.dp)
-                        .background(color = Color(0xff3459DE)))
+                    Box(
+                        modifier = Modifier
+                            .height(2.dp)
+                            .background(color = Color(0xff3459DE))
+                    )
                 }
             }
 

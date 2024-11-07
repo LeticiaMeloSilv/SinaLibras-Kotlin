@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(route = "escolha") { Escolha(controleDeNavegacao) }//FEITO(TESTAR NOVAMENTE EMAIL PROFESSOR)
+                        composable(route = "escolha") { Escolha(controleDeNavegacao) }//FEITO
 
 
 
@@ -179,7 +179,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(//FEITO(VERIFICAR NAVEGAÇÃO)
+                        composable(//FEITO
                             "configuracoes?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -565,7 +565,7 @@ class MainActivity : ComponentActivity() {
 
 
                         composable(
-                            "configuracoes?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
+                            "postarPostagem?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
                                 navArgument("email") { type = NavType.StringType },
@@ -601,7 +601,7 @@ class MainActivity : ComponentActivity() {
 
 
                         composable(
-                            "configuracoes?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
+                            "postarVideo?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
                                 navArgument("email") { type = NavType.StringType },

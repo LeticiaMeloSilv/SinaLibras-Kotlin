@@ -325,7 +325,7 @@ fun Escolha(controleDeNavegacao: NavHostController) {
 
                                             if (dadoUsuario.status_code == 200) {
                                                 val dataUsuarioCadastrado =
-                                                    dadoUsuario.usuario.data.take(10)
+                                                    dadoUsuario.usuario.data_cadastro.take(10)
                                                 val data = dataUsuarioCadastrado.split("-")
                                                 val dia = data[2]
                                                 val mes = data[1]
@@ -347,7 +347,7 @@ fun Escolha(controleDeNavegacao: NavHostController) {
                                                         .setSalvarUsuarioTemporario(
                                                             usuario = Professor(
                                                                 email = email,
-                                                                data = currentDate.toString()
+                                                                data_cadastro = currentDate.toString()
                                                             )
                                                         )
 
@@ -395,7 +395,7 @@ fun Escolha(controleDeNavegacao: NavHostController) {
                                                     .setSalvarUsuarioTemporario(
                                                         usuario = Professor(
                                                             email = email,
-                                                            data = currentDate.toString()
+                                                            data_cadastro = currentDate.toString()
                                                         )
                                                     )
 

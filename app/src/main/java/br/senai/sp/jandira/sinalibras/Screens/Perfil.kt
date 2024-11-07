@@ -487,7 +487,7 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Image(
-                        painter = painterResource(id = R.drawable.selo_aluno),
+                        painter = painterResource(id = R.drawable.selo_professor),
                         contentDescription = "tag",
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)

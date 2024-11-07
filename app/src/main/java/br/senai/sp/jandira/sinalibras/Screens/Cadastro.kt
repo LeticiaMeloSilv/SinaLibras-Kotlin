@@ -433,7 +433,7 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                                                 senha = senhaState.value,
                                                 data_nascimento = dataNascimento,
                                                 foto_perfil = fotoState.value,
-                                                data = currentDate.toString()
+                                                data_cadastro = currentDate.toString()
                                             )
                                         )
                                     callUsuarios.enqueue(object : Callback<ResultProfessor> {

@@ -5,6 +5,7 @@ import br.senai.sp.jandira.sinalibras.model.ResultAluno
 import br.senai.sp.jandira.sinalibras.model.Aluno
 import br.senai.sp.jandira.sinalibras.model.Professor
 import br.senai.sp.jandira.sinalibras.model.ResultProfessor
+import br.senai.sp.jandira.sinalibras.model.ResultProfessores
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -58,7 +59,7 @@ interface UsuarioService {
 
 
     @GET("/v1/sinalibras/professores")
-    fun getAllProfessores(): Call<ResultProfessor>
+    fun getAllProfessores(): Call<ResultProfessores>
 
     @GET("/v1/sinalibras/professor/{id}")
     fun getProfessorId(@Path("id")id:Int): Call<ResultProfessor>

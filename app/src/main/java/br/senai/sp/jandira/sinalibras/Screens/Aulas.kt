@@ -217,7 +217,7 @@ mutableStateOf(ResultVideo())
                                     color = Color.Black
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
-                            Text(text = video.data, fontSize = 14.sp)
+                            Text(text = video.data_cadastro, fontSize = 14.sp)
                         }
                     }
                 }
