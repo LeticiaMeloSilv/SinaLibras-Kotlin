@@ -440,6 +440,8 @@ fun Escolha(controleDeNavegacao: NavHostController) {
 //                                                    errorBody,
 //                                                    ResultAluno::class.java
 //                                                )
+
+
                                                 mensagemErroState.value = dadoUsuario.message
                                             }
 

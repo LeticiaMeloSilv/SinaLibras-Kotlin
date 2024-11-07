@@ -54,6 +54,7 @@ import coil.compose.rememberAsyncImagePainter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.math.round
 
 @Composable
 fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: String) {
@@ -267,7 +268,10 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
                         contentDescription = "tag",
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .height(32.dp).border(2.dp, color = Color.Black)
+                            .height(32.dp)
+                            .border(2.dp, color = Color.Black)
+                            .clip(RoundedCornerShape(32.dp)),
+
 
                     )
 

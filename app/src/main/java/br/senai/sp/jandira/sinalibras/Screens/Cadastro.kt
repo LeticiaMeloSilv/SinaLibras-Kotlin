@@ -348,12 +348,13 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
 //                            else if (emailValido.result=="valid"){
                             val nascimento = nascimentoState.value
                             var dataNascimento = ""
+                            var ano="2024"
                             if (nascimento.contains("/")) {
                                 //arruma o estilo da data pra mandar ela bonitinha pro back
                                 val partes = nascimento.split("/")
                                 val dia = partes[0]
                                 val mes = partes[1]
-                                val ano = partes[2]
+                                 ano = partes[2]
                                 dataNascimento = "$ano-$mes-$dia"
                                 Log.i("323", dataNascimento)
                             } else {
@@ -361,7 +362,12 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                                     "O formato do campo data de nascimento está incorreto"
                                 umError.value = true
                             }
-                            if (emailState.value == "" || nomeState.value == "" || nascimentoState.value == "" || senhaState.value == "" || confirmaSenhaState.value == "") {
+                            val subtracao = 2024 - ano.toInt()
+                            val idade = subtracao
+                            if(idade<18){
+                                mensagemErroState.value="voce deve ser maior de 18 anos para participar da nossa aplicação"
+                            }
+                            else if (emailState.value == "" || nomeState.value == "" || nascimentoState.value == "" || senhaState.value == "" || confirmaSenhaState.value == "") {
                                 mensagemErroState.value = "Todos os campos devem ser preenchidos"
                                 umError.value = true
                             } else if (senhaState.value != confirmaSenhaState.value) {
@@ -374,7 +380,8 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                                 mensagemErroState.value =
                                     "O formato do campo data de nascimento está incorreto"
                                 umError.value = true
-                            } else {
+                            }
+                            else {
                                 if (emailProfessor == "") {
                                     val callUsuarios = RetrofitFactory()
                                         .getUsuarioService().setSalvarAluno(

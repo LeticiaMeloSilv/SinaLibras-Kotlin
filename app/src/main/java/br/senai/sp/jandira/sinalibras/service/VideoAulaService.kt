@@ -30,7 +30,7 @@ interface VideoAulaService {
     @GET("/v1/sinalibras/videoaula")
     fun getAllVideos(): Call<ResultVideo>
 
-    @GET("/v1/sinalibras/videosModulo/{id}")
+    @GET("/v1/sinalibras/videos/modulo/{id}")
     fun getVideoById(@Path("id")id:Int): Call<ResultVideo>
 
 

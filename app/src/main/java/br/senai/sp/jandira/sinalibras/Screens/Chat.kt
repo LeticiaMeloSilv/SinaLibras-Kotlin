@@ -87,16 +87,57 @@ fun Chat(
             Log.i("ERRO_VIDEO", p1.toString())
         }
     })
-
+    val painter: Painter =
+        if (fotoPerfil != "" && fotoPerfil != "null" && fotoPerfil.isNotEmpty()) {
+            rememberAsyncImagePainter(model = fotoPerfil)
+        } else {
+            painterResource(id = R.drawable.perfil)
+        }
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFD0E6FF))
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(88.dp)
+            )
+
+            Image(
+                painter = painter,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(Color(0xFFA5D1FF), CircleShape)
+                    .clickable {
+                        controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}")
+                    }
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
         Column(
             modifier = Modifier
                 .padding(16.dp)
         ) {
+
+            Text(
+                text = "Recentes",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,9 +152,7 @@ fun Chat(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 //barra de pesquisa
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+
                     Icon(
                         Icons.Filled.Search,
                         contentDescription = "Pesquisar por usuario...",
@@ -125,7 +164,7 @@ fun Chat(
                         color = Color.Black,
                         fontWeight = FontWeight.Bold
                     )
-                }
+
 
             }
 
@@ -143,7 +182,6 @@ fun Chat(
 
             LazyRow(
             ) {
-                //pegar todos os professores
                 items(5) { count ->
                     val professorPainter: Painter =
                         if (funcionouState && !dadosProfessores.professores?.get(count)?.foto_perfil.isNullOrEmpty()) {
@@ -156,10 +194,10 @@ fun Chat(
                             painterResource(id = R.drawable.perfil)
                         }
                     Log.i("PROFESSOR", count.toString())
-                    Card(
+                    Column(
                         modifier = Modifier
                             .padding(end = 10.dp)
-                            .size(width = 64.dp, height = 64.dp)
+                            .align(alignment = Alignment.CenterHorizontally)
                             .clickable {
                                 controleDeNavegacao.navigate(
                                     "outroPerfil?id=${id}&idOutroUsuario=${
@@ -169,90 +207,77 @@ fun Chat(
                                     }&tipoUsuario=${tipoUsuario}&tipoOutroUsuario=professor&fotoPerfil=${fotoPerfil}"
                                 )
                             },
-                        shape = CircleShape,
-                        colors = CardDefaults
-                            .cardColors(
-                                containerColor = Color(0xFFCF06F0)
-                            )
+
                     ) {
 
                         Image(
                             painter = professorPainter,
                             contentDescription = "foto de perfil do usuario${count}",
                             modifier = Modifier
-                                .size(25.dp),
+                                .size(width = 64.dp, height = 64.dp),
                             contentScale = ContentScale.Fit
                         )
+                        dadosProfessores.professores?.get(count)?.nome?.let {
+                            Text(
+                                text = it,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 13.sp,
+                                color = Color.Black,
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            )
+                        }
+                    }
 
-                    }
-                    dadosProfessores.professores?.get(count)?.nome?.let {
-                        Text(
-                            text = it,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp,
-                            color = Color.Black,
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        )
-                    }
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Text(
-            text = "Recentes",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 22.dp)
-        )
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-
-        LazyColumn(
-            modifier = Modifier
-                .width(319.dp)
-                .height(349.dp)
-        ) {
-            //pegar todos os usuarios q o outro usuario ja mandou msg
-            items(5) { dadosUsuarios ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(54.dp)
-                        .clickable {
-                            controleDeNavegacao.navigate("chatEspecifico?idDoOutroUsuario=${dadosUsuarios}}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&tipoOutroUsuario=professor")
-                        },
-
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.perfil),
-                            contentDescription = "foto de perfil do usuario${dadosUsuarios}",
-                            modifier = Modifier
-                                .size(38.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                        Text(
-                            text = "nome do usuario",
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 18.sp,
-                            color = Color.Black,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 8.dp)
-                        )
-                    }
-                }
-            }
-        }
+//        LazyColumn(
+//            modifier = Modifier
+//                .width(319.dp)
+//                .padding(top=10.dp)
+//        ) {
+//            //pegar todos os usuarios q o outro usuario ja mandou msg
+//            items(5) { dadosUsuarios ->
+//                Card(
+//                    modifier = Modifier
+//                        .height(54.dp)
+//                        .clickable {
+//                            controleDeNavegacao.navigate("chatEspecifico?idDoOutroUsuario=${dadosUsuarios}}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&tipoOutroUsuario=professor")
+//                        },
+//
+//                    shape = RoundedCornerShape(16.dp),
+//                    colors = CardDefaults.cardColors(containerColor = Color.White)
+//                ) {
+//                    Row(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(horizontal = 16.dp),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Image(
+//                            painter = painterResource(id = R.drawable.perfil),
+//                            contentDescription = "foto de perfil do usuario${dadosUsuarios}",
+//                            modifier = Modifier
+//                                .size(38.dp),
+//                            contentScale = ContentScale.Fit
+//                        )
+//                        Text(
+//                            text = "nome do usuario",
+//                            fontWeight = FontWeight.Medium,
+//                            fontSize = 18.sp,
+//                            color = Color.Black,
+//                            modifier = Modifier
+//                                .weight(1f)
+//                                .padding(horizontal = 8.dp)
+//                        )
+//                    }
+//                }
+//            }
+//        }
         Card(
             shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
             modifier = Modifier
