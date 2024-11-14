@@ -16,12 +16,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +59,7 @@ import coil.compose.rememberAsyncImagePainter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable
@@ -107,6 +113,8 @@ fun VideoInfo(
     var erroState by remember {
         mutableStateOf(false)
     }
+
+
     Log.i("caralho", idDoVideo)
     val callVideoById = RetrofitFactory().getVideoAulaService().getVideoById(idDoVideo.toInt())
     callVideoById.enqueue(object : Callback<ResultVideoID> {
@@ -130,6 +138,14 @@ fun VideoInfo(
             erroState = true
         }
     })
+
+    val painter: Painter =
+        if (dadosVideoAula.professor?.get(0)?.foto_perfil.isNullOrEmpty()) {
+            Log.i("CALMA", "139")
+            rememberAsyncImagePainter(model = dadosVideoAula.professor?.get(0)?.foto_perfil)
+        } else {
+            painterResource(id = R.drawable.perfil)
+        }
     if (!funcionouState && !erroState) {
         Box(
             modifier = Modifier
@@ -172,18 +188,18 @@ fun VideoInfo(
         }
 
     }
-
     if (funcionouState) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color(0xFFC7E2FE))
+                .background(Color(0xFFD0E6FF))
         ) {
+        Column() {
             Image(
                 painter = painterResource(id = R.drawable.logo_grande),
                 contentDescription = "Logo",
                 modifier = Modifier
-                    .size(width = 130.dp, height = 60.dp)
+                    .size(width = 160.dp, height = 90.dp)
                     .align(Alignment.CenterHorizontally)
                     .padding(top = 16.dp)
             )
@@ -198,7 +214,6 @@ fun VideoInfo(
             ) {
                 val videoUri = Uri.parse(dadosVideoAula.url_video)
                 PlayerVideo(videoUri)
-
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -212,7 +227,7 @@ fun VideoInfo(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(start = 16.dp, end = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -259,40 +274,40 @@ fun VideoInfo(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        rememberAsyncImagePainter(model = dadosVideoAula.id_professor),
+                        painter = painter,
                         contentDescription = "Avatar",
                         modifier = Modifier
                             .size(40.dp)
                             .padding(end = 8.dp)
-                    )//PRECISO MUDAR PRA FOTO DE PERFIL DO PROFESSOR E PRO NOME DO PROFESSOR
+                    )
                     Text(
-                        text = dadosVideoAula.id_professor.toString(),
+                        text = dadosVideoAula.professor?.get(0)?.nome.toString(),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Column(modifier = Modifier.padding(16.dp)) {
+                dadosVideoAula.comentarios?.forEach { comentario ->
                     Text(
-                        text = dadosVideoAula.titulo,
+                        text = comentario.id_comentario.toString(),//NOME ALUNO
                         fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF2A3C78)
                     )
                     Text(
-                        text = dadosVideoAula.titulo,
+                        text = comentario.id_comentario.toString(),//CONTEUDO DA MENS
                         color = Color(0xFF2A3C78)
                     )
                 }
-
-                Spacer(modifier = Modifier.height(176.dp))
-
-
+            }
+        }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .align(Alignment.BottomCenter),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Button(
                         onClick = {
@@ -311,7 +326,6 @@ fun VideoInfo(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.width(16.dp))
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -330,18 +344,48 @@ fun VideoInfo(
                                 .padding(start = 16.dp)
                         )
                     }
+
+                    TextField(
+                        value = nomeState.value,
+                        onValueChange = {
+                            nomeState.value=it
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text("Nome Completo") },
+                        isError = umError.value,
+                        colors = TextFieldDefaults
+                            .colors(
+                                focusedContainerColor = Color.Transparent,
+                                focusedTextColor = Color(0xff334EAC),
+                                unfocusedContainerColor = Color.Transparent,
+                                unfocusedTextColor = Color(0xff334EAC),
+                                errorTextColor = Color(0xff334EAC),
+                                errorContainerColor = Color.Transparent,
+                                errorPlaceholderColor = Color(0xff334EAC),
+                                errorLabelColor = Color(0xff334EAC),
+                                focusedPlaceholderColor = Color(0xff334EAC),
+                                unfocusedPlaceholderColor = Color(0xff334EAC),
+                                unfocusedLabelColor = Color(0xff334EAC),
+                                focusedLabelColor = Color(0xff334EAC)
+                            )
+
+
+                    )
                     Spacer(modifier = Modifier.width(16.dp))
                     Icon(
                         painter = painterResource(id = R.drawable.send),
                         contentDescription = "Enviar",
-                        modifier = Modifier.size(24.dp).clickable{
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
 
-                        }
+                            }
                     )
                 }
 
 
-            }
+
+
         }
     } else {
         Column(

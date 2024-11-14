@@ -7,8 +7,8 @@ data class VideoAula(
     val duracao:String="",
     val data_cadastro:String="",
     val foto_capa:String="",
-    val modulo:List<Modulo>,
-    val nivel:List<Nivel>,
-    val comentarios:List<Comentarios>,
-    val professor:List<Professor>
+    val modulo:List<Modulo>?=null,
+    val nivel:List<Nivel>?=null,
+    val comentarios:List<Comentarios>?=null,
+    val professor:List<Professor>?=null
 )
