@@ -17,15 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,9 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
-import br.senai.sp.jandira.sinalibras.model.RespostaUsuario
 import br.senai.sp.jandira.sinalibras.model.ResultVideo
-import br.senai.sp.jandira.sinalibras.model.VideoAula
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
 import coil.compose.rememberAsyncImagePainter
 import retrofit2.Call
@@ -72,17 +66,20 @@ mutableStateOf(ResultVideo())
         mutableStateOf(false)
     }
     val callVideos =
-        RetrofitFactory().getVideoAulaService().getVideoById(idModulo.toInt())
+        RetrofitFactory().getVideoAulaService().getVideosById(idModulo.toInt())
 
     callVideos.enqueue(object : Callback<ResultVideo> {
         override fun onResponse(p0: Call<ResultVideo>, p1: Response<ResultVideo>) {
             val videoResponse = p1.body()
             Log.i("ALUNO",videoResponse.toString())
             if (p1.isSuccessful) {
+                Log.i("erroo",videoResponse.toString())
+
                 if (videoResponse != null) {
-                    if (videoResponse.video != null) {
+                    if (videoResponse.videos != null) {
                         funcionouState=true
                         dadosVideos= videoResponse
+                        Log.i("erroo",videoResponse.toString())
                     }
                     else{
                         erroState = true
@@ -102,6 +99,7 @@ mutableStateOf(ResultVideo())
         }
 
         override fun onFailure(p0: Call<ResultVideo>, p1: Throwable) {
+            erroState = true
             Log.i("ERRO_VIDEO", p1.toString())
         }
     })
@@ -179,14 +177,14 @@ mutableStateOf(ResultVideo())
                 }
 
                 Text(
-                    text = nomeModulo,
-                    fontSize = 24.sp,
+                    text = nomeModulo.uppercase(),
+                    fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
             }
             LazyColumn {
-                items(dadosVideos.video ?: emptyList()) { video ->
+                items(dadosVideos.videos ?: emptyList()) { video ->
                     Log.i("CALMA", dadosVideos.toString())
                     Card(
                         shape = RoundedCornerShape(16.dp),
@@ -196,7 +194,7 @@ mutableStateOf(ResultVideo())
                         modifier = Modifier
                             .padding(vertical = 8.dp)
                             .fillMaxWidth()
-                            .clickable { controleDeNavegacao.navigate("video?idDoVideo=${video.id_videoaula}}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}") }
+                            .clickable { controleDeNavegacao.navigate("video?idDoVideo=${video.id_videoaula}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}") }
                     ) {
                         Column {
                             // Video thumbnail

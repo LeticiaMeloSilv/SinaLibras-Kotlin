@@ -1,13 +1,8 @@
 package br.senai.sp.jandira.service
 
-import br.senai.sp.jandira.sinalibras.model.ResultUsuarioTeste
-import br.senai.sp.jandira.sinalibras.model.ResultAluno
-import br.senai.sp.jandira.sinalibras.model.Aluno
-import br.senai.sp.jandira.sinalibras.model.Professor
 import br.senai.sp.jandira.sinalibras.model.ResultModulo
-import br.senai.sp.jandira.sinalibras.model.ResultProfessor
-import br.senai.sp.jandira.sinalibras.model.ResultQuiz
 import br.senai.sp.jandira.sinalibras.model.ResultVideo
+import br.senai.sp.jandira.sinalibras.model.ResultVideoID
 import br.senai.sp.jandira.sinalibras.model.VideoAula
 import retrofit2.Call
 import retrofit2.http.Body
@@ -31,7 +26,12 @@ interface VideoAulaService {
     fun getAllVideos(): Call<ResultVideo>
 
     @GET("/v1/sinalibras/videos/modulo/{id}")
-    fun getVideoById(@Path("id")id:Int): Call<ResultVideo>
+    fun getVideosById(@Path("id")id:Int): Call<ResultVideo>
+
+
+    @GET("/v1/sinalibras/videoaula/{id}")
+    fun getVideoById(@Path("id")id:Int): Call<ResultVideoID>
+
 
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json

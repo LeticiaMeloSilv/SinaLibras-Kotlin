@@ -47,7 +47,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
-import br.senai.sp.jandira.sinalibras.model.ResultVideo
+import br.senai.sp.jandira.sinalibras.model.ResultVideoID
 import br.senai.sp.jandira.sinalibras.model.VideoAula
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
 import coil.compose.rememberAsyncImagePainter
@@ -107,9 +107,10 @@ fun VideoInfo(
     var erroState by remember {
         mutableStateOf(false)
     }
+    Log.i("caralho", idDoVideo)
     val callVideoById = RetrofitFactory().getVideoAulaService().getVideoById(idDoVideo.toInt())
-    callVideoById.enqueue(object : Callback<ResultVideo> {
-        override fun onResponse(p0: Call<ResultVideo>, p1: Response<ResultVideo>) {
+    callVideoById.enqueue(object : Callback<ResultVideoID> {
+        override fun onResponse(p0: Call<ResultVideoID>, p1: Response<ResultVideoID>) {
             val videoResponse = p1.body()
             if (p1.isSuccessful) {
 
@@ -124,7 +125,7 @@ fun VideoInfo(
             }
         }
 
-        override fun onFailure(p0: Call<ResultVideo>, p1: Throwable) {
+        override fun onFailure(p0: Call<ResultVideoID>, p1: Throwable) {
             Log.i("ERRO_PERFIL", p1.toString())
             erroState = true
         }
@@ -179,7 +180,7 @@ fun VideoInfo(
                 .background(color = Color(0xFFC7E2FE))
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.logo_grande),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(width = 130.dp, height = 60.dp)
@@ -200,7 +201,7 @@ fun VideoInfo(
 
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Column(
                 modifier = Modifier
@@ -215,12 +216,13 @@ fun VideoInfo(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                        Text(
-                            text = dadosVideoAula.titulo,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
 
+                    Text(
+                        text = dadosVideoAula.titulo,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF3F51B5)
+                    )
                     Row(
                         horizontalArrangement = Arrangement.End
                     ) {
@@ -238,7 +240,6 @@ fun VideoInfo(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
                     modifier = Modifier
