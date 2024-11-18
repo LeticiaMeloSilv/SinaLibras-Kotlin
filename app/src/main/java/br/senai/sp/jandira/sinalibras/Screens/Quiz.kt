@@ -77,12 +77,13 @@ fun PlayerQuizVideo(videoUri: Uri) {
 
     val player = remember { ExoPlayer.Builder(context).build() }
     playerView.player = player
-    val id = videoUri.toString().substringAfter("/d/").substringBefore("/view")
-    val downloadLink = "https://drive.google.com/uc?export=download&id=$id"
+    //val id = videoUri.toString().substringAfter("/d/").substringBefore("/view")
+   // val downloadLink = "https://drive.google.com/uc?export=download&id=$id"
+    val downloadLink=videoUri
 
     player.volume = 0f
 
-    val mediaItem = MediaItem.fromUri(Uri.parse(downloadLink))
+    val mediaItem = MediaItem.fromUri(Uri.parse(downloadLink.toString()))
     player.setMediaItem(mediaItem)
     player.prepare()
     player.play()
