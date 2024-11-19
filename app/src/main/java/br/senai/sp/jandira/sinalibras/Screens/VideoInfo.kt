@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
@@ -52,10 +50,14 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
+import br.senai.sp.jandira.sinalibras.model.Comentarios
+import br.senai.sp.jandira.sinalibras.model.ResultComentario
 import br.senai.sp.jandira.sinalibras.model.ResultVideoID
 import br.senai.sp.jandira.sinalibras.model.VideoAula
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
 import coil.compose.rememberAsyncImagePainter
+import com.google.gson.Gson
+import org.threeten.bp.LocalDate
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -103,6 +105,7 @@ fun VideoInfo(
     idModulo: String,
     nomeModulo: String
 ) {
+    val currentDate: LocalDate = LocalDate.now()
 
     var dadosVideoAula by remember {
         mutableStateOf(VideoAula())
@@ -113,8 +116,13 @@ fun VideoInfo(
     var erroState by remember {
         mutableStateOf(false)
     }
+    var comentarioState = remember {
+        mutableStateOf("")
+    }
 
-
+    var mensagemErroState = remember {
+        mutableStateOf("")
+    }
     Log.i("caralho", idDoVideo)
     val callVideoById = RetrofitFactory().getVideoAulaService().getVideoById(idDoVideo.toInt())
     callVideoById.enqueue(object : Callback<ResultVideoID> {
@@ -244,13 +252,15 @@ fun VideoInfo(
                         Icon(
                             painter = painterResource(id = R.drawable.curtir),
                             contentDescription = "Favorito",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Black
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Icon(
                             painter = painterResource(id = R.drawable.salvar),
                             contentDescription = "Salvar",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Black
                         )
                     }
                 }
@@ -275,36 +285,43 @@ fun VideoInfo(
                 ) {
                     Image(
                         painter = painter,
-                        contentDescription = "Avatar",
+                        contentDescription = "foto de perfil do professor",
                         modifier = Modifier
                             .size(40.dp)
                             .padding(end = 8.dp)
                     )
                     Text(
                         text = dadosVideoAula.professor?.get(0)?.nome.toString(),
-                        style = MaterialTheme.typography.bodyMedium
+                        color=Color.Black
                     )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 dadosVideoAula.comentarios?.forEach { comentario ->
+                    Box (modifier=Modifier.padding(vertical = 10.dp, horizontal = 16.dp)){
                     Text(
                         text = comentario.id_comentario.toString(),//NOME ALUNO
                         fontWeight = FontWeight.SemiBold,
+                        fontSize = 18.sp,
                         color = Color(0xFF2A3C78)
                     )
                     Text(
-                        text = comentario.id_comentario.toString(),//CONTEUDO DA MENS
-                        color = Color(0xFF2A3C78)
+                        text = comentario.comentario.toString(),//CONTEUDO DA MENS
+                        color = Color(0xFF2A3C78),
+                        fontSize = 12.sp,
+                        modifier=Modifier.padding(horizontal = 8.dp)
                     )
+                    }
                 }
+                Text(text = mensagemErroState.value, color = Color.Red)
+
             }
         }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(horizontal = 8.dp, vertical = 8.dp)
                         .align(Alignment.BottomCenter),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -326,33 +343,13 @@ fun VideoInfo(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp)
-                            .background(
-                                color = Color(0xFF89BFF7),
-                                shape = MaterialTheme.shapes.medium
-                            )
-                    ) {
-                        Text(
-                            text = "Comentar...",
-                            color = Color(0xFF456EDC),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier
-                                .align(Alignment.CenterStart)
-                                .padding(start = 16.dp)
-                        )
-                    }
 
                     TextField(
-                        value = nomeState.value,
+                        value = comentarioState.value,
                         onValueChange = {
-                            nomeState.value=it
+                            comentarioState.value=it
                         },
-                        modifier = Modifier.fillMaxWidth(),
-                        label = { Text("Nome Completo") },
-                        isError = umError.value,
+                        label = { Text("Comentar...") },
                         colors = TextFieldDefaults
                             .colors(
                                 focusedContainerColor = Color.Transparent,
@@ -375,19 +372,62 @@ fun VideoInfo(
                     Icon(
                         painter = painterResource(id = R.drawable.send),
                         contentDescription = "Enviar",
+                        tint=Color(0xff334EAC),
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(28.dp)
                             .clickable {
+                                val callComentario = RetrofitFactory()
+                                    .getVideoAulaService().setSalvarComentario(
+                                        comentario = Comentarios(
+                                            comentario = comentarioState.value,
+                                            data = currentDate.toString(),
+                                            id_videoaula = idDoVideo.toLong(),
+                                            id_aluno = id.toLong(),
+                                        )
+                                    )
+                                callComentario.enqueue(object : Callback<ResultComentario> {
+                                    override fun onResponse(
+                                        p0: Call<ResultComentario>,
+                                        p1: Response<ResultComentario>
+                                    ) {
+                                        val comentarioSalvo = p1.body()
+
+                                        if (p1.isSuccessful) {
+                                            if (comentarioSalvo != null) {
+                                                controleDeNavegacao.navigate("video?idDoVideo=${idDoVideo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}")
+                                            }
+                                        } else {
+                                            val errorBody = p1.errorBody()?.string()
+                                            val gson = Gson()
+                                            val usuarioSalvo = gson.fromJson(
+                                                errorBody,
+                                                ResultComentario::class.java
+                                            )
+                                            mensagemErroState.value = usuarioSalvo.message
+                                        }
+                                    }
+
+
+                                    override fun onFailure(
+                                        p0: Call<ResultComentario>,
+                                        p1: Throwable
+                                    ) {
+                                        Log.i("ERRO_CADASTRO", p1.toString())
+                                        mensagemErroState.value =
+                                            "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+
+                                    }
+
+                                })
 
                             }
                     )
                 }
 
 
-
-
         }
-    } else {
+    }
+    else {
         Column(
             modifier = Modifier
                 .fillMaxSize()

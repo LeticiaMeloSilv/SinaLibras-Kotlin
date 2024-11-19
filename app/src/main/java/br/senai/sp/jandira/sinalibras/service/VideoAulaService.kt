@@ -1,6 +1,10 @@
 package br.senai.sp.jandira.service
 
+import br.senai.sp.jandira.sinalibras.model.Comentarios
+import br.senai.sp.jandira.sinalibras.model.Professor
+import br.senai.sp.jandira.sinalibras.model.ResultComentario
 import br.senai.sp.jandira.sinalibras.model.ResultModulo
+import br.senai.sp.jandira.sinalibras.model.ResultProfessor
 import br.senai.sp.jandira.sinalibras.model.ResultVideo
 import br.senai.sp.jandira.sinalibras.model.ResultVideoID
 import br.senai.sp.jandira.sinalibras.model.VideoAula
@@ -37,4 +41,11 @@ interface VideoAulaService {
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/videoaula")
     fun setSalvarVideoAula(@Body videoAula: VideoAula): Call<ResultVideo>
+
+
+
+    @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
+    @POST("/v1/sinalibras/videoaula/comentario")
+    fun setSalvarComentario(@Body comentario: Comentarios): Call<ResultComentario>
+
 }

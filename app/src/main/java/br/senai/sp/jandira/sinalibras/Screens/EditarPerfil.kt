@@ -88,7 +88,7 @@ fun EditarPerfil(
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     var nomeState = remember {
-        mutableStateOf(nome)
+        mutableStateOf("")
     }
     var emailState = remember {
         mutableStateOf(email)
