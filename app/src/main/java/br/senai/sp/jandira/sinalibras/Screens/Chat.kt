@@ -117,7 +117,7 @@ fun Chat(
                     .size(50.dp)
                     .background(Color(0xFFA5D1FF), CircleShape)
                     .clickable {
-                        controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}")
+                        controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
                     }
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop

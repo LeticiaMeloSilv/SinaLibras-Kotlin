@@ -468,10 +468,6 @@ fun EditarPerfil(
                 val dataNascimentoMandar = "$anoMandar-$mesMandar-$diaMandar"
 
                 Log.i( "calma",nomeState.value.toString())
-                Log.i( "calma",emailState.value.toString())
-                Log.i( "calma",dataNascimentoMandar.toString())
-                Log.i( "calma",link.toString())
-
 
                 if (nomeState.value == "" || emailState.value == "" || nascimentoState.value == "") {
                     mensagemErroState.value =
@@ -518,7 +514,8 @@ fun EditarPerfil(
                                 Log.i("ERRO_EDITAR_PERFIL", p1.toString())
                             }
                         })
-                    } else {
+                    }
+                    else {
                         val callAtualizarProfessor =
                             RetrofitFactory().getUsuarioService().setAtualizarProfessor(
                                 id.toInt(),

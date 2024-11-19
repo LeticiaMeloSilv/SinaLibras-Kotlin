@@ -84,9 +84,7 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
     var nascimentoState = remember {
         mutableStateOf("")
     }
-    var fotoState = remember {
-        mutableStateOf("")
-    }
+
     var umError = remember {
         mutableStateOf(false)
     }
@@ -390,7 +388,7 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                                                 email = emailState.value.lowercase(),
                                                 senha = senhaState.value,
                                                 data_nascimento = dataNascimento,
-                                                foto_perfil = fotoState.value,
+                                                foto_perfil = "https://firebasestorage.googleapis.com/v0/b/sinalibras-439801.appspot.com/o/lv_0_20241118103324.mp4?alt=media&token=7ceaf70a-5f26-4535-9aed-253431c60346",
                                                 data_cadastro = currentDate.toString()
                                             )
                                         )
@@ -439,7 +437,7 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                                                 email = emailState.value.lowercase(),
                                                 senha = senhaState.value,
                                                 data_nascimento = dataNascimento,
-                                                foto_perfil = fotoState.value,
+                                                foto_perfil = "https://firebasestorage.googleapis.com/v0/b/sinalibras-439801.appspot.com/o/lv_0_20241118103324.mp4?alt=media&token=7ceaf70a-5f26-4535-9aed-253431c60346",
                                                 data_cadastro = currentDate.toString()
                                             )
                                         )

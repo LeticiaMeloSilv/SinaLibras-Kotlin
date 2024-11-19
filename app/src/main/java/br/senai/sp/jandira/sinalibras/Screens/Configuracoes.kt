@@ -108,7 +108,7 @@ fun Configuracoes(
         ) {
             Button(
                 onClick = {
-                    controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}")
+                    controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
                 },
                 colors = ButtonColors(
                     Color.Transparent,
@@ -356,7 +356,7 @@ fun Configuracoes(
                 .height(120.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.logo_grande),
                 contentDescription = "logo",
                 modifier = Modifier
                     .align(Alignment.Center)

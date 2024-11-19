@@ -125,21 +125,24 @@ class MainActivity : ComponentActivity() {
 
 
                         composable(//FEITO
-                            "perfil?id={id}&tipoUsuario={tipoUsuario}",
+                            "perfil?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
                                 navArgument("tipoUsuario") { type = NavType.StringType },
-
+                                navArgument("fotoPerfil") { type = NavType.StringType },
                                 )
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val tipoUsuario =
                                 backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+
 
                             Perfil(
                                 controleDeNavegacao = controleDeNavegacao,
                                 id = id,
-                                tipoUsuario = tipoUsuario
+                                tipoUsuario = tipoUsuario,
+                                fotoPerfil = fotoPerfil
                             )
                         }
 

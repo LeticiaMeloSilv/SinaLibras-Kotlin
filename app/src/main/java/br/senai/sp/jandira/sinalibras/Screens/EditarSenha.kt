@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.sinalibras.Screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonColors
@@ -30,6 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +41,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.senai.sp.jandira.sinalibras.model.Aluno
+import br.senai.sp.jandira.sinalibras.model.ResultAluno
+import br.senai.sp.jandira.sinalibras.model.ResultProfessor
+import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +58,22 @@ fun EditarSenha(
     fotoPerfil: String,
     tipoUsuario: String,nome: String, dataNascimento: String
 ) {
+
+    var emailState=remember {
+        mutableStateOf("")
+    }
+    var emailErrado=remember{
+        mutableStateOf(true)
+    }
+    var senhaState = remember {
+        mutableStateOf("")
+    }
+    var confirmaSenhaState= remember {
+        mutableStateOf("")
+    }
+    var mensagemErroState = remember {
+        mutableStateOf("")
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,7 +116,7 @@ fun EditarSenha(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "Um código de verificação foi enviado ao seu email.\nPor favor, insira-o no campo abaixo",
+                    text = "Escreva seu email no campo abaixo para confirmar a ação",
                     color = Color.White,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
@@ -103,8 +129,8 @@ fun EditarSenha(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     TextField(
-                        value = "AH293HN",
-                        onValueChange = {},
+                        value = emailState.value,
+                        onValueChange = {emailState.value=it},
                         modifier = Modifier.weight(1f),
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = Color.White,
@@ -114,7 +140,11 @@ fun EditarSenha(
                         singleLine = true
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(onClick = { /* Ação enviar código */ }) {
+                    IconButton(onClick = {
+                        if(emailState.value==email){
+                            emailErrado.value=true
+                        }
+                    }) {
                         Icon(Icons.Default.Send , contentDescription = "Enviar Código", tint = Color.White)
                     }
                 }
@@ -124,8 +154,8 @@ fun EditarSenha(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Sua senha precisa ter pelo menos seis caracteres e incluir uma combinação de números, letras e caracteres especiais (!@#$)",
-            color = Color(0xFF485F9A),
+            text = mensagemErroState.value,
+            color = Color.Red,
             fontSize = 12.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
@@ -134,15 +164,10 @@ fun EditarSenha(
         Spacer(modifier = Modifier.height(16.dp))
 
         TextField(
-            value = "",
-            onValueChange = {},
+            value = senhaState.value,
+            onValueChange = {senhaState.value=it},
             label = { Text("Nova Senha", color = Color(0xFF485F9A)) },
-            visualTransformation = PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(onClick = { /* Ação exibir senha */ }) {
-                    Icon(Icons.Default.VisibilityOff, contentDescription = null, tint = Color(0xFF485F9A))
-                }
-            },
+            enabled = emailErrado.value==false,
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
@@ -154,9 +179,10 @@ fun EditarSenha(
         Spacer(modifier = Modifier.height(16.dp))
 
         TextField(
-            value = "",
-            onValueChange = {},
+            value = confirmaSenhaState.value,
+            onValueChange = {confirmaSenhaState.value=it},
             label = { Text("Confirmar Senha", color = Color(0xFF485F9A)) },
+            enabled = emailErrado.value==false,
             visualTransformation = PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(onClick = { /* Ação exibir senha */ }) {
@@ -174,7 +200,84 @@ fun EditarSenha(
         Spacer(modifier = Modifier.height(134.dp))
 
         Button(
-            onClick = { /* Ação confirmar */ },
+            onClick = {
+                if (senhaState.value == "" || confirmaSenhaState.value == "") {
+                    mensagemErroState.value = "Todos os campos devem ser preenchidos"
+                } else if (senhaState.value != confirmaSenhaState.value) {
+                    mensagemErroState.value = "Sua senha não confere"
+                } else if (senhaState.value.length > 8 || confirmaSenhaState.value.length > 8) {
+                    mensagemErroState.value = "Sua senha deve ter 8 caracteres"
+                }
+                else{
+                    if(tipoUsuario=="aluno"){
+                        val callAtualizarAluno =
+                            RetrofitFactory().getUsuarioService().setAtualizarAlunoSenha(
+                                id.toInt(),
+                                usuario = Aluno(
+                                    senha = senhaState.value,
+                                )
+                            )
+                        callAtualizarAluno.enqueue(object : Callback<ResultAluno> {
+                            override fun onResponse(
+                                p0: Call<ResultAluno>,
+                                p1: Response<ResultAluno>
+                            ) {
+                                val alunoResponse = p1.body()
+                                Log.i("ALUNO", alunoResponse.toString())
+                                if (p1.isSuccessful) {
+                                    if (alunoResponse != null) {
+                                        controleDeNavegacao.navigate(
+                                            "configuracoes?id=${alunoResponse.aluno?.id_aluno}&email=${alunoResponse.aluno?.email}&nome=${alunoResponse.aluno?.nome}&dataNascimento=${alunoResponse.aluno?.data_nascimento}&fotoPerfil=${alunoResponse.aluno?.foto_perfil}&tipoUsuario=${tipoUsuario}"
+                                        )
+                                    }
+
+                                } else {
+                                    Log.i("CALMA", alunoResponse?.message!!.toString())
+                                }
+                            }
+
+                            override fun onFailure(p0: Call<ResultAluno>, p1: Throwable) {
+                                Log.i("ERRO_EDITAR_PERFIL", p1.toString())
+                            }
+                        })
+
+                }
+                    else{
+                            val callAtualizarProfessor =
+                                RetrofitFactory().getUsuarioService().setAtualizarProfessorSenha(
+                                    id.toInt(),
+                                    usuario = Aluno(
+                                        senha = senhaState.value,
+                                    )
+                                )
+                        callAtualizarProfessor.enqueue(object : Callback<ResultProfessor> {
+                                override fun onResponse(
+                                    p0: Call<ResultProfessor>,
+                                    p1: Response<ResultProfessor>
+                                ) {
+                                    val alunoResponse = p1.body()
+                                    Log.i("Professor", alunoResponse.toString())
+                                    if (p1.isSuccessful) {
+                                        if (alunoResponse != null) {
+                                            controleDeNavegacao.navigate(
+                                                "configuracoes?id=${alunoResponse.professor?.id_professor}&email=${alunoResponse.professor?.email}&nome=${alunoResponse.professor?.nome}&dataNascimento=${alunoResponse.professor?.data_nascimento}&fotoPerfil=${alunoResponse.professor?.foto_perfil}&tipoUsuario=${tipoUsuario}"
+                                            )
+                                        }
+
+                                    } else {
+                                        Log.i("CALMA", alunoResponse?.message!!.toString())
+                                    }
+                                }
+
+                                override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
+                                    Log.i("ERRO_EDITAR_PERFIL", p1.toString())
+                                }
+                            })
+
+
+                    }
+                }
+                      },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),

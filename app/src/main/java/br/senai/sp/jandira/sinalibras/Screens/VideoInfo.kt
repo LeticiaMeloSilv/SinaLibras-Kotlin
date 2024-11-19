@@ -71,12 +71,12 @@ fun PlayerVideo(videoUri: Uri) {
 
     val player = remember { ExoPlayer.Builder(context).build() }
     playerView.player = player
-    val id = videoUri.toString().substringAfter("/d/").substringBefore("/view")
-    val downloadLink = "https://drive.google.com/uc?export=download&id=$id"
-
+    //val id = videoUri.toString().substringAfter("/d/").substringBefore("/view")
+    //val downloadLink = "https://drive.google.com/uc?export=download&id=$id"
+    val downloadLink=videoUri
     player.volume = 0f
 
-    val mediaItem = MediaItem.fromUri(Uri.parse(downloadLink))
+    val mediaItem = MediaItem.fromUri(Uri.parse(downloadLink.toString()))
     player.setMediaItem(mediaItem)
     player.prepare()
     player.play()
@@ -165,6 +165,7 @@ fun VideoInfo(
                 ),
             contentAlignment = Alignment.Center
         ) {
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -436,6 +437,24 @@ fun VideoInfo(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Button(
+                onClick = {
+                    controleDeNavegacao.navigate("aulas?idModulo=${idModulo}&nomeModulo=${nomeModulo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                },
+                colors = ButtonColors(
+                    Color.Transparent,
+                    Color.Transparent,
+                    Color.Transparent,
+                    Color.Transparent
+                ),
+                modifier=Modifier.fillMaxWidth().align(Alignment.Start)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.btn_voltar),
+                    contentDescription = "Botao Voltar",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
 
             Image(
                 painter = painterResource(id = R.drawable.erro),

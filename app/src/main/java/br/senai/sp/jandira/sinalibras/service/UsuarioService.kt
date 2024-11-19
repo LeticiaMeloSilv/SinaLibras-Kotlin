@@ -42,6 +42,9 @@ interface UsuarioService {
     @DELETE("/v1/sinalibras/aluno/{id}")
     fun setDellAluno(@Path("id")id:Int): Call<ResultAluno>
 
+    @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
+    @PUT("/v1/sinalibras/aluno/perfil/{id}")
+    fun setAtualizarAlunoSenha(@Path("id")id:Int,@Body usuario: Aluno): Call<ResultAluno>
 
 
 
@@ -78,4 +81,10 @@ interface UsuarioService {
 
     @DELETE("/v1/sinalibras/professor/{id}")
     fun setDellProfessor(@Path("id")id:Int): Call<ResultProfessor>
+
+    @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
+    @PUT("/v1/sinalibras/professor/perfil/{id}")
+    fun setAtualizarProfessorSenha(@Path("id")id:Int,@Body usuario: Aluno): Call<ResultProfessor>
+
+
 }

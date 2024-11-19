@@ -84,7 +84,7 @@ fun SobreNos(controleDeNavegacao:NavHostController, id: String, email: String, n
             }
             Spacer(modifier = Modifier.width(16.dp))
             Image(
-                painter = painterResource(id = R.drawable.aluno),
+                painter = painterResource(id = R.drawable.perfil),
                 contentDescription = "Person",
                 modifier = Modifier
                     .size(80.dp)

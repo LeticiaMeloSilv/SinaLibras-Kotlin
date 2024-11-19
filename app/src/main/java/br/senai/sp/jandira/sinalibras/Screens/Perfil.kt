@@ -57,7 +57,7 @@ import retrofit2.Response
 import kotlin.math.round
 
 @Composable
-fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: String) {
+fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: String, fotoPerfil:String) {
 
 
 //    var dadosPerfil by remember {
@@ -638,7 +638,23 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
+            Button(
+                onClick = {
+                    controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                },
+                colors = ButtonColors(
+                    Color.Transparent,
+                    Color.Transparent,
+                    Color.Transparent,
+                    Color.Transparent
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.btn_voltar),
+                    contentDescription = "Botao Voltar",
+                    modifier = Modifier.size(20.dp)
+                )
+            }
             Image(
                 painter = painterResource(id = R.drawable.erro),
                 contentDescription = "logo",
