@@ -632,7 +632,9 @@ class MainActivity : ComponentActivity() {
                                 nome = nome,
                                 dataNascimento = dataNascimento,
                                 fotoPerfil = fotoPerfil,
-                                tipoUsuario = tipoUsuario
+                                tipoUsuario = tipoUsuario,
+                                getContent = { getContent.launch("video/*") },
+                                initialImageUri = imageUri
                             )
                         }
 

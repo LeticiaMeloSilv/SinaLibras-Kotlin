@@ -63,8 +63,8 @@ fun Modulos(
         mutableStateOf(false)
     }
 
-    val callQuestions = RetrofitFactory().getVideoAulaService().getAllModulos()
-    callQuestions.enqueue(object : Callback<ResultModulo> {
+    val callModulos = RetrofitFactory().getVideoAulaService().getAllModulos()
+    callModulos.enqueue(object : Callback<ResultModulo> {
         override fun onResponse(p0: Call<ResultModulo>, p1: Response<ResultModulo>) {
             val alunoResponse = p1.body()
             if (alunoResponse == null) {
@@ -118,7 +118,10 @@ fun Modulos(
                         .size(width = 70.dp, height = 70.dp)
                         .align(alignment = Alignment.CenterVertically)
                         .padding(8.dp)
-                        .clip(CircleShape), // Aplica a forma circular
+                        .clip(CircleShape)
+                        .clickable {
+                            controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                        },
                     contentScale = ContentScale.Crop
                 )
             }

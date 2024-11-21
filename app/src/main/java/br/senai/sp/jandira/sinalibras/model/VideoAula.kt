@@ -10,5 +10,8 @@ data class VideoAula(
     val modulo:List<Modulo>?=null,
     val nivel:List<Nivel>?=null,
     val comentarios:List<Comentarios>?=null,
-    val professor:List<Professor>?=null
-)
+    val professor:List<Professor>?=null,
+    val id_professor:Long=0,
+    val id_modulo: Int =0,
+    val id_nivel: Int =0,
+    )

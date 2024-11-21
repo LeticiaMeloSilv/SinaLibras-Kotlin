@@ -32,6 +32,9 @@ interface VideoAulaService {
     @GET("/v1/sinalibras/videos/modulo/{id}")
     fun getVideosById(@Path("id")id:Int): Call<ResultVideo>
 
+    @GET("/v1/sinalibras/videos/modulo/{id}")
+    fun getVideosProfessorById(@Path("id")id:Int): Call<ResultVideo>
+
 
     @GET("/v1/sinalibras/videoaula/{id}")
     fun getVideoById(@Path("id")id:Int): Call<ResultVideoID>

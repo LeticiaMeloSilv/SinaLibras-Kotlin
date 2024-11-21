@@ -63,7 +63,7 @@ fun EditarSenha(
         mutableStateOf("")
     }
     var emailErrado=remember{
-        mutableStateOf(true)
+        mutableStateOf("errado")
     }
     var senhaState = remember {
         mutableStateOf("")
@@ -136,13 +136,21 @@ fun EditarSenha(
                             containerColor = Color.White,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor=Color.Black
                         ),
                         singleLine = true
                     )
+
                     Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(onClick = {
+                    Button(onClick = {
+                        mensagemErroState.value=""
                         if(emailState.value==email){
-                            emailErrado.value=true
+                            emailErrado.value=""
+                            Log.i("EMAIL", emailErrado.value)
+                        }
+                        else{
+mensagemErroState.value="O email fornecido não corresponde ao email de cadastro"
                         }
                     }) {
                         Icon(Icons.Default.Send , contentDescription = "Enviar Código", tint = Color.White)
@@ -167,12 +175,15 @@ fun EditarSenha(
             value = senhaState.value,
             onValueChange = {senhaState.value=it},
             label = { Text("Nova Senha", color = Color(0xFF485F9A)) },
-            enabled = emailErrado.value==false,
+            enabled =  emailErrado.value=="",
+
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
                 focusedIndicatorColor = Color(0xFF485F9A),
                 unfocusedIndicatorColor = Color(0xFF485F9A),
+                focusedTextColor = Color.Black,
+                unfocusedTextColor=Color.Black
             )
         )
 
@@ -182,18 +193,14 @@ fun EditarSenha(
             value = confirmaSenhaState.value,
             onValueChange = {confirmaSenhaState.value=it},
             label = { Text("Confirmar Senha", color = Color(0xFF485F9A)) },
-            enabled = emailErrado.value==false,
-            visualTransformation = PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(onClick = { /* Ação exibir senha */ }) {
-                    Icon(Icons.Default.VisibilityOff, contentDescription = null, tint = Color(0xFF485F9A))
-                }
-            },
+            enabled = emailErrado.value=="",
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
                 focusedIndicatorColor = Color(0xFF485F9A),
                 unfocusedIndicatorColor = Color(0xFF485F9A),
+                focusedTextColor = Color.Black,
+                unfocusedTextColor=Color.Black
             )
         )
 
@@ -226,9 +233,13 @@ fun EditarSenha(
                                 Log.i("ALUNO", alunoResponse.toString())
                                 if (p1.isSuccessful) {
                                     if (alunoResponse != null) {
-                                        controleDeNavegacao.navigate(
-                                            "configuracoes?id=${alunoResponse.aluno?.id_aluno}&email=${alunoResponse.aluno?.email}&nome=${alunoResponse.aluno?.nome}&dataNascimento=${alunoResponse.aluno?.data_nascimento}&fotoPerfil=${alunoResponse.aluno?.foto_perfil}&tipoUsuario=${tipoUsuario}"
-                                        )
+                                        Log.i("DEUERRO",alunoResponse.toString())
+                                        if(alunoResponse.status)
+                                            controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+
+                                        else{
+                                            mensagemErroState.value=alunoResponse.message
+                                        }
                                     }
 
                                 } else {
@@ -259,9 +270,7 @@ fun EditarSenha(
                                     Log.i("Professor", alunoResponse.toString())
                                     if (p1.isSuccessful) {
                                         if (alunoResponse != null) {
-                                            controleDeNavegacao.navigate(
-                                                "configuracoes?id=${alunoResponse.professor?.id_professor}&email=${alunoResponse.professor?.email}&nome=${alunoResponse.professor?.nome}&dataNascimento=${alunoResponse.professor?.data_nascimento}&fotoPerfil=${alunoResponse.professor?.foto_perfil}&tipoUsuario=${tipoUsuario}"
-                                            )
+                                            controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
                                         }
 
                                     } else {
@@ -286,14 +295,14 @@ fun EditarSenha(
             Text(text = "Confirmar", color = Color.White, fontSize = 16.sp)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+       // Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "obs: caso não o encontre na caixa de entrada, verifique a caixa Spam",
-            fontSize = 12.sp,
-            color = Color.Black,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
+//        Text(
+//            text = "obs: caso não o encontre na caixa de entrada, verifique a caixa Spam",
+//            fontSize = 12.sp,
+//            color = Color.Black,
+//            modifier = Modifier.fillMaxWidth(),
+//            textAlign = TextAlign.Center
+//        )
     }
 }

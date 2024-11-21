@@ -100,12 +100,6 @@ fun Configuracoes(
     ) {
 
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
             Button(
                 onClick = {
                     controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
@@ -131,10 +125,10 @@ fun Configuracoes(
                 fontSize = 22.sp,
                 color = Color.Black,
                 modifier = Modifier
-                    .align(Alignment.CenterVertically)
+                    .align(Alignment.CenterHorizontally)
                     .padding(horizontal = 60.dp)
             )
-        }
+
 
         Spacer(modifier = Modifier.height(24.dp))
 

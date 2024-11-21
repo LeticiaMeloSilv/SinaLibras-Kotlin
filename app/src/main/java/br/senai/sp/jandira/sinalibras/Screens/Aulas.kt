@@ -177,8 +177,9 @@ mutableStateOf(ResultVideo())
                 }
 
                 Text(
-                    text = nomeModulo.uppercase(),
+                    text = nomeModulo,
                     fontSize = 32.sp,
+                    color = Color.Black,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
@@ -200,7 +201,7 @@ mutableStateOf(ResultVideo())
                             // Video thumbnail
 
                             Image(
-                                rememberAsyncImagePainter(model = video.foto_capa),
+                                rememberAsyncImagePainter(model = video.url_video),
                                 contentDescription = "card do video",
                                 modifier = Modifier
                                     .height(180.dp)

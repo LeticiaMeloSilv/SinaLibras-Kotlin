@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.LaunchedEffect
@@ -88,7 +89,7 @@ fun EditarPerfil(
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     var nomeState = remember {
-        mutableStateOf("")
+        mutableStateOf(nome)
     }
     var emailState = remember {
         mutableStateOf(email)
@@ -197,18 +198,18 @@ fun EditarPerfil(
 //                            launcher.launch(intent)
 //                        }
 //            )
-            Image(
+                Image(
 
-                painter = painter,
-                contentDescription = "foto de Perfil",
-                modifier = Modifier
-                    .size(width = 170.dp, height = 170.dp)
-                    .clickable {
-                        getContent()
-                    }
-                    .clip(CircleShape), // Aplica a forma circular
-                contentScale = ContentScale.Crop
-            )
+                    painter = painter,
+                    contentDescription = "foto de Perfil",
+                    modifier = Modifier
+                        .size(width = 170.dp, height = 170.dp)
+                        .clickable {
+                            getContent()
+                        }
+                        .clip(CircleShape), // Aplica a forma circular
+                    contentScale = ContentScale.Crop
+                )
 
             Box(
                 modifier = Modifier
@@ -435,14 +436,17 @@ fun EditarPerfil(
                     color = Color(0xff334EAC),
                     shape = RoundedCornerShape(16.dp)
                 )
-                .background(Color.Transparent)
+                .background(Color(0xFFC7E2FE))
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
                 .clickable { controleDeNavegacao.navigate("editarSenha?id=${id}&email=${email}&nome=${nome}&dataNascimento=${dataNascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}") },
-            shape = RoundedCornerShape(12.dp),
+
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFC7E2FE))
 
 
-            ) {
+
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -451,11 +455,11 @@ fun EditarPerfil(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "Alterar Senha", fontSize = 16.sp, fontWeight = FontWeight.Medium,color=Color.Black )
-                Icon(Icons.Default.ArrowForward, contentDescription = "Alterar Senha")
+                Icon(Icons.Default.ArrowForward, contentDescription = "Alterar Senha", tint=Color(0xff334EAC))
             }
         }
 
-        Spacer(modifier = Modifier.height(200.dp))
+        Spacer(modifier = Modifier.height(140.dp))
 
         Text(text = mensagemErroState.value, color = Color.Red)
 
@@ -555,8 +559,7 @@ fun EditarPerfil(
             },
             modifier = Modifier
                 .width(412.dp)
-                .height(56.dp)
-                .padding(horizontal = 32.dp),
+                .height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3F51B5)),
             shape = RoundedCornerShape(10.dp)
         ) {
@@ -587,6 +590,7 @@ fun uploadFile(fileUri: Uri) {
     val storageRef: StorageReference = FirebaseStorage.getInstance().reference
     val fileRef = storageRef.child("uploads/${fileUri.lastPathSegment}")
     fileRef.putFile(fileUri)
+
         .addOnSuccessListener {
             fileRef.downloadUrl.addOnSuccessListener { uri ->
                 Log.i("CALMA", "URL de download: $uri")

@@ -4,7 +4,6 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,11 +15,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -203,7 +203,7 @@ fun VideoInfo(
                 .fillMaxSize()
                 .background(Color(0xFFD0E6FF))
         ) {
-        Column() {
+        Column(modifier=Modifier.padding(60.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.logo_grande),
                 contentDescription = "Logo",
@@ -230,8 +230,6 @@ fun VideoInfo(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = Color(0xFFC7E2FE))
-
             ) {
                 Row(
                     modifier = Modifier
@@ -281,7 +279,7 @@ fun VideoInfo(
                                 strokeWidth = strokeWidth
                             )
                         }
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
@@ -297,14 +295,17 @@ fun VideoInfo(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(6.dp))
+                val scrollState = rememberScrollState()
 
+                Column(
+                    modifier = Modifier.verticalScroll(scrollState).padding(vertical = 10.dp, horizontal = 6.dp)
+                ){
                 dadosVideoAula.comentarios?.forEach { comentario ->
-                    Box (modifier=Modifier.padding(vertical = 10.dp, horizontal = 16.dp)){
                     Text(
-                        text = comentario.id_comentario.toString(),//NOME ALUNO
+                        text = comentario.id_aluno.toString(),//NOME ALUNO
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         color = Color(0xFF2A3C78)
                     )
                     Text(
@@ -322,8 +323,10 @@ fun VideoInfo(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 8.dp)
-                        .align(Alignment.BottomCenter),
+                        .padding(horizontal = 8.dp, vertical = 8.dp)
+                        .align(Alignment.BottomCenter)
+                        .background(Color(0xFFC7E2FE))
+                        .height(50.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -344,13 +347,13 @@ fun VideoInfo(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-
                     TextField(
                         value = comentarioState.value,
                         onValueChange = {
                             comentarioState.value=it
                         },
-                        label = { Text("Comentar...") },
+                        modifier = Modifier.width(200.dp).height(30.dp),
+                        label = { Text(text="Comentar...", color=Color(0xff334EAC)) },
                         colors = TextFieldDefaults
                             .colors(
                                 focusedContainerColor = Color.Transparent,
@@ -366,65 +369,68 @@ fun VideoInfo(
                                 unfocusedLabelColor = Color(0xff334EAC),
                                 focusedLabelColor = Color(0xff334EAC)
                             )
-
-
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Icon(
+                    Button(
+                        onClick = {
+                            val callComentario = RetrofitFactory()
+                                .getVideoAulaService().setSalvarComentario(
+                                    comentario = Comentarios(
+                                        comentario = comentarioState.value,
+                                        data = currentDate.toString(),
+                                        id_videoaula = idDoVideo.toLong(),
+                                        id_aluno = id.toLong(),
+                                    )
+                                )
+                            callComentario.enqueue(object : Callback<ResultComentario> {
+                                override fun onResponse(
+                                    p0: Call<ResultComentario>,
+                                    p1: Response<ResultComentario>
+                                ) {
+                                    val comentarioSalvo = p1.body()
+
+                                    if (p1.isSuccessful) {
+                                        if (comentarioSalvo != null) {
+                                            controleDeNavegacao.navigate("video?idDoVideo=${idDoVideo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}")
+                                        }
+                                    } else {
+                                        val errorBody = p1.errorBody()?.string()
+                                        val gson = Gson()
+                                        val usuarioSalvo = gson.fromJson(
+                                            errorBody,
+                                            ResultComentario::class.java
+                                        )
+                                        mensagemErroState.value = usuarioSalvo.message
+                                    }
+                                }
+
+
+                                override fun onFailure(
+                                    p0: Call<ResultComentario>,
+                                    p1: Throwable
+                                ) {
+                                    Log.i("ERRO_CADASTRO", p1.toString())
+                                    mensagemErroState.value =
+                                        "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+
+                                }
+
+                            })
+
+                        },
+                        colors = ButtonColors(
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent
+                        )
+                    ) {
+                    Image(
                         painter = painterResource(id = R.drawable.send),
                         contentDescription = "Enviar",
-                        tint=Color(0xff334EAC),
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clickable {
-                                val callComentario = RetrofitFactory()
-                                    .getVideoAulaService().setSalvarComentario(
-                                        comentario = Comentarios(
-                                            comentario = comentarioState.value,
-                                            data = currentDate.toString(),
-                                            id_videoaula = idDoVideo.toLong(),
-                                            id_aluno = id.toLong(),
-                                        )
-                                    )
-                                callComentario.enqueue(object : Callback<ResultComentario> {
-                                    override fun onResponse(
-                                        p0: Call<ResultComentario>,
-                                        p1: Response<ResultComentario>
-                                    ) {
-                                        val comentarioSalvo = p1.body()
-
-                                        if (p1.isSuccessful) {
-                                            if (comentarioSalvo != null) {
-                                                controleDeNavegacao.navigate("video?idDoVideo=${idDoVideo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}")
-                                            }
-                                        } else {
-                                            val errorBody = p1.errorBody()?.string()
-                                            val gson = Gson()
-                                            val usuarioSalvo = gson.fromJson(
-                                                errorBody,
-                                                ResultComentario::class.java
-                                            )
-                                            mensagemErroState.value = usuarioSalvo.message
-                                        }
-                                    }
-
-
-                                    override fun onFailure(
-                                        p0: Call<ResultComentario>,
-                                        p1: Throwable
-                                    ) {
-                                        Log.i("ERRO_CADASTRO", p1.toString())
-                                        mensagemErroState.value =
-                                            "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
-
-                                    }
-
-                                })
-
-                            }
+                        modifier = Modifier.size(36.dp)
                     )
                 }
-
+                }
 
         }
     }

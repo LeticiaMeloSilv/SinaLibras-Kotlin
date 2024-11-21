@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -49,6 +52,7 @@ import br.senai.sp.jandira.sinalibras.model.ResultAluno
 import br.senai.sp.jandira.sinalibras.model.Aluno
 import br.senai.sp.jandira.sinalibras.model.Professor
 import br.senai.sp.jandira.sinalibras.model.ResultProfessor
+import br.senai.sp.jandira.sinalibras.model.ResultVideo
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
 import coil.compose.rememberAsyncImagePainter
 import retrofit2.Call
@@ -268,8 +272,7 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
                         contentDescription = "tag",
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .height(32.dp)
-                            .border(2.dp, color = Color.Black)
+                            .height(40.dp)
                             .clip(RoundedCornerShape(32.dp)),
 
 
@@ -403,13 +406,54 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
             }
         } else {
             val professor = dadosPerfilProfessor
-
+            var dadosVideos by remember{
+                mutableStateOf(ResultVideo())
+            }
             val painter: Painter =
                 if (!professor.foto_perfil.isNullOrEmpty()) {
                     rememberAsyncImagePainter(model = professor.foto_perfil)
                 } else {
                     painterResource(id = R.drawable.perfil)
                 }
+            val callVideosDoProfessor =
+                RetrofitFactory().getVideoAulaService().getVideosProfessorById(id.toInt())
+
+            callVideosDoProfessor.enqueue(object : Callback<ResultVideo> {
+                override fun onResponse(p0: Call<ResultVideo>, p1: Response<ResultVideo>) {
+                    val videoResponse = p1.body()
+                    Log.i("ALUNO",videoResponse.toString())
+                    if (p1.isSuccessful) {
+                        Log.i("erroo",videoResponse.toString())
+
+                        if (videoResponse != null) {
+                            if (videoResponse.videos != null) {
+                                funcionouState=true
+                                dadosVideos= videoResponse
+                                Log.i("erroo",videoResponse.toString())
+                            }
+                            else{
+                                erroState = true
+                            }
+                        }
+                        else{
+                            Log.i("CALMA","ESTYIKL")
+                            erroState = true
+
+                        }
+
+                    } else {
+                        erroState = true
+
+                        Log.i("CALMA", videoResponse?.message!!.toString())
+                    }
+                }
+
+                override fun onFailure(p0: Call<ResultVideo>, p1: Throwable) {
+                    erroState = true
+                    Log.i("ERRO_VIDEO", p1.toString())
+                }
+            })
+
 
             Column(
                 modifier = Modifier
@@ -489,17 +533,66 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
                         color = Color.Black,
                         fontSize = 26.sp
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Image(
                         painter = painterResource(id = R.drawable.selo_professor),
                         contentDescription = "tag",
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .height(32.dp).border(2.dp, color = Color.Black)
-
+                            .height(40.dp)
                     )
 
                 }
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center,modifier=Modifier.fillMaxWidth()){
+                    Button(onClick = {controleDeNavegacao.navigate("postarVideo?id=${id}&email=${professor.email}&nome=${professor.nome}&dataNascimento=${professor.data_nascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")}) {
+                        Text(text="Postar Video")
+                    }
+                    Spacer(modifier=Modifier.width(20.dp))
+                    Button(onClick = {controleDeNavegacao.navigate("postarPostagem?id=${id}&email=${professor.email}&nome=${professor.nome}&dataNascimento=${professor.data_nascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")}) {
+                        Text(text="Postar Texto")
+                    }
+                }
+                Spacer(modifier=Modifier.height(20.dp))
+                if(dadosVideos.videos!=null){
+                LazyColumn(modifier = Modifier.padding(horizontal=20.dp)) {
+                    items(dadosVideos.videos ?: emptyList()) { video ->
+                        Log.i("CALMA", dadosVideos.toString())
+                        Card(
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFFFFFFFF)
+                            ),
+                            modifier = Modifier
+                                .padding(vertical = 8.dp)
+                                .fillMaxWidth()
+                             //  .clickable { controleDeNavegacao.navigate("editarVideo?idDoVideo=${video.id_videoaula}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}") }
+                        ) {
+                            Column {
+                                // Video thumbnail
+
+                                Image(
+                                    rememberAsyncImagePainter(model = video.url_video),
+                                    contentDescription = "card do video",
+                                    modifier = Modifier
+                                        .height(180.dp)
+                                        .fillMaxWidth(),
+                                    contentScale = ContentScale.Crop
+                                )
+                                Column(modifier = Modifier.padding(8.dp)) {
+                                    Text(
+                                        text = video.titulo,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Black
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(text = video.data_cadastro, fontSize = 14.sp)
+                                }
+                            }}
+                        }
+                    }
+                }
+
 
 
 //                Row(

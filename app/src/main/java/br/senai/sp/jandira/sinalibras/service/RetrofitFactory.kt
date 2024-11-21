@@ -7,7 +7,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitFactory {
-    private val BASE_URL = "http://192.168.46.26:8080/"
+    private val BASE_URL="http://192.168.46.26:8080/"//CELULAR
+    //private val BASE_URL = "http://192.168.15.5:8080/"  //CASA
+//private val BASE_URL = "https://sinalibras-back-d2gnehfaaxfxegaq.brazilsouth-01.azurewebsites.net/"  //NUVEM
+
 
     private val retrofitFactory = Retrofit
         .Builder()

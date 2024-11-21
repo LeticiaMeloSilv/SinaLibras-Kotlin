@@ -79,7 +79,7 @@ interface UsuarioService {
     @POST("/v1/sinalibras/professor/validacao")
     fun setValidarEntradaProfessor(@Body usuario: Professor): Call<ResultProfessor>
 
-    @DELETE("/v1/sinalibras/professor/{id}")
+    @DELETE("/v1/sinalibras/professor/perfil/{id}")
     fun setDellProfessor(@Path("id")id:Int): Call<ResultProfessor>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
