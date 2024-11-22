@@ -66,7 +66,7 @@ mutableStateOf(ResultVideo())
         mutableStateOf(false)
     }
     val callVideos =
-        RetrofitFactory().getVideoAulaService().getVideosById(idModulo.toInt())
+        RetrofitFactory().getPostagensService().getVideosById(idModulo.toInt())
 
     callVideos.enqueue(object : Callback<ResultVideo> {
         override fun onResponse(p0: Call<ResultVideo>, p1: Response<ResultVideo>) {
@@ -216,7 +216,7 @@ mutableStateOf(ResultVideo())
                                     color = Color.Black
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
-                            Text(text = video.data_cadastro, fontSize = 14.sp)
+                            Text(text = video.data, fontSize = 14.sp)
                         }
                     }
                 }

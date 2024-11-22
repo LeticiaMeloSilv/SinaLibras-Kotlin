@@ -1,19 +1,15 @@
 package br.senai.sp.jandira.sinalibras.Screens
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +24,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -58,7 +53,6 @@ import coil.compose.rememberAsyncImagePainter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.math.round
 
 @Composable
 fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: String, fotoPerfil:String) {
@@ -416,7 +410,7 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
                     painterResource(id = R.drawable.perfil)
                 }
             val callVideosDoProfessor =
-                RetrofitFactory().getVideoAulaService().getVideosProfessorById(id.toInt())
+                RetrofitFactory().getPostagensService().getVideosProfessorById(id.toInt())
 
             callVideosDoProfessor.enqueue(object : Callback<ResultVideo> {
                 override fun onResponse(p0: Call<ResultVideo>, p1: Response<ResultVideo>) {
@@ -586,7 +580,7 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
                                         color = Color.Black
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    Text(text = video.data_cadastro, fontSize = 14.sp)
+                                    Text(text = video.data, fontSize = 14.sp)
                                 }
                             }}
                         }

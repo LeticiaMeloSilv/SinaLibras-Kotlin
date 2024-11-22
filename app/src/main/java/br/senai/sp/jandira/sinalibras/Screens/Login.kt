@@ -203,7 +203,7 @@ fun Login(controleDeNavegacao: NavHostController) {
             color = Color.Red,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(40.dp))
         Button(
             onClick = {
                 if (emailState.value == "" || senhaState.value == "") {

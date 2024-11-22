@@ -63,7 +63,7 @@ fun Modulos(
         mutableStateOf(false)
     }
 
-    val callModulos = RetrofitFactory().getVideoAulaService().getAllModulos()
+    val callModulos = RetrofitFactory().getPostagensService().getAllModulos()
     callModulos.enqueue(object : Callback<ResultModulo> {
         override fun onResponse(p0: Call<ResultModulo>, p1: Response<ResultModulo>) {
             val alunoResponse = p1.body()

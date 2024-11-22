@@ -124,7 +124,7 @@ fun VideoInfo(
         mutableStateOf("")
     }
     Log.i("caralho", idDoVideo)
-    val callVideoById = RetrofitFactory().getVideoAulaService().getVideoById(idDoVideo.toInt())
+    val callVideoById = RetrofitFactory().getPostagensService().getVideoById(idDoVideo.toInt())
     callVideoById.enqueue(object : Callback<ResultVideoID> {
         override fun onResponse(p0: Call<ResultVideoID>, p1: Response<ResultVideoID>) {
             val videoResponse = p1.body()
@@ -203,17 +203,16 @@ fun VideoInfo(
                 .fillMaxSize()
                 .background(Color(0xFFD0E6FF))
         ) {
-        Column(modifier=Modifier.padding(60.dp)) {
+        Column(modifier=Modifier.padding(6.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.logo_grande),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(width = 160.dp, height = 90.dp)
                     .align(Alignment.CenterHorizontally)
-                    .padding(top = 16.dp)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Box(
                 modifier = Modifier
@@ -299,7 +298,7 @@ fun VideoInfo(
                 val scrollState = rememberScrollState()
 
                 Column(
-                    modifier = Modifier.verticalScroll(scrollState).padding(vertical = 10.dp, horizontal = 6.dp)
+                    modifier = Modifier.verticalScroll(scrollState).padding(vertical = 16.dp, horizontal = 6.dp)
                 ){
                 dadosVideoAula.comentarios?.forEach { comentario ->
                     Text(
@@ -323,7 +322,6 @@ fun VideoInfo(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 8.dp)
                         .align(Alignment.BottomCenter)
                         .background(Color(0xFFC7E2FE))
                         .height(50.dp),
@@ -352,7 +350,7 @@ fun VideoInfo(
                         onValueChange = {
                             comentarioState.value=it
                         },
-                        modifier = Modifier.width(200.dp).height(30.dp),
+                        modifier = Modifier.width(200.dp),
                         label = { Text(text="Comentar...", color=Color(0xff334EAC)) },
                         colors = TextFieldDefaults
                             .colors(
@@ -373,7 +371,7 @@ fun VideoInfo(
                     Button(
                         onClick = {
                             val callComentario = RetrofitFactory()
-                                .getVideoAulaService().setSalvarComentario(
+                                .getPostagensService().setSalvarComentario(
                                     comentario = Comentarios(
                                         comentario = comentarioState.value,
                                         data = currentDate.toString(),

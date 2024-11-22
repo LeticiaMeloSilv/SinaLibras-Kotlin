@@ -49,14 +49,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
-import br.senai.sp.jandira.sinalibras.model.ResultAluno
 import br.senai.sp.jandira.sinalibras.model.ResultModulo
+import br.senai.sp.jandira.sinalibras.model.ResultNivel
 import br.senai.sp.jandira.sinalibras.model.ResultVideo
 import br.senai.sp.jandira.sinalibras.model.VideoAula
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.gson.Gson
 import org.threeten.bp.LocalDate
 import retrofit2.Call
 import retrofit2.Callback
@@ -78,7 +77,6 @@ fun PostVideo(
 ) {
     val currentDate: LocalDate = LocalDate.now()
 
-
     var mensagemErroState = remember {
         mutableStateOf("")
     }
@@ -86,11 +84,6 @@ fun PostVideo(
     var fotoState = remember { mutableStateOf("") }
     var descricaoState = remember { mutableStateOf("") }
     var tituloState = remember { mutableStateOf("") }
-    var basicoState = remember { mutableStateOf(false) }
-    var intermediarioState = remember { mutableStateOf(false) }
-    var avancadoState = remember { mutableStateOf(false) }
-
-    var moduloEscolhidoState = remember { mutableStateOf(false) }
     var idModuloEscolhidoState = remember { mutableStateOf("") }
 
     var idNivelEscolhidoState = remember { mutableStateOf("") }
@@ -99,40 +92,62 @@ fun PostVideo(
     var dadosModulos by remember {
         mutableStateOf(ResultModulo())
     }
+    var dadosNiveis by remember {
+        mutableStateOf(ResultNivel())
+    }
     LaunchedEffect(initialImageUri) {
         imageUri = initialImageUri
         imageUri?.let { uploadVideo(it) }
         fotoState.value = imageUri.toString()
 
+        val callModulos = RetrofitFactory().getPostagensService().getAllModulos()
+        callModulos.enqueue(object : Callback<ResultModulo> {
+            override fun onResponse(p0: Call<ResultModulo>, p1: Response<ResultModulo>) {
+                val alunoResponse = p1.body()
+                if (alunoResponse == null) {
+                    Log.i("ERRO_MODULOS", p1.toString())
+                } else {
+                    Log.i("TAG", alunoResponse.toString())
+                    //funcionouState = true
+                    dadosModulos = alunoResponse
+                }
+            }
+
+            override fun onFailure(p0: Call<ResultModulo>, p1: Throwable) {
+                Log.i("ERRO_PERFIL", p1.toString())
+            }
+
+
+        })
+
+        val callNiveis = RetrofitFactory().getPostagensService().getAllNiveis()
+        callNiveis.enqueue(object : Callback<ResultNivel> {
+            override fun onResponse(p0: Call<ResultNivel>, p1: Response<ResultNivel>) {
+                val alunoResponse = p1.body()
+                if (alunoResponse == null) {
+                    Log.i("ERRO_MODULOS", p1.toString())
+                } else {
+                    Log.i("TAG", alunoResponse.toString())
+                    //funcionouState = true
+                    dadosNiveis = alunoResponse
+                }
+            }
+
+            override fun onFailure(p0: Call<ResultNivel>, p1: Throwable) {
+                Log.i("ERRO_PERFIL", p1.toString())
+            }
+
+
+        })
     }
 
-
-    val callModulos = RetrofitFactory().getVideoAulaService().getAllModulos()
-    callModulos.enqueue(object : Callback<ResultModulo> {
-        override fun onResponse(p0: Call<ResultModulo>, p1: Response<ResultModulo>) {
-            val alunoResponse = p1.body()
-            if (alunoResponse == null) {
-                Log.i("ERRO_MODULOS", p1.toString())
-            } else {
-                Log.i("TAG", alunoResponse.toString())
-                //funcionouState = true
-                dadosModulos = alunoResponse
-            }
-        }
-
-        override fun onFailure(p0: Call<ResultModulo>, p1: Throwable) {
-            Log.i("ERRO_PERFIL", p1.toString())
-        }
-
-
-    })
 
     val scrollState = rememberScrollState()
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFD0E6FF))
-            .padding(10.dp),
+            .padding(horizontal = 10.dp, vertical = 5.dp),
         ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -144,6 +159,7 @@ fun PostVideo(
             ) {
                 Button(
                     onClick = {
+                        imageUri=null
                         controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
                     },
                     colors = ButtonColors(
@@ -194,11 +210,14 @@ fun PostVideo(
 
 
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = "Titulo do video:",
+
                 color = Color.Black,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Start)
             )
             OutlinedTextField(
@@ -215,11 +234,14 @@ fun PostVideo(
                 )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = "Descrição do video:",
+
                 color = Color.Black,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Start)
             )
             OutlinedTextField(
@@ -227,7 +249,7 @@ fun PostVideo(
                 onValueChange = { descricaoState.value = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(125.dp)
+                    .height(100.dp)
                     .background(Color(0xFFE2EEFF), shape = RoundedCornerShape(8.dp)),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color.Transparent,
@@ -242,78 +264,55 @@ fun PostVideo(
             Text(
                 text = "Nível",
                 color = Color.Black,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Start),
-                fontWeight = FontWeight.Bold
             )
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.align(Alignment.Start).fillMaxWidth()
             ) {
-                Checkbox(
-                    checked = basicoState.value,
-                    onCheckedChange = {
-                        intermediarioState.value = false
-                        avancadoState.value = false
-                        basicoState.value = true
-                        idNivelEscolhidoState.value = ""
-                        idNivelEscolhidoState.value = "0"
-                    },
-                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFF3B5EDF))
-                )
-                Text(text = "Básico", color = Color.Black)
+                Log.i("aaaaa",dadosNiveis.toString())
+                dadosNiveis.niveis?.forEach { nivel ->
+                    Row (horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically){
+                        Checkbox(
+                            checked = idNivelEscolhidoState.value == nivel.id_nivel.toString(),
+                            onCheckedChange = {
+                                if (idNivelEscolhidoState.value == nivel.id_nivel.toString()) {
+                                    idNivelEscolhidoState.value = ""
+                                } else {
+                                    idNivelEscolhidoState.value = nivel.id_nivel.toString()
+                                }
+                            },
+                            colors = CheckboxDefaults.colors(checkedColor = Color(0xFF3B5EDF))
+                        )
+                        Text(text = nivel.nivel, color = Color.Black)
 
-                Checkbox(
-                    checked = intermediarioState.value,
-                    onCheckedChange = {
-                        intermediarioState.value = true
-                        avancadoState.value = false
-                        basicoState.value = false
-                        idNivelEscolhidoState.value = ""
-                        idNivelEscolhidoState.value = "1"
-
-                    },
-                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFF3B5EDF))
-                )
-                Text(text = "Intermediário", color = Color.Black)
-                Checkbox(
-                    checked = avancadoState.value,
-                    onCheckedChange = {
-                        intermediarioState.value = false
-                        avancadoState.value = true
-                        basicoState.value = false
-                        idNivelEscolhidoState.value = ""
-
-                        idNivelEscolhidoState.value = "2"
-
-                    },
-                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFF3B5EDF))
-                )
-                Text(text = "Avançado", color = Color.Black)
+                } }
             }
 
             Text(
                 text = "Módulo",
                 color = Color.Black,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.width(4.dp))
+                fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.Start),
 
+                )
             Column(
-                modifier = Modifier.verticalScroll(scrollState)
-            ) {
+                modifier = Modifier.verticalScroll(scrollState).align(Alignment.Start)
+                ) {
                 dadosModulos.modulo?.forEach { item ->
-                    Row {
+                    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(
-                            checked = moduloEscolhidoState.value,
+                            checked = idModuloEscolhidoState.value == item.id_modulo.toString(),
                             onCheckedChange = {
-                                if (moduloEscolhidoState.value) {
+                                if (idModuloEscolhidoState.value == item.id_modulo.toString()) {
+                                    // Desmarca o checkbox se já estiver selecionado
                                     idModuloEscolhidoState.value = ""
                                 } else {
-                                    moduloEscolhidoState.value = true
+                                    // Marca o checkbox e atualiza o ID
                                     idModuloEscolhidoState.value = item.id_modulo.toString()
                                 }
-
                             },
                             colors = CheckboxDefaults.colors(checkedColor = Color(0xFF3B5EDF))
                         )
@@ -342,17 +341,22 @@ fun PostVideo(
         ) {
             Button(
                 onClick = {
+                    Log.i("aaaaa",tituloState.value)
+                    Log.i("aaaaa",idModuloEscolhidoState.value)
+                    Log.i("aaaaa",idNivelEscolhidoState.value)
+                    Log.i("aaaaa",link)
+
                     val callUsuarios = RetrofitFactory()
-                        .getVideoAulaService().setSalvarVideoAula(
+                        .getPostagensService().setSalvarVideoAula(
                             videoAula = VideoAula(
                                 titulo = tituloState.value,
-                                duracao = "00:00:00",
+                                duracao = "00:10:00",
                                 foto_capa = "link",
                                 id_modulo = idModuloEscolhidoState.value.toInt(),
                                 id_nivel = idNivelEscolhidoState.value.toInt(),
                                 id_professor = id.toLong(),
-                                url_video = "https://firebasestorage.googleapis.com/v0/b/sinalibras-439801.appspot.com/o/lv_0_20241118103324.mp4?alt=media&token=7ceaf70a-5f26-4535-9aed-253431c60346",
-                                data_cadastro = currentDate.toString()
+                                url_video = link,
+                                data = currentDate.toString()
                             )
                         )
                     callUsuarios.enqueue(object : Callback<ResultVideo> {
@@ -361,6 +365,7 @@ fun PostVideo(
                             p1: Response<ResultVideo>
                         ) {
                             val usuarioSalvo = p1.body()
+                            Log.i("aaaaa",usuarioSalvo.toString())
 
                             if (p1.isSuccessful) {
                                 if (usuarioSalvo != null) {
@@ -368,10 +373,8 @@ fun PostVideo(
                                 }
 
                             } else {
+                                 mensagemErroState.value = usuarioSalvo!!.message.toString()
 
-                                if (usuarioSalvo != null) {
-                                    mensagemErroState.value = usuarioSalvo.message.toString()
-                                }
                             }
                         }
 
@@ -380,7 +383,7 @@ fun PostVideo(
                             p0: Call<ResultVideo>,
                             p1: Throwable
                         ) {
-                            Log.i("ERRO_CADASTRO", p1.toString())
+                            Log.i("aaaaa", p1.toString())
                             mensagemErroState.value =
                                 "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
 
@@ -393,8 +396,8 @@ fun PostVideo(
                     contentColor = Color.White
                 ),
                 modifier = Modifier
-                    .width(127.dp)
-                    .height(43.dp)
+                    .width(135.dp)
+                    .height(48.dp)
                     .align(Alignment.CenterHorizontally),
                 shape = RoundedCornerShape(8.dp)
             ) {
