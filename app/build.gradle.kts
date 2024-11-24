@@ -94,4 +94,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx:21.1.0")
 
 
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
+
+
+
 }

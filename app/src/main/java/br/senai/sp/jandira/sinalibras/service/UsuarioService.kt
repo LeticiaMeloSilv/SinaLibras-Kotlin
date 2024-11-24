@@ -60,8 +60,8 @@ interface UsuarioService {
 
 
 
-
-    @GET("/v1/sinalibras/professores")
+    @Headers("Accept: application/json")
+    @GET("/v1/sinalibras/alunos")
     fun getAllProfessores(): Call<ResultProfessores>
 
     @GET("/v1/sinalibras/professor/{id}")

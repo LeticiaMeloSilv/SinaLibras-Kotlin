@@ -43,6 +43,7 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 import br.senai.sp.jandira.sinalibras.model.ResultModulo
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import retrofit2.Call
 import retrofit2.Callback
@@ -145,6 +146,7 @@ fun Modulos(
                         rowItems.forEach { modulo ->
                             CardComponent(
                                 title = modulo.modulo,
+                                icone=modulo.icon,
                                 idModulo = modulo.id_modulo.toString(),
                                 id = id,
                                 fotoPerfil = fotoPerfil,
@@ -308,7 +310,7 @@ fun Modulos(
 
 @Composable
 fun CardComponent(
-    title: String, idModulo: String,
+    title: String, idModulo: String,icone: String?,
     controleDeNavegacao: NavHostController,
     id: String,
     tipoUsuario: String,
@@ -326,10 +328,15 @@ fun CardComponent(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize()
         ) {
-            Icon(
-                imageVector = Icons.Filled.People,
-                contentDescription = "",
-                tint = Color.Black
+            val icon:Painter=if(icone!=null){rememberAsyncImagePainter(model = icone)}
+            else{ painterResource(  R.drawable.videos)
+            }
+
+            Image(
+painter=                    icon,
+        contentDescription = "",
+                modifier=Modifier.size(30.dp)
+
             )
             Text(
                 text = title,

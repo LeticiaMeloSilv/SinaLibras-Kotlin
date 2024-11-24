@@ -538,11 +538,11 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
 
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center,modifier=Modifier.fillMaxWidth()){
-                    Button(onClick = {controleDeNavegacao.navigate("postarVideo?id=${id}&email=${professor.email}&nome=${professor.nome}&dataNascimento=${professor.data_nascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")}) {
+                    Button(onClick = {controleDeNavegacao.navigate("postarVideo?id=${id}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")}) {
                         Text(text="Postar Video")
                     }
                     Spacer(modifier=Modifier.width(20.dp))
-                    Button(onClick = {controleDeNavegacao.navigate("postarPostagem?id=${id}&email=${professor.email}&nome=${professor.nome}&dataNascimento=${professor.data_nascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")}) {
+                    Button(onClick = {controleDeNavegacao.navigate("postarPostagem?id=${id}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")}) {
                         Text(text="Postar Texto")
                     }
                 }

@@ -62,42 +62,78 @@ fun Chat(
     var dadosProfessores by remember {
         mutableStateOf(ResultProfessores())
     }
+
     var funcionouState by remember {
         mutableStateOf(false)
     }
-    val callProfessores =
-        RetrofitFactory().getUsuarioService().getAllProfessores()
+    val service = RetrofitFactory().getUsuarioService()
+    Log.i("CARALHO", "Service criado: $service")
 
+    val callProfessores = service.getAllProfessores()
+    Log.i("CARALHO", "Chamada criada: $callProfessores")
+try{
     callProfessores.enqueue(object : Callback<ResultProfessores> {
-        override fun onResponse(p0: Call<ResultProfessores>, p1: Response<ResultProfessores>) {
-            val professorResponse = p1.body()
-            Log.i("ALUNO", professorResponse.toString())
-            if (p1.isSuccessful) {
-                if (professorResponse != null) {
-                    funcionouState = true
-                    dadosProfessores = professorResponse
-                }
-
+        override fun onResponse(call: Call<ResultProfessores>, response: Response<ResultProfessores>) {
+            Log.i("CARALHO", "Código de resposta: ${response.code()}")
+            if (response.isSuccessful) {
+                Log.i("CARALHO", "Resposta: ${response.body()}")
             } else {
-                Log.i("CALMA", professorResponse?.message!!.toString())
-            }
-        }
+                Log.e("CARALHO", "Erro: ${response.errorBody()?.string()}")
+            }        }
 
-        override fun onFailure(p0: Call<ResultProfessores>, p1: Throwable) {
-            Log.i("ERRO_VIDEO", p1.toString())
+        override fun onFailure(call: Call<ResultProfessores>, t: Throwable) {
+            Log.e("CARALHO", "Erro: ${t.message}", t)
         }
     })
+}
+catch(e:Exception){
+    Log.i("CARALHO", e.toString())
+}
+//    callProfessores.enqueue(object : Callback<ResultProfessores> {
+//        override fun onResponse(p0: Call<ResultProfessores>, p1: Response<ResultProfessores>) {
+//            try{
+//            val professorResponse = p1.body()
+//            Log.i("CARALHO", "$professorResponse 77")
+//            if (professorResponse != null) {
+//                if (professorResponse.status_code==200) {
+//                    if (professorResponse != null) {
+//                        funcionouState = true
+//                        dadosProfessores = professorResponse
+//                        Log.i("CARALHO", "$professorResponse 82")
+//                    } else{funcionouState=false
+//                        Log.i("CARALHO", "PQP")
+//                    }
+//
+//                } else {
+//                    Log.i("CARALHO", "se for eu choro")
+//                }
+//            }
+//            else{
+//
+//            }
+//            }
+//            catch (e: Exception){
+//                Log.i("CARALHO", e.toString())
+//            }
+//        }
+//        override fun onFailure(p0: Call<ResultProfessores>, p1: Throwable) {
+//            Log.i("CARALHO", p1.toString())
+//        }
+//    })
+
     val painter: Painter =
         if (fotoPerfil != "" && fotoPerfil != "null" && fotoPerfil.isNotEmpty()) {
             rememberAsyncImagePainter(model = fotoPerfil)
         } else {
             painterResource(id = R.drawable.perfil)
         }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFD0E6FF))
     ) {
+        Column(){
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -153,17 +189,17 @@ fun Chat(
             ) {
                 //barra de pesquisa
 
-                    Icon(
-                        Icons.Filled.Search,
-                        contentDescription = "Pesquisar por usuario...",
-                        tint = Color(0xFF04509C)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Pesquisar por usuario...",
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold
-                    )
+                Icon(
+                    Icons.Filled.Search,
+                    contentDescription = "Pesquisar por usuario...",
+                    tint = Color(0xFF04509C)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Pesquisar por usuario...",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
 
 
             }
@@ -179,45 +215,42 @@ fun Chat(
             )
 
             Spacer(modifier = Modifier.height(10.dp))
+            Log.i("ONDE",dadosProfessores.toString())
 
-            LazyRow(
+            Row(
             ) {
-                items(5) { count ->
+                dadosProfessores.professores!!.forEach {
+                    professor->
                     val professorPainter: Painter =
-                        if (funcionouState && !dadosProfessores.professores?.get(count)?.foto_perfil.isNullOrEmpty()) {
+                        if (funcionouState && !professor.foto_perfil.isNullOrEmpty()) {
                             rememberAsyncImagePainter(
-                                model = dadosProfessores.professores?.get(
-                                    count
-                                )?.foto_perfil
+                                model = professor.foto_perfil
                             )
                         } else {
                             painterResource(id = R.drawable.perfil)
                         }
-                    Log.i("PROFESSOR", count.toString())
+                    Log.i("PROFESSOR", professor.toString())
                     Column(
                         modifier = Modifier
                             .padding(end = 10.dp)
-                            .align(alignment = Alignment.CenterHorizontally)
                             .clickable {
                                 controleDeNavegacao.navigate(
                                     "outroPerfil?id=${id}&idOutroUsuario=${
-                                        dadosProfessores.professores?.get(
-                                            count
-                                        )?.id_professor
+                                        professor.id_professor
                                     }&tipoUsuario=${tipoUsuario}&tipoOutroUsuario=professor&fotoPerfil=${fotoPerfil}"
                                 )
                             },
 
-                    ) {
+                        ) {
 
                         Image(
                             painter = professorPainter,
-                            contentDescription = "foto de perfil do usuario${count}",
+                            contentDescription = "foto de perfil do usuario${professor.nome}",
                             modifier = Modifier
                                 .size(width = 64.dp, height = 64.dp),
                             contentScale = ContentScale.Fit
                         )
-                        dadosProfessores.professores?.get(count)?.nome?.let {
+                        professor.nome.let {
                             Text(
                                 text = it,
                                 fontWeight = FontWeight.Bold,
@@ -227,15 +260,15 @@ fun Chat(
                             )
                         }
                     }
-
                 }
+
             }
         }
 
         Spacer(modifier = Modifier.height(40.dp))
+    }
 
-
-//        LazyColumn(
+//        Column(
 //            modifier = Modifier
 //                .width(319.dp)
 //                .padding(top=10.dp)

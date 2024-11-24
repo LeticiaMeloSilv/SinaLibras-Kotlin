@@ -4,5 +4,6 @@ data class ResultProfessores(
     val professores: List<Professor>?=null,
     val status: Boolean=false,
     val status_code: Int=0,
-    val message: String=""
+    val message: String="",
+    val quantidade: Int = 0,
 )

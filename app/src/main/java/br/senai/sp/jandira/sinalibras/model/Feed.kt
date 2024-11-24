@@ -10,8 +10,9 @@ data class Feed(
     val tipo:String="",
     val titulo:String="",
     val foto_capa:String="",
-    val modulo:List<Modulo>?=null,
-    val nivel:List<Nivel>?=null,
+    val url_video:String="",
+    val modulo:Modulo?=null,
+    val nivel:Nivel?=null,
     val comentarios:List<Comentarios>?=null,
-    val professor:List<Professor>?=null,
+    val professor:Professor?=null,
     )

@@ -568,12 +568,9 @@ class MainActivity : ComponentActivity() {
 
 
                         composable(
-                            "postarPostagem?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
+                            "postarPostagem?id={id}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
-                                navArgument("email") { type = NavType.StringType },
-                                navArgument("nome") { type = NavType.StringType },
-                                navArgument("dataNascimento") { type = NavType.StringType },
                                 navArgument("fotoPerfil") {
                                     type = NavType.StringType;nullable = true
                                 },
@@ -581,10 +578,6 @@ class MainActivity : ComponentActivity() {
                             )
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
-                            val email = backStackEntry.arguments?.getString("email") ?: ""
-                            val nome = backStackEntry.arguments?.getString("nome") ?: ""
-                            val dataNascimento =
-                                backStackEntry.arguments?.getString("dataNascimento") ?: ""
                             val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
                             val tipoUsuario =
                                 backStackEntry.arguments?.getString("tipoUsuario") ?: ""
@@ -592,9 +585,6 @@ class MainActivity : ComponentActivity() {
                             PostPostagem(
                                 controleDeNavegacao = controleDeNavegacao,
                                 id = id,
-                                email = email,
-                                nome = nome,
-                                dataNascimento = dataNascimento,
                                 fotoPerfil = fotoPerfil,
                                 tipoUsuario = tipoUsuario,
                                 getContent = { getContent.launch("image/*") },
@@ -606,12 +596,9 @@ class MainActivity : ComponentActivity() {
 
 
                         composable(
-                            "postarVideo?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
+                            "postarVideo?id={id}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
-                                navArgument("email") { type = NavType.StringType },
-                                navArgument("nome") { type = NavType.StringType },
-                                navArgument("dataNascimento") { type = NavType.StringType },
                                 navArgument("fotoPerfil") {
                                     type = NavType.StringType;nullable = true
                                 },
@@ -619,10 +606,6 @@ class MainActivity : ComponentActivity() {
                             )
                         ) { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
-                            val email = backStackEntry.arguments?.getString("email") ?: ""
-                            val nome = backStackEntry.arguments?.getString("nome") ?: ""
-                            val dataNascimento =
-                                backStackEntry.arguments?.getString("dataNascimento") ?: ""
                             val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
                             val tipoUsuario =
                                 backStackEntry.arguments?.getString("tipoUsuario") ?: ""
@@ -630,9 +613,6 @@ class MainActivity : ComponentActivity() {
                             PostVideo(
                                 controleDeNavegacao = controleDeNavegacao,
                                 id = id,
-                                email = email,
-                                nome = nome,
-                                dataNascimento = dataNascimento,
                                 fotoPerfil = fotoPerfil,
                                 tipoUsuario = tipoUsuario,
                                 getContent = { getContent.launch("video/*") },

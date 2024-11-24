@@ -270,9 +270,6 @@ fun PostPostagem(
     id: String,
     tipoUsuario: String,
     fotoPerfil: String,
-    dataNascimento: String,
-    nome: String,
-    email: String,
     getContent: () -> Unit,
     initialImageUri: Uri?
 ) {

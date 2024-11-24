@@ -1,6 +1,8 @@
 package br.senai.sp.jandira.sinalibras.Screens
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,7 +48,10 @@ import coil.compose.rememberAsyncImagePainter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Aulas(
     controleDeNavegacao: NavHostController,
@@ -65,6 +70,7 @@ mutableStateOf(ResultVideo())
     var erroState by remember {
         mutableStateOf(false)
     }
+
     val callVideos =
         RetrofitFactory().getPostagensService().getVideosById(idModulo.toInt())
 
@@ -103,6 +109,7 @@ mutableStateOf(ResultVideo())
             Log.i("ERRO_VIDEO", p1.toString())
         }
     })
+
     if (!funcionouState && !erroState) {
         Box(
             modifier = Modifier
@@ -186,6 +193,10 @@ mutableStateOf(ResultVideo())
             }
             LazyColumn {
                 items(dadosVideos.videos ?: emptyList()) { video ->
+                    val data = LocalDate.parse(video.data.substring(0, 10))
+                    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+                    val data_postado=data.format(formatter)
                     Log.i("CALMA", dadosVideos.toString())
                     Card(
                         shape = RoundedCornerShape(16.dp),
@@ -216,7 +227,7 @@ mutableStateOf(ResultVideo())
                                     color = Color.Black
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
-                            Text(text = video.data, fontSize = 14.sp)
+                                video.professor?.get(0)?.let { Text(text = it.nome, fontSize = 14.sp) }
                         }
                     }
                 }
