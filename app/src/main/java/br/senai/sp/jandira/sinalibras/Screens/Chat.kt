@@ -77,6 +77,8 @@ try{
             Log.i("CARALHO", "Código de resposta: ${response.code()}")
             if (response.isSuccessful) {
                 Log.i("CARALHO", "Resposta: ${response.body()}")
+                funcionouState = true
+                        dadosProfessores = professorResponse
             } else {
                 Log.e("CARALHO", "Erro: ${response.errorBody()?.string()}")
             }        }
