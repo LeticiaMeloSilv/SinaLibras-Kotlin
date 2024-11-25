@@ -28,14 +28,17 @@ import br.senai.sp.jandira.sinalibras.Screens.SobreNos
 import br.senai.sp.jandira.sinalibras.Screens.VideoInfo
 import br.senai.sp.jandira.sinalibras.ui.theme.SinaLibrasTheme
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import br.senai.sp.jandira.sinalibras.Screens.Aulas
 import br.senai.sp.jandira.sinalibras.Screens.Chat
+import br.senai.sp.jandira.sinalibras.Screens.EditarVideo
 import br.senai.sp.jandira.sinalibras.Screens.Feed
 import br.senai.sp.jandira.sinalibras.Screens.Modulos
 import br.senai.sp.jandira.sinalibras.Screens.PerfilOutroUsuario
@@ -48,6 +51,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 //caso mude o ipv4 do note, muda o ip configumado no res/xml/network_security_config e no retrofit
 class MainActivity : ComponentActivity() {
     private lateinit var getContent: ActivityResultLauncher<String>
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidThreeTen.init(this)//coisinha q pega data atual
@@ -430,7 +434,55 @@ class MainActivity : ComponentActivity() {
                                 fotoPerfil = fotoPerfil
                             )
                         }
+                        composable(//FEITO
+                            "editarVideo?idDoVideo={idDoVideo}&tipoUsuario={tipoUsuario}&id={id}&fotoPerfil={fotoPerfil}&idModulo={idModulo}&idNivel={idNivel}&duracao={duracao}&url={url}&foto={foto}&titulo={titulo}&descricao={descricao}",
+                            arguments = listOf(
+                                navArgument("idDoVideo") { type = NavType.StringType },
+                                navArgument("tipoUsuario") { type = NavType.StringType },
+                                navArgument("id") { type = NavType.StringType },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
+                                navArgument("idModulo") { type = NavType.StringType },
+                                navArgument("idNivel") { type = NavType.StringType },
+                                navArgument("duracao") { type = NavType.StringType },
+                                navArgument("url") { type = NavType.StringType },
+                                navArgument("foto") { type = NavType.StringType },
+                                navArgument("titulo") { type = NavType.StringType },
+                                navArgument("descricao") { type = NavType.StringType },
 
+                                )
+                        ) { backStackEntry ->
+                            val idDoVideo = backStackEntry.arguments?.getString("idDoVideo") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+                            val idModulo = backStackEntry.arguments?.getString("idModulo") ?: ""
+                            val idNivel = backStackEntry.arguments?.getString("idNivel") ?: ""
+                            val titulo = backStackEntry.arguments?.getString("titulo") ?: ""
+                            val url = backStackEntry.arguments?.getString("url") ?: ""
+                            val duracao = backStackEntry.arguments?.getString("duracao") ?: ""
+                            val foto = backStackEntry.arguments?.getString("foto") ?: ""
+                            val descricao = backStackEntry.arguments?.getString("descricao") ?: ""
+
+                            EditarVideo(
+                                controleDeNavegacao = controleDeNavegacao,
+                                idDoVideo = idDoVideo,
+                                idModulo = idModulo,
+                                idNivel = idNivel,
+                                titulo = titulo,
+                                url=url,
+                                duracao=duracao,
+                                descricao=descricao,
+                                fotoCapa=foto,
+                                id = id,
+                                tipoUsuario = tipoUsuario,
+                                fotoPerfil = fotoPerfil,
+                                getContent = { getContent.launch("image/*") },
+                                initialImageUri = imageUri
+                            )
+                        }
                         composable(
                             "modulos?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
 

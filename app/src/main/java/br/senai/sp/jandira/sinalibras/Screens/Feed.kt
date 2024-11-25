@@ -25,9 +25,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,11 +41,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -73,26 +78,77 @@ fun Feed(
     var focus by remember {
         mutableStateOf(false)
     }
+    val funcionouState= remember{
+        mutableStateOf(false)
+    }
+    val erroState=remember{
+        mutableStateOf(false)
+    }
 
     val callFeed = RetrofitFactory().getPostagensService().getAllFeed()
     callFeed.enqueue(object : Callback<ResultFeed> {
         override fun onResponse(p0: Call<ResultFeed>, p1: Response<ResultFeed>) {
             val alunoResponse = p1.body()
             if (alunoResponse == null) {
+                erroState.value=true
                 Log.i("ERRO_MODULOS", p1.toString())
             } else {
                 Log.i("ERRO_", alunoResponse.toString())
-                //funcionouState = true
+                funcionouState.value = true
                 dados = alunoResponse
             }
         }
 
         override fun onFailure(p0: Call<ResultFeed>, p1: Throwable) {
+            erroState.value=true
+
             Log.i("ERRO_PERFIL", p1.toString())
         }
 
 
     })
+    if (!funcionouState.value && !erroState.value) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFFC7E2FE), Color(0xFF345ADE))
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Logotipo SinaLibras",
+                    modifier = Modifier.size(100.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "SinaLibras",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF3F51B5)
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                //isso q faz o circulo q roda
+                CircularProgressIndicator(
+                    color = Color(0xFF3F51B5),
+                    strokeWidth = 4.dp,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+        }
+
+    } else if (funcionouState.value) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -115,7 +171,10 @@ fun Feed(
                 )
 
                 Image(
-                    painter = rememberAsyncImagePainter(model = fotoPerfil),
+                    painter = rememberAsyncImagePainter(
+                        model = fotoPerfil,
+                        placeholder = painterResource(R.drawable.perfil),
+                        error = painterResource(id = R.drawable.erro)),
                     contentDescription = null,
                     modifier = Modifier
                         .size(50.dp)
@@ -161,7 +220,15 @@ fun Feed(
                 dados.feed?.forEach { feed ->
 
                     Card(
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFEAF4FF))
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFEAF4FF)),
+                        modifier=Modifier.clickable{
+                            if(feed.tipo=="postagem"){
+
+                            }
+                            else{
+                                controleDeNavegacao.navigate("video?idDoVideo=${feed.id}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${feed.modulo?.id_modulo}&nomeModulo=${feed.modulo?.modulo}")
+                            }
+                        }
                     ) {
                         Row(
                             modifier = Modifier
@@ -174,6 +241,7 @@ fun Feed(
                                     if (feed.professor.foto_perfil != "" && feed.professor.foto_perfil != "null" && feed.professor.foto_perfil != null && feed.professor.foto_perfil.isNotEmpty()) {
                                         rememberAsyncImagePainter(
                                             model = feed.professor.foto_perfil,
+                                            placeholder = painterResource(R.drawable.perfil),
                                             error = painterResource(id = R.drawable.erro)
                                         )
                                     } else {
@@ -213,25 +281,25 @@ fun Feed(
                             if (feed.tipo == "postagem") {
                                 fotoPublicacao =
                                     rememberAsyncImagePainter(
-                                        model = feed.foto
+                                        model = feed.foto,
+                                        placeholder = painterResource(R.drawable.erro),
+                                        error = painterResource(id = R.drawable.erro)
                                     )
 
                             } else {
                                 fotoPublicacao =
                                     rememberAsyncImagePainter(
-                                        model = feed.foto_capa
+                                        model = feed.foto_capa,
+                                                placeholder = painterResource(R.drawable.erro),
+                                        error = painterResource(id = R.drawable.erro)
                                     )
                             }
-                            if (feed.tipo == "postagem") {
-                                if (feed.foto != null) {
                                     Image(
                                         painter = fotoPublicacao,
                                         contentDescription = "foto da publicação",
                                         modifier = Modifier
                                             .fillMaxSize()
                                     )
-                                }
-                            }
                         }
                         if (feed.tipo == "postagem") {
                             Text(
@@ -264,6 +332,24 @@ fun Feed(
                     .align(Alignment.BottomCenter)
                     .padding(start=16.dp,end=16.dp,top=16.dp, bottom = 105.dp)
             ) {
+                Button(
+                    onClick = {
+                        focus = false
+                    },
+                    colors = ButtonColors(
+                        Color.Transparent,
+                        Color.Transparent,
+                        Color.Transparent,
+                        Color.Transparent
+                    ),
+                    modifier = Modifier.offset(x = -20.dp, y = -10.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.btn_cancelar),
+                        contentDescription = "Botao cancelar ação",
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -466,6 +552,62 @@ fun Feed(
             }
 
         }
+    }}
+    else{
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFD0E6FF))
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                },
+                colors = ButtonColors(
+                    Color.Transparent,
+                    Color.Transparent,
+                    Color.Transparent,
+                    Color.Transparent
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.btn_voltar),
+                    contentDescription = "Botao Voltar",
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Image(
+                painter = painterResource(id = R.drawable.erro),
+                contentDescription = "logo",
+                modifier = Modifier
+
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            Text(
+                text = "ERRO!!",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+
+            Text(
+                text = "mande uma\nmensagem para o\ntime de suporte",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black,
+                textAlign = TextAlign.Center
+            )
+        }
     }
+
 }
 

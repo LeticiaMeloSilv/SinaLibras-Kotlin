@@ -100,34 +100,34 @@ fun Configuracoes(
     ) {
 
 
-            Button(
-                onClick = {
-                    controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
-                },
-                colors = ButtonColors(
-                    Color.Transparent,
-                    Color.Transparent,
-                    Color.Transparent,
-                    Color.Transparent
-                )
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.btn_voltar),
-                    contentDescription = "Botao Voltar",
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-
-            Text(
-                text = "Configurações",
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp,
-                color = Color.Black,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(horizontal = 60.dp)
+        Button(
+            onClick = {
+                controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+            },
+            colors = ButtonColors(
+                Color.Transparent,
+                Color.Transparent,
+                Color.Transparent,
+                Color.Transparent
             )
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.btn_voltar),
+                contentDescription = "Botao Voltar",
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+
+        Text(
+            text = "Configurações",
+            fontWeight = FontWeight.Bold,
+            fontSize = 22.sp,
+            color = Color.Black,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(horizontal = 60.dp)
+        )
 
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -137,7 +137,7 @@ fun Configuracoes(
             value = "",
             onValueChange = {},
             leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = null, tint = Color.Black)
+                Icon(Icons.Default.Search, contentDescription = null, tint = Color.Black)
 
             },
             label = { Text("Pesquisar...", color = Color.Black, fontWeight = FontWeight.Medium) },
@@ -413,11 +413,11 @@ fun Configuracoes(
                     textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Row (
-                    modifier=Modifier.fillMaxWidth(),
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
-                ){
+                ) {
                     Button(
                         onClick = {
                             focusTelaSegundaConfirmacao.value = true
@@ -445,7 +445,8 @@ fun Configuracoes(
                     Button(
                         onClick = {
                             focusTela.value = false
-                            focusTelaSegundaConfirmacao.value = false                        },
+                            focusTelaSegundaConfirmacao.value = false
+                        },
                         colors = ButtonColors(
                             Color.Transparent,
                             Color.Transparent,
@@ -488,7 +489,8 @@ fun Configuracoes(
                     onClick = {
 
                         focusTela.value = false
-                        focusTelaSegundaConfirmacao.value = false                    },
+                        focusTelaSegundaConfirmacao.value = false
+                    },
                     colors = ButtonColors(
                         Color.Transparent,
                         Color.Transparent,
@@ -550,11 +552,11 @@ fun Configuracoes(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Row (
-                    modifier=Modifier.fillMaxWidth(),
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
-                ){
+                ) {
                     Button(
                         onClick = {
                             if (emailState.value == "") {

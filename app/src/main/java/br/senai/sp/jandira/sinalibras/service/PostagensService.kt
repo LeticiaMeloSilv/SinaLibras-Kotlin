@@ -2,19 +2,23 @@ package br.senai.sp.jandira.service
 
 import br.senai.sp.jandira.sinalibras.model.Comentarios
 import br.senai.sp.jandira.sinalibras.model.Postagem
+import br.senai.sp.jandira.sinalibras.model.Professor
 import br.senai.sp.jandira.sinalibras.model.ResultComentario
 import br.senai.sp.jandira.sinalibras.model.ResultFeed
 import br.senai.sp.jandira.sinalibras.model.ResultModulo
 import br.senai.sp.jandira.sinalibras.model.ResultNivel
 import br.senai.sp.jandira.sinalibras.model.ResultPostagem
+import br.senai.sp.jandira.sinalibras.model.ResultProfessor
 import br.senai.sp.jandira.sinalibras.model.ResultVideo
 import br.senai.sp.jandira.sinalibras.model.ResultVideoID
 import br.senai.sp.jandira.sinalibras.model.VideoAula
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface PostagensService {
@@ -55,6 +59,10 @@ interface PostagensService {
     fun setSalvarVideoAula(@Body videoAula: VideoAula): Call<ResultVideo>
 
 
+    @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
+    @PUT("/v1/sinalibras/videoaula/{id}")
+    fun setAtualizarVideoAula(@Path("id")id:Int,@Body videoAula: VideoAula): Call<ResultVideo>
+
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/videoaula/comentario")
@@ -66,6 +74,9 @@ interface PostagensService {
     fun setSalvarPostagem(@Body postagem: Postagem): Call<ResultPostagem>
 
 
+
+    @DELETE("/v1/sinalibras/videoaula/{id}")
+    fun setDellVideo(@Path("id")id:Int): Call<ResultVideo>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/postagem/comentario")

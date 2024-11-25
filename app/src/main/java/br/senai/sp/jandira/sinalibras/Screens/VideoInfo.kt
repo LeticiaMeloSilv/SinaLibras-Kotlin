@@ -319,6 +319,7 @@ fun VideoInfo(
 
             }
         }
+            if(tipoUsuario=="aluno"){
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -388,6 +389,7 @@ fun VideoInfo(
 
                                     if (p1.isSuccessful) {
                                         if (comentarioSalvo != null) {
+                                            Log.i("CALMA",comentarioSalvo.toString())
                                             controleDeNavegacao.navigate("video?idDoVideo=${idDoVideo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}")
                                         }
                                     } else {
@@ -428,7 +430,7 @@ fun VideoInfo(
                         modifier = Modifier.size(36.dp)
                     )
                 }
-                }
+                }}
 
         }
     }

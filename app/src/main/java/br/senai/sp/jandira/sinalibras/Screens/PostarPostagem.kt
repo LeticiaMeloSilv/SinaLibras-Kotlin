@@ -403,7 +403,8 @@ fun PostPostagem(
             shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter),
+                .align(Alignment.BottomCenter)
+                .padding(bottom=16.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color(0xFFD0E6FF)
             )
@@ -445,7 +446,8 @@ fun PostPostagem(
                 ),
                 modifier = Modifier
                     .width(135.dp)
-                    .height(48.dp),
+                    .height(48.dp)
+                    .align(Alignment.CenterHorizontally),
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(text = "POSTAR", fontWeight = FontWeight.Bold)

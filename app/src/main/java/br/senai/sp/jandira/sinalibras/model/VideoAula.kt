@@ -5,6 +5,7 @@ data class VideoAula(
     val url_video:String="",
     val titulo:String="",
     val duracao:String="",
+    val descricao:String="",
     val data:String="",
     val foto_capa:String="",
     val modulo:List<Modulo>?=null,

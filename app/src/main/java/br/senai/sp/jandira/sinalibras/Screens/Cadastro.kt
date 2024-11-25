@@ -437,7 +437,7 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                                                 email = emailState.value.lowercase(),
                                                 senha = senhaState.value,
                                                 data_nascimento = dataNascimento,
-                                                foto_perfil = "https://firebasestorage.googleapis.com/v0/b/sinalibras-439801.appspot.com/o/lv_0_20241118103324.mp4?alt=media&token=7ceaf70a-5f26-4535-9aed-253431c60346",
+                                                foto_perfil = "https://firebasestorage.googleapis.com/v0/b/sinalibras-439801.appspot.com/o/perfil.png?alt=media&token=389f67ce-ff31-4bbd-b1db-c014e30448c1",
                                                 data_cadastro = currentDate.toString()
                                             )
                                         )

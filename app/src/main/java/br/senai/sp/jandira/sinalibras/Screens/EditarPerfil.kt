@@ -504,6 +504,7 @@ fun EditarPerfil(
                                 Log.i("ALUNO", alunoResponse.toString())
                                 if (p1.isSuccessful) {
                                     if (alunoResponse != null) {
+                                        link=""
                                         controleDeNavegacao.navigate(
                                             "configuracoes?id=${alunoResponse.aluno?.id_aluno}&email=${alunoResponse.aluno?.email}&nome=${alunoResponse.aluno?.nome}&dataNascimento=${alunoResponse.aluno?.data_nascimento}&fotoPerfil=${alunoResponse.aluno?.foto_perfil}&tipoUsuario=${tipoUsuario}"
                                         )

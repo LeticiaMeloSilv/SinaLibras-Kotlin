@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -538,11 +539,11 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
 
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center,modifier=Modifier.fillMaxWidth()){
-                    Button(onClick = {controleDeNavegacao.navigate("postarVideo?id=${id}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")}) {
+                    Button(onClick = {controleDeNavegacao.navigate("postarVideo?id=${professor.id_professor}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")}) {
                         Text(text="Postar Video")
                     }
                     Spacer(modifier=Modifier.width(20.dp))
-                    Button(onClick = {controleDeNavegacao.navigate("postarPostagem?id=${id}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")}) {
+                    Button(onClick = {controleDeNavegacao.navigate("postarPostagem?id=${professor.id_professor}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")}) {
                         Text(text="Postar Texto")
                     }
                 }
@@ -559,7 +560,9 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
                             modifier = Modifier
                                 .padding(vertical = 8.dp)
                                 .fillMaxWidth()
-                             //  .clickable { controleDeNavegacao.navigate("editarVideo?idDoVideo=${video.id_videoaula}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}") }
+
+                                .clickable {
+                                    controleDeNavegacao.navigate("editarVideo?idDoVideo=${video.id_videoaula}&tipoUsuario=${tipoUsuario}&id=${id}&fotoPerfil=${fotoPerfil}&idModulo=${video.id_modulo}&idNivel=${video.id_nivel}&duracao=${video.duracao}&url=${video.url_video}&foto=${video.foto_capa}&titulo=${video.titulo}&descricao=${video.descricao}") }
                         ) {
                             Column {
                                 // Video thumbnail

@@ -60,7 +60,7 @@ import org.threeten.bp.LocalDate
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+ var linkUrl=""
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostVideo(
@@ -93,6 +93,7 @@ fun PostVideo(
     }
     LaunchedEffect(initialImageUri) {
         imageUri = initialImageUri
+        Log.i("upload",initialImageUri.toString())
         imageUri?.let { uploadVideo(it) }
         fotoState.value = imageUri.toString()
 
@@ -297,6 +298,7 @@ fun PostVideo(
             Column(
                 modifier = Modifier.verticalScroll(scrollState).align(Alignment.Start)
                 ) {
+                Log.i("upload",dadosModulos.modulo.toString())
                 dadosModulos.modulo?.forEach { item ->
                     Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(
@@ -337,21 +339,22 @@ fun PostVideo(
         ) {
             Button(
                 onClick = {
-                    Log.i("aaaaa",tituloState.value)
-                    Log.i("aaaaa",idModuloEscolhidoState.value)
-                    Log.i("aaaaa",idNivelEscolhidoState.value)
-                    Log.i("aaaaa",link)
+Log.i("CARALHO",id)
+                    if(tituloState.value==""|| descricaoState.value==""||idModuloEscolhidoState.value==""||idNivelEscolhidoState.value==""||id==""||linkUrl==""||currentDate.toString()==""){
+                        mensagemErroState.value = "Existem campos requiridos que não foram preenchidos"
 
+                    }
                     val callUsuarios = RetrofitFactory()
                         .getPostagensService().setSalvarVideoAula(
                             videoAula = VideoAula(
                                 titulo = tituloState.value,
                                 duracao = "00:10:00",
+                                descricao = descricaoState.value,
                                 foto_capa = "link",
                                 id_modulo = idModuloEscolhidoState.value.toInt(),
                                 id_nivel = idNivelEscolhidoState.value.toInt(),
                                 id_professor = id.toLong(),
-                                url_video = link,
+                                url_video = linkUrl,
                                 data = currentDate.toString()
                             )
                         )
@@ -362,14 +365,27 @@ fun PostVideo(
                         ) {
                             val usuarioSalvo = p1.body()
                             Log.i("aaaaa",usuarioSalvo.toString())
+                            Log.i("aaaaa",p0.toString())
+
 
                             if (p1.isSuccessful) {
                                 if (usuarioSalvo != null) {
+                                    linkUrl=""
                                     controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                                }
+                                else {
+                                    linkUrl=""
+                                    mensagemErroState.value = "Ocorreu um erro por parte do Servidor, tente novamente mais tarde"
+
                                 }
 
                             } else {
-                                 mensagemErroState.value = usuarioSalvo!!.message.toString()
+                                if(usuarioSalvo!=null){
+                                    linkUrl=""
+                                    mensagemErroState.value = usuarioSalvo.message.toString()}
+                                else{
+                                    linkUrl=""
+                                    mensagemErroState.value="Ocorreu um erro, verifique se preencheu todos os campos"}
 
                             }
                         }
@@ -380,6 +396,7 @@ fun PostVideo(
                             p1: Throwable
                         ) {
                             Log.i("aaaaa", p1.toString())
+                            linkUrl=""
                             mensagemErroState.value =
                                 "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
 
@@ -412,11 +429,11 @@ fun uploadVideo(fileUri: Uri) {
         .addOnSuccessListener {
             fileRef.downloadUrl.addOnSuccessListener { uri ->
                 Log.i("UPLOAD", "URL de download: $uri")
-                link = uri.toString()
+                linkUrl = uri.toString()
             }
         }
         .addOnFailureListener { exception ->
-            link = ""
+            linkUrl = ""
             Log.i("UPLOAD", "Falha no upload: ${exception.message}")
         }
 }
