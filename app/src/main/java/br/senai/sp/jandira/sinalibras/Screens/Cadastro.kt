@@ -101,8 +101,8 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
         if (confirmaSenhaVisivel) VisualTransformation.None else PasswordVisualTransformation()
 //bloquear caracteres especiais(pro nome, vou adicionai essa regra no data nascimento tbm, só q dai só autorizando numeros e /)
     //arruma isso dps, está ao contrario, e só ta escrevendo uma letra
-      //  val filtroNome = Regex("[^a-zA-Z ]")
-   // val filtroData = Regex("[^0-9/]")
+      //  val filtroNome = Regex("[^0-9.,@#$%*&():;{}_=+<>!]/]")
+    //val filtroData = Regex("[^a-zA-Z .,@#$%*&():;{}_=+<>!]")
 
 
     //gradiente do background
@@ -302,7 +302,7 @@ fun Cadastro(controleDeNavegacao: NavHostController, emailProfessor: String) {
                     nascimentoState.value =it
 //                        newText ->
 //                    if (filtroData.matches(newText)) {
-//                        nascimentoState.value = newText
+//                        nascimentoState.value = it
 //                    }
                                 },
                 label = { Text("Data de nascimento") },

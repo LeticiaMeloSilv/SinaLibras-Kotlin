@@ -224,7 +224,7 @@ catch(e:Exception){
 
             Row(
             ) {
-                dadosProfessores.professores!!.forEach {
+                dadosProfessores.professor!!.forEach {
                     professor->
                     val professorPainter: Painter =
                         if (funcionouState && !professor.foto_perfil.isNullOrEmpty()) {
@@ -250,9 +250,9 @@ catch(e:Exception){
 
                         Image(
                             painter = professorPainter,
-                            contentDescription = "foto de perfil do usuario${professor.nome}",
+                            contentDescription = "foto de perfil do usuario ${professor.nome}",
                             modifier = Modifier
-                                .size(width = 64.dp, height = 64.dp),
+                                .size(100.dp),
                             contentScale = ContentScale.Fit
                         )
                         professor.nome.let {

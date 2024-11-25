@@ -40,6 +40,7 @@ import br.senai.sp.jandira.sinalibras.Screens.Aulas
 import br.senai.sp.jandira.sinalibras.Screens.Chat
 import br.senai.sp.jandira.sinalibras.Screens.EditarVideo
 import br.senai.sp.jandira.sinalibras.Screens.Feed
+import br.senai.sp.jandira.sinalibras.Screens.ImplementacaoFutura
 import br.senai.sp.jandira.sinalibras.Screens.Modulos
 import br.senai.sp.jandira.sinalibras.Screens.PerfilOutroUsuario
 import br.senai.sp.jandira.sinalibras.Screens.PostPostagem
@@ -106,7 +107,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(//FEITO(MUDAR LOGICA DE PEGAR VIDEO)
+                        composable(//FEITO
                             "quiz?idFornecido={idFornecido}&emailFornecido={emailFornecido}",
                             arguments = listOf(
                                 navArgument("idFornecido") { type = NavType.StringType },
@@ -151,7 +152,7 @@ class MainActivity : ComponentActivity() {
                         }
 
 
-                        composable(//FEITO(ACHO Q FEITO)
+                        composable(//FEITO
                             "outroPerfil?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}&idOutroUsuario={idOutroUsuario}&tipoOutroUsuario={tipoOutroUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -221,7 +222,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(//FEITO(INSERIR INFORMACOES REAIS)
+                        composable(//FEITO
                             "sobreNos?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -293,7 +294,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(//FAZER
+                        composable(//FEITO
                             "editarSenha?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -483,7 +484,7 @@ class MainActivity : ComponentActivity() {
                                 initialImageUri = imageUri
                             )
                         }
-                        composable(
+                        composable(//FEITO
                             "modulos?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
 
                             arguments = listOf(
@@ -506,7 +507,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        composable(
+                        composable(//FEITO
                             "feed?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -531,8 +532,33 @@ class MainActivity : ComponentActivity() {
                                 fotoPerfil = fotoPerfil
                             )
                         }
+                        composable(//FEITO
+                            "implementacao?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
+                            arguments = listOf(
+                                navArgument("id") { type = NavType.StringType },
+                                navArgument("tipoUsuario") { type = NavType.StringType },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
 
-                        composable(
+
+                                )
+                        ) { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+
+
+                            ImplementacaoFutura(
+                                controleDeNavegacao = controleDeNavegacao,
+                                id = id,
+                                tipoUsuario = tipoUsuario,
+                                fotoPerfil = fotoPerfil
+                            )
+                        }
+
+                        composable(//FEITO
                             "aulas?idModulo={idModulo}&nomeModulo={nomeModulo}&id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -559,7 +585,7 @@ class MainActivity : ComponentActivity() {
                                 fotoPerfil = fotoPerfil
                             )
                         }
-                        composable(
+                        composable(//FAZER
                             "chat?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -584,7 +610,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        composable(
+                        composable(//FEITO(deixar bnt)
                             "suporte?id={id}&email={email}&nome={nome}&dataNascimento={dataNascimento}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -619,7 +645,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FEITO
                             "postarPostagem?id={id}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },
@@ -647,7 +673,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                        composable(
+                        composable(//FEITO
                             "postarVideo?id={id}&fotoPerfil={fotoPerfil}&tipoUsuario={tipoUsuario}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.StringType },

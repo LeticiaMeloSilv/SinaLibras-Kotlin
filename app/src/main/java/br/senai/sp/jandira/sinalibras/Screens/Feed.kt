@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
@@ -31,8 +33,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,14 +52,18 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 import br.senai.sp.jandira.sinalibras.model.Aluno
+import br.senai.sp.jandira.sinalibras.model.Professor
 import br.senai.sp.jandira.sinalibras.model.ResultFeed
 import br.senai.sp.jandira.sinalibras.model.ResultModulo
+import br.senai.sp.jandira.sinalibras.model.ResultProfessor
+import br.senai.sp.jandira.sinalibras.model.ResultProfessores
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
@@ -63,6 +72,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Feed(
     controleDeNavegacao: NavHostController,
@@ -78,12 +88,19 @@ fun Feed(
     var focus by remember {
         mutableStateOf(false)
     }
-    val funcionouState= remember{
+    var funcionouState= remember{
         mutableStateOf(false)
     }
     val erroState=remember{
         mutableStateOf(false)
     }
+    val pesquisaProfessor=remember{
+        mutableStateOf(false)
+    }
+    var dadosPerfilProfessor by remember {
+        mutableStateOf(ResultProfessores())
+    }
+    var pesquisaState = remember { mutableStateOf("") }
 
     val callFeed = RetrofitFactory().getPostagensService().getAllFeed()
     callFeed.enqueue(object : Callback<ResultFeed> {
@@ -192,31 +209,108 @@ fun Feed(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFA5D1FF), shape = RoundedCornerShape(24.dp))
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal=10.dp)
+                    .background(Color(0xFFA5D1FF), shape = RoundedCornerShape(24.dp)),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.Center
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Filled.Search, contentDescription = "Buscar", tint = Color.Black)
+                    Icon(Icons.Filled.Search, contentDescription = "Buscar", tint = Color.Black,
+                        modifier=Modifier.clickable{
+                            funcionouState.value=false
+                            val callProfessorById = RetrofitFactory().getUsuarioService().getPesquisarProfessor(pesquisaState.value)
+                            callProfessorById.enqueue(object : Callback<ResultProfessores> {
+                                override fun onResponse(p0: Call<ResultProfessores>, p1: Response<ResultProfessores>) {
+                                    val professorResponse = p1.body()
+                                    if (p1.isSuccessful) {
+                                        if (professorResponse != null) {
+                                            if(professorResponse.status_code!=404){
+                                                pesquisaProfessor.value=true
+                                                dadosPerfilProfessor=professorResponse
+                                                funcionouState.value = true
+                                            }else{
+//aq vc coloca o pesquisar por video
+                                            }
+                                        }
+                                    } else {
+
+                                        Log.i("API Error", "Null response body")
+                                    }
+                                }
+
+                                override fun onFailure(p0: Call<ResultProfessores>, p1: Throwable) {
+                                    Log.i("ERRO_PERFIL", p1.toString())
+                                }
+
+
+                            })
+                        })
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Buscar", color = Color.Black)
+                    OutlinedTextField(
+                        value = pesquisaState.value,
+                        onValueChange = { pesquisaState.value = it },
+                        label={ Text(text = "Buscar...", color = Color.Black)},
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
+                        ),
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                funcionouState.value=false
+                                val callProfessorById = RetrofitFactory().getUsuarioService().getPesquisarProfessor(pesquisaState.value)
+                                callProfessorById.enqueue(object : Callback<ResultProfessores> {
+                                    override fun onResponse(p0: Call<ResultProfessores>, p1: Response<ResultProfessores>) {
+                                        val professorResponse = p1.body()
+                                        if (p1.isSuccessful) {
+                                            if (professorResponse != null) {
+                                                if(professorResponse.status_code!=404){
+                                                    pesquisaProfessor.value=true
+                                                    dadosPerfilProfessor=professorResponse
+                                                    funcionouState.value = true
+                                                    Log.i("CALMA",professorResponse.toString())
+                                                }else{
+//aq vc coloca o pesquisar por video
+                                                }
+                                            }
+                                        } else {
+
+                                            Log.i("API Error", "Null response body")
+                                        }
+                                    }
+
+                                    override fun onFailure(p0: Call<ResultProfessores>, p1: Throwable) {
+                                        Log.i("ERRO_PERFIL", p1.toString())
+                                    }
+
+
+                                })
+                            }
+                        )
+                    )
                 }
 
-                Icon(
-                    imageVector = Icons.Filled.List,
-                    contentDescription = "Filtrar",
-                    tint = Color.Black,
-                    modifier = Modifier.size(24.dp)
-                )
+//                Icon(
+//                    imageVector = Icons.Filled.List,
+//                    contentDescription = "Filtrar",
+//                    tint = Color.Black,
+//                    modifier = Modifier.size(24.dp)
+//                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
             Column(
                 modifier = Modifier.verticalScroll(scrollState)
             ) {
+                if(!pesquisaProfessor.value){
                 dados.feed?.forEach { feed ->
 
                     Card(
@@ -319,6 +413,64 @@ fun Feed(
 
                 }
             }
+            else{
+                    Button(
+                        onClick = {
+    dadosPerfilProfessor==null
+                                  pesquisaState.value==""
+                            pesquisaProfessor.value=false
+                                  },
+                        colors = ButtonColors(
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent,
+                            Color.Transparent
+                        )
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.btn_voltar),
+                            contentDescription = "Botao Voltar",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Row{
+                    dadosPerfilProfessor.professor?.forEach{professor->
+                        val painter: Painter =
+                            if (professor.foto_perfil != "" && professor.foto_perfil != "null" && professor.foto_perfil != null && professor.foto_perfil.isNotEmpty()) {
+                                rememberAsyncImagePainter(
+                                    model = professor.foto_perfil,
+                                    placeholder = painterResource(R.drawable.perfil),
+                                    error = painterResource(id = R.drawable.erro)
+                                )
+                            } else {
+                                painterResource(id = R.drawable.perfil)
+                            }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,modifier=Modifier.padding(start=16.dp,top=16.dp).clickable{
+                                controleDeNavegacao.navigate(
+                                    "outroPerfil?id=${id}&idOutroUsuario=${
+                                        professor.id_professor
+                                    }&tipoUsuario=${tipoUsuario}&tipoOutroUsuario=professor&fotoPerfil=${fotoPerfil}")
+                            }){
+                        Image(
+                            painter = painter,
+                            contentDescription = "foto de usuario do professor que postou essa publicação",
+                            modifier = Modifier
+                                .background(Color(0xFFA5D1FF), CircleShape)
+                                .size(100.dp)
+                                .clip(CircleShape), // Aplica a forma circular
+                            contentScale = ContentScale.Crop
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = professor.nome,
+                            fontSize = 18.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold)
+                        }
+                    }}
+
+            }}
         }
         if (focus) {
             Box(modifier=Modifier.fillMaxSize().background(color=Color(0x68090A1E))){

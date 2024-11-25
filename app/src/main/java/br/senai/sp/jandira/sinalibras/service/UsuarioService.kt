@@ -67,6 +67,10 @@ interface UsuarioService {
     @GET("/v1/sinalibras/professor/{id}")
     fun getProfessorId(@Path("id")id:Int): Call<ResultProfessor>
 
+
+    @GET("/v1/sinalibras/professor/nome/{nome}")
+    fun getPesquisarProfessor(@Path("nome")nome:String): Call<ResultProfessores>
+
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/professor")
     fun setSalvarProfessor(@Body usuario: Professor): Call<ResultProfessor>
