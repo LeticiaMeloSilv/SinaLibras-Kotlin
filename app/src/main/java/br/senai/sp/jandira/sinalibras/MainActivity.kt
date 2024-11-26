@@ -1,5 +1,7 @@
 package br.senai.sp.jandira.sinalibras
 
+import android.app.Application
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -709,6 +711,42 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+class LoginActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            SinaLibrasTheme {
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    Login { userID ->
+                        setupZegoUIKit(userID)
+                        navigateToMainActivity(userID)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupZegoUIKit(userID: String) {
+        val application: Application = application
+        val appID: Long = 1212991992
+        val appSign: String = "4d8c3b893a6deef9dafe73b70cd996f99070c0062549dab7ae7bff729225be21"
+        val userName: String = userID
+        val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
+        ZegoUIKitPrebuiltCallService.init(application, appID, appSign, userID, userName, callInvitationConfig)
+    }
+
+    private fun navigateToMainActivity(userID: String) {
+        val context = this
+        val intent = Intent(context, MainActivity::class.java)
+        intent.putExtra("userID", userID)
+        startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ZegoUIKitPrebuiltCallService.unInit()
+    }
 
 
 //usei esse no AndroidManifest para ter acesso a internet

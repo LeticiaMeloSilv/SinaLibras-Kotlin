@@ -264,6 +264,31 @@ fun PerfilOutroUsuario(
             //btn manda mens
             Button(
                 onClick = { //AQ COLOCA O LINK PRA TELA DE VIDEO CHAMADA
+
+                    var targetUserID by remember { mutableStateOf("") }
+                    val videoCallButton = remember { ZegoSendCallInvitationButton(context = LocalContext.current) }
+                    val voiceCallButton = remember { ZegoSendCallInvitationButton(context = LocalContext.current) }
+
+                    fun setupButtons() {
+                        if (targetUserID.isNotEmpty()) {
+                            videoCallButton.setIsVideoCall(true)
+                            videoCallButton.resourceID = "zego_uikit_call"
+                            videoCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserID, targetUserID)))
+
+                            voiceCallButton.setIsVideoCall(false)
+                            voiceCallButton.resourceID = "zego_uikit_call"
+                            voiceCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserID, targetUserID)))
+                        }
+                    }
+
+                                targetUserID = idOutroUsuario
+                                setupButtons()
+
+                            AndroidView(
+                                factory = { videoCallButton },
+                                modifier = Modifier.size(60.dp)
+                            )
+
                      },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0F1951)),
                 shape = RoundedCornerShape(8.dp),

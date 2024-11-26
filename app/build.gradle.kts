@@ -93,4 +93,8 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx:21.1.0")
 
+
+    implementation("com.zegocloud:uikit:2.0.0")
+
+
 }

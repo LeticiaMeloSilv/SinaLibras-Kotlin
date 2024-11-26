@@ -16,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url=uri("https://artifact.zego.im/repository/maven-public/") }
     }
 }
 
