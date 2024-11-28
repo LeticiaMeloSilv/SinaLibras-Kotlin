@@ -130,33 +130,6 @@ fun Configuracoes(
         )
 
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-
-        TextField(
-            value = "",
-            onValueChange = {},
-            leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = null, tint = Color.Black)
-
-            },
-            label = { Text("Pesquisar...", color = Color.Black, fontWeight = FontWeight.Medium) },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .width(315.dp)
-                .height(44.dp)
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RoundedCornerShape(13.dp)
-                ),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color(0xFFACD0F5),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            shape = RoundedCornerShape(13.dp)
-        )
         Spacer(modifier = Modifier.height(80.dp))
 
         Box(

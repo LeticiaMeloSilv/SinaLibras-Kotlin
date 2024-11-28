@@ -75,8 +75,12 @@ fun SobreNos(
                 color = Color.Black
             )
         }
-        Spacer(modifier = Modifier.height(24.dp))
-
+        Image(
+            painter = painterResource(id = R.drawable.openowl),
+            contentDescription = "Logotipo OpenOwl",
+            modifier = Modifier.size(200.dp),
+            alignment = Alignment.Center
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -106,13 +110,12 @@ fun SobreNos(
                 contentScale = ContentScale.Fit
             )
         }
-        Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = "O SinaLibras é uma plataforma online e totalmente gratuita para conectar pessoas, ensinando a todos os nossos usuários a Língua de Sinais Brasileira e tudo sobre a comunidade de pessoas surdas, ensurdecidas e deficientes auditivos.",
             fontSize = 16.sp,
-            color = Color.Black
+            color = Color.Black,
+            modifier=Modifier.padding(20.dp)
         )
-        Spacer(modifier = Modifier.width(10.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -143,15 +146,14 @@ fun SobreNos(
             }
 
         }
-        Spacer(modifier = Modifier.width(10.dp))
 
         Text(
             text = "Foi pensando nessas pessoas que a plataforma foi desenvolvida, e para nos ajudar em todo processo de criação de conteúdo e informações, contamos com a ajuda de pessoas que têm propriedade para ensinar. 'Como garantem que isso aconteça em uma plataforma totalmente gratuita?' Nossos professores não são contratados, pois caso fossem, teríamos de cobrar pela utilização da plataforma, então, nossos professores são afiliados de ONGs e conhecedores da comunidade, para participarem, eles realizam um questionário antes de criarem suas contas, o usuário deve alcançar 70% de acertos para termos certeza de que ele é capacitado para espalhar informação e inclusão em nossa plataforma. A plataforma conta com um sistema de videoaulas, postagens de texto e videochamada, você tem a liberdade de explorar todo o conteúdo postado, comentar suas dúvidas e curtir suas videoaulas preferidas!",
             fontSize = 16.sp,
-            color = Color.Black
-        )
+            color = Color.Black,
+            modifier=Modifier.padding(20.dp)
 
-        Spacer(modifier = Modifier.height(10.dp))
+        )
 
         Row(
             modifier = Modifier

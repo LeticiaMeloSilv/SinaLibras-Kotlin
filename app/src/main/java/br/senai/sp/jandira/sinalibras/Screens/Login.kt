@@ -80,8 +80,6 @@ fun Login(controleDeNavegacao: NavHostController) {
     )
 
 
-    var userID by remember { mutableStateOf(TextFieldValue("")) }
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -246,7 +244,6 @@ fun Login(controleDeNavegacao: NavHostController) {
                                     Log.i("CARA",professorList.toString())
                                     if(p1.isSuccessful){
                                         if (professorList != null) {
-                                            onLogin(professorList.professor.id_professor)
                                             controleDeNavegacao.navigate("feed?id=${professorList.professor?.id_professor}&tipoUsuario=professor&fotoPerfil=${professorList.professor?.foto_perfil}")
                                         }
                                     }

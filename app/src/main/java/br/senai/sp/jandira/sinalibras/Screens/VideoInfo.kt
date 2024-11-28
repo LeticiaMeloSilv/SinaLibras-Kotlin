@@ -1,9 +1,12 @@
 package br.senai.sp.jandira.sinalibras.Screens
 
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,6 +64,7 @@ import org.threeten.bp.LocalDate
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.format.DateTimeFormatter
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -95,6 +99,7 @@ fun PlayerVideo(videoUri: Uri) {
     AndroidView(factory = { playerView })
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VideoInfo(
     controleDeNavegacao: NavHostController,
@@ -119,7 +124,12 @@ fun VideoInfo(
     var comentarioState = remember {
         mutableStateOf("")
     }
-
+    var salvarState by remember {
+        mutableStateOf(false)
+    }
+    var descricaoState by remember {
+        mutableStateOf(false)
+    }
     var mensagemErroState = remember {
         mutableStateOf("")
     }
@@ -131,13 +141,11 @@ fun VideoInfo(
             if (p1.isSuccessful) {
 
                 dadosVideoAula = videoResponse?.video!![0]
-                Log.i("CALMA", dadosVideoAula.toString())
 
                 funcionouState = true
 
             } else {
                 erroState = true
-                Log.i("CALMA", videoResponse?.message!!.toString())
             }
         }
 
@@ -237,32 +245,62 @@ fun VideoInfo(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-
+Row(verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.Center){
                     Text(
                         text = dadosVideoAula.titulo,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF3F51B5)
                     )
+                    Icon(
+                        painter = painterResource(id=R.drawable.seta),
+                        contentDescription = "ver mais",
+                        modifier = Modifier.size(16.dp)
+                            .clickable { descricaoState=!descricaoState},
+                        tint = Color(0xFF3F51B5),
+
+                        )
+}
                     Row(
                         horizontalArrangement = Arrangement.End
                     ) {
+                       val status=if(salvarState)
+                           painterResource(id = R.drawable.salvo)
+                        else{
+                           painterResource(id = R.drawable.salvar)
+                       }
                         Icon(
-                            painter = painterResource(id = R.drawable.curtir),
-                            contentDescription = "Favorito",
-                            modifier = Modifier.size(24.dp),
-                            tint = Color.Black
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Icon(
-                            painter = painterResource(id = R.drawable.salvar),
+                            painter = status,
                             contentDescription = "Salvar",
-                            modifier = Modifier.size(24.dp),
-                            tint = Color.Black
+                            modifier = Modifier.size(24.dp)
+                                .clickable { salvarState=!salvarState },
+                            tint = Color.Black,
+
                         )
                     }
                 }
+if(descricaoState){
+    val data = java.time.LocalDate.parse(dadosVideoAula.data.substring(0, 10))
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
+    val data_postado=data.format(formatter)
+    Column(modifier=Modifier.padding(start=32.dp, end=32.dp)){
+    Text(
+        text = dadosVideoAula.descricao,
+        fontSize = 15.sp,
+        color = Color.Black
+    )
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+        text = data_postado,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = Color(0xFF3F51B5)
+    )
+    }
+}
 
                 Row(
                     modifier = Modifier
@@ -431,6 +469,35 @@ fun VideoInfo(
                     )
                 }
                 }}
+            else{
+                Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomStart)
+                    .background(Color(0xFFC7E2FE))
+                    .height(50.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    onClick = {
+                        controleDeNavegacao.navigate("aulas?idModulo=${idModulo}&nomeModulo=${nomeModulo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                    },
+                    colors = ButtonColors(
+                        Color.Transparent,
+                        Color.Transparent,
+                        Color.Transparent,
+                        Color.Transparent
+                    )
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.btn_voltar),
+                        contentDescription = "Botao Voltar",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+            }
 
         }
     }

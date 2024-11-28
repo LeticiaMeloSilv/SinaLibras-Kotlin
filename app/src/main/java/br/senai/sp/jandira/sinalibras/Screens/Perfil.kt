@@ -1,6 +1,9 @@
+
 package br.senai.sp.jandira.sinalibras.Screens
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -54,7 +57,9 @@ import coil.compose.rememberAsyncImagePainter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: String, fotoPerfil:String) {
 
@@ -583,7 +588,11 @@ fun Perfil(controleDeNavegacao: NavHostController, tipoUsuario: String,id: Strin
                                         color = Color.Black
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    Text(text = video.data, fontSize = 14.sp)
+                                    val data = java.time.LocalDate.parse(video.data.substring(0, 10))
+                                    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+                                    val data_postado=data.format(formatter)
+                                    Text(text = data_postado, fontSize = 14.sp)
                                 }
                             }}
                         }

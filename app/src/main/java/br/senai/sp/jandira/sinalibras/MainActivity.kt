@@ -40,9 +40,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import br.senai.sp.jandira.sinalibras.Screens.Aulas
 import br.senai.sp.jandira.sinalibras.Screens.Chat
+import br.senai.sp.jandira.sinalibras.Screens.EditarPostagem
 import br.senai.sp.jandira.sinalibras.Screens.EditarVideo
 import br.senai.sp.jandira.sinalibras.Screens.Feed
-import br.senai.sp.jandira.sinalibras.Screens.ImplementacaoFutura
 import br.senai.sp.jandira.sinalibras.Screens.Modulos
 import br.senai.sp.jandira.sinalibras.Screens.PerfilOutroUsuario
 import br.senai.sp.jandira.sinalibras.Screens.PostPostagem
@@ -64,7 +64,6 @@ class MainActivity : ComponentActivity() {
         getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
                 imageUri = it
-                Log.i("CALMA", "URI recebida: $it")
             }
         }
 
@@ -487,6 +486,39 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(//FEITO
+                            "editarPostagem?idDaPostagem={idDaPostagem}&tipoUsuario={tipoUsuario}&id={id}&fotoPerfil={fotoPerfil}&fotoPerfil={foto}&texto={texto}",
+                            arguments = listOf(
+                                navArgument("idDaPostagem") { type = NavType.StringType },
+                                navArgument("tipoUsuario") { type = NavType.StringType },
+                                navArgument("id") { type = NavType.StringType },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
+                                navArgument("foto") { type = NavType.StringType },
+                                navArgument("texto") { type = NavType.StringType },
+
+                                )
+                        ) { backStackEntry ->
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+                            val idDaPostagem = backStackEntry.arguments?.getString("idDaPostagem") ?: ""
+                            val texto = backStackEntry.arguments?.getString("texto") ?: ""
+                            val foto = backStackEntry.arguments?.getString("foto") ?: ""
+
+                            EditarPostagem(
+                                controleDeNavegacao = controleDeNavegacao,
+                                idDaPostagem = idDaPostagem,
+                                texto = texto,
+                                fotoPerfil=foto,
+                                id = id,
+                                tipoUsuario = tipoUsuario,
+                                getContent = { getContent.launch("image/*") },
+                                initialImageUri = imageUri
+                            )
+                        }
+                        composable(//FEITO
                             "modulos?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
 
                             arguments = listOf(
@@ -534,31 +566,7 @@ class MainActivity : ComponentActivity() {
                                 fotoPerfil = fotoPerfil
                             )
                         }
-                        composable(//FEITO
-                            "implementacao?id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
-                            arguments = listOf(
-                                navArgument("id") { type = NavType.StringType },
-                                navArgument("tipoUsuario") { type = NavType.StringType },
-                                navArgument("fotoPerfil") {
-                                    type = NavType.StringType;nullable = true
-                                },
 
-
-                                )
-                        ) { backStackEntry ->
-                            val id = backStackEntry.arguments?.getString("id") ?: ""
-                            val tipoUsuario =
-                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
-                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
-
-
-                            ImplementacaoFutura(
-                                controleDeNavegacao = controleDeNavegacao,
-                                id = id,
-                                tipoUsuario = tipoUsuario,
-                                fotoPerfil = fotoPerfil
-                            )
-                        }
 
                         composable(//FEITO
                             "aulas?idModulo={idModulo}&nomeModulo={nomeModulo}&id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
@@ -711,43 +719,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-class LoginActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            SinaLibrasTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    Login { userID ->
-                        setupZegoUIKit(userID)
-                        navigateToMainActivity(userID)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setupZegoUIKit(userID: String) {
-        val application: Application = application
-        val appID: Long = 1212991992
-        val appSign: String = "4d8c3b893a6deef9dafe73b70cd996f99070c0062549dab7ae7bff729225be21"
-        val userName: String = userID
-        val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
-        ZegoUIKitPrebuiltCallService.init(application, appID, appSign, userID, userName, callInvitationConfig)
-    }
-
-    private fun navigateToMainActivity(userID: String) {
-        val context = this
-        val intent = Intent(context, MainActivity::class.java)
-        intent.putExtra("userID", userID)
-        startActivity(intent)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        ZegoUIKitPrebuiltCallService.unInit()
-    }
-
 
 //usei esse no AndroidManifest para ter acesso a internet
 //  <uses-permission android:name="android.permission.INTERNET"/>

@@ -315,153 +315,236 @@ catch(e:Exception){
 //                    }
 //                }
 //            }
+//        if (focus) {
+//            Box(modifier=Modifier.fillMaxSize().background(color=Color(0x68090A1E))){
+//            Column(
+//                modifier = Modifier
+//                    .width(258.dp)
+//                    .background(
+//                        color = Color.White,
+//                        shape = RoundedCornerShape(10.dp)
+//                    )
+//                    .align(Alignment.BottomCenter)
+//                    .padding(start=16.dp,end=16.dp,top=16.dp, bottom = 105.dp)
+//            ) {
+//                Button(
+//                    onClick = {
+//                        focus = false
+//                    },
+//                    colors = ButtonColors(
+//                        Color.Transparent,
+//                        Color.Transparent,
+//                        Color.Transparent,
+//                        Color.Transparent
+//                    ),
+//                    modifier = Modifier.offset(x = -20.dp, y = -10.dp)
+//                ) {
+//                    Image(
+//                        painter = painterResource(id = R.drawable.btn_cancelar),
+//                        contentDescription = "Botao cancelar ação",
+//                        modifier = Modifier.size(40.dp)
+//                    )
+//                }
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .background(Color(0xFFC7E2FE))
+//                        .border(1.dp, Color.Black)
+//                        .clickable{
+//                            controleDeNavegacao.navigate("postarVideo?id=${id}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")
+//                        }
+//                        .padding(horizontal = 12.dp, vertical = 16.dp),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Text(
+//                        text = "Adicionar aula",
+//                        fontSize = 16.sp,
+//                        fontWeight = FontWeight.Black,
+//                        color = Color.Black
+//                    )
+//                    Image(
+//                        painter = painterResource(id = R.drawable.videoaula),
+//                        contentDescription = "adicionar aula",
+//                        modifier = Modifier.size(40.dp),
+//                        contentScale = ContentScale.Fit
+//                    )
+//                }
+//
+//                Spacer(modifier = Modifier.height(20.dp))
+//
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .background(Color(0xFFC7E2FE))
+//                        .border(1.dp, Color.Black)
+//                        .clickable{
+//                            controleDeNavegacao.navigate("postarPostagem?id=${id}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")
+//                        }
+//                        .padding(horizontal = 12.dp, vertical = 16.dp),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Text(
+//                        text = "Adicionar post",
+//                        fontSize = 16.sp,
+//                        fontWeight = FontWeight.Black,
+//                        color = Color.Black
+//                    )
+//                    Image(
+//                        painter = painterResource(id = R.drawable.postagem),
+//                        contentDescription = "adicionar postagem",
+//                        modifier = Modifier.size(40.dp),
+//                        contentScale = ContentScale.Fit
+//                    )
+//                }
+//            }}
 //        }
-        Card(
-            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter),
-            colors = CardColors(
-                containerColor = Color(0xFFA5D1FF),
-                contentColor = Color(0xFFA5D1FF),
-                disabledContentColor = Color(0xFFA5D1FF),
-                disabledContainerColor = Color(0xFFA5D1FF)
-            )
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 38.dp, vertical = 10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .clickable { controleDeNavegacao.navigate("chat?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}") }
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.chat),
-                        contentDescription = "Chat Icon",
-                        modifier = Modifier.size(25.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                    Text(
-                        text = "Chat",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Light,
-                        color = Color.Black,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .clickable { controleDeNavegacao.navigate("implementacao?id=${id}&tipoUsuario=${tipoUsuario}") }
-
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.atividades),
-                        contentDescription = "Activities Icon",
-                        modifier = Modifier
-                            .size(25.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                    Text(
-                        text = "Atividades",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Light,
-                        color = Color.Black,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-
-                    )
-                }
-
-
-                Box(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFFA5D1FF))
-                        .padding(horizontal = 10.dp, vertical = 5.dp)
-                ) {
-                    if (tipoUsuario == "aluno") {
-                        Image(
-                            painter = painterResource(
-                                id = R.drawable.rank
-                            ),
-                            contentDescription = "Profile Icon",
-                            modifier = Modifier
-                                .size(45.dp)
-                                .offset((-10).dp, 0.dp)
-                                .clickable { controleDeNavegacao.navigate("implementacao?id=${id}&tipoUsuario=${tipoUsuario}") },
-                            contentScale = ContentScale.Fit
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(
-                                id = R.drawable.mais
-                            ),
-                            contentDescription = "Profile Icon",
-                            modifier = Modifier
-                                .size(45.dp)
-                                .offset((-10).dp, 0.dp)
-                                .clickable { controleDeNavegacao.navigate("criar?id=${id}&tipoUsuario=${tipoUsuario}") },
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .clickable {
-                            controleDeNavegacao.navigate("modulos?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
-                        }
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.videos),
-                        contentDescription = "Classes Icon",
-                        modifier = Modifier
-                            .size(25.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                    Text(
-                        text = "Aulas",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Light,
-                        color = Color.Black,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .clickable {
-                            controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
-                        }
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.feed),
-                        contentDescription = "Menu Icon",
-                        modifier = Modifier
-                            .size(25.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                    Text(
-                        text = "Feed",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Light,
-                        color = Color.Black,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .height(2.dp)
-                            .background(color = Color(0xff3459DE))
-                    )
-                }
-            }
-
-        }
+//
+//        Card(
+//            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .align(Alignment.BottomCenter),
+//            colors = CardColors(
+//                containerColor = Color(0xFFA5D1FF),
+//                contentColor = Color(0xFFA5D1FF),
+//                disabledContentColor = Color(0xFFA5D1FF),
+//                disabledContainerColor = Color(0xFFA5D1FF)
+//            )
+//        ) {
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 38.dp, vertical = 10.dp),
+//                horizontalArrangement = Arrangement.SpaceBetween,
+//            ) {
+//                Column(
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    modifier = Modifier
+//                        .clickable { controleDeNavegacao.navigate("chat?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}") }
+//                ) {
+//                    Image(
+//                        painter = painterResource(id = R.drawable.chat),
+//                        contentDescription = "Chat Icon",
+//                        modifier = Modifier.size(25.dp),
+//                        contentScale = ContentScale.Fit
+//                    )
+//                    Text(
+//                        text = "Chat",
+//                        fontSize = 13.sp,
+//                        fontWeight = FontWeight.Light,
+//                        color = Color.Black,
+//                        modifier = Modifier.align(Alignment.CenterHorizontally)
+//                    )
+//                }
+//
+//                Column(
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    modifier = Modifier
+//                        .clickable {
+//                            controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+//                        }
+//                ) {
+//                    Image(
+//                        painter = painterResource(id = R.drawable.perfil_icone),
+//                        contentDescription = "icone de perfil",
+//                        modifier = Modifier
+//                            .size(25.dp),
+//                        contentScale = ContentScale.Fit
+//                    )
+//                    Text(
+//                        text = "Perfil",
+//                        fontSize = 13.sp,
+//                        fontWeight = FontWeight.Light,
+//                        color = Color.Black,
+//                        modifier = Modifier.align(Alignment.CenterHorizontally)
+//
+//                    )
+//                }
+//
+//                Box(
+//                    modifier = Modifier
+//                        .size(64.dp)
+//                        .clip(CircleShape)
+//                        .background(Color(0xFFA5D1FF))
+//                        .padding(horizontal = 10.dp, vertical = 5.dp)
+//                ) {
+//                    if (tipoUsuario == "aluno") {
+//                        Image(
+//                            painter = painterResource(
+//                                id = R.drawable.rank
+//                            ),
+//                            contentDescription = "Profile Icon",
+//                            modifier = Modifier
+//                                .size(45.dp)
+//                                .clickable { controleDeNavegacao.navigate("implementacao?id=${id}&tipoUsuario=${tipoUsuario}") },
+//                            contentScale = ContentScale.Fit
+//                        )
+//                    } else {
+//                        Image(
+//                            painter = painterResource(
+//                                id = R.drawable.mais
+//                            ),
+//                            contentDescription = "Profile Icon",
+//                            modifier = Modifier
+//                                .size(45.dp)
+//                                .clickable { focus = true },
+//                            contentScale = ContentScale.Fit
+//                        )
+//                    }
+//                }
+//                Column(
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    modifier = Modifier
+//                        .clickable {
+//                            controleDeNavegacao.navigate("modulos?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+//                        }
+//                ) {
+//                    Image(
+//                        painter = painterResource(id = R.drawable.videos),
+//                        contentDescription = "Classes Icon",
+//                        modifier = Modifier
+//                            .size(25.dp),
+//                        contentScale = ContentScale.Fit
+//                    )
+//                    Text(
+//                        text = "Aulas",
+//                        fontSize = 13.sp,
+//                        fontWeight = FontWeight.Light,
+//                        color = Color.Black,
+//                        modifier = Modifier.align(Alignment.CenterHorizontally)
+//                    )
+//                }
+//                Column(
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    modifier = Modifier
+//                        .clickable {
+//                            controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+//                        }
+//                ) {
+//                    Image(
+//                        painter = painterResource(id = R.drawable.feed),
+//                        contentDescription = "Menu Icon",
+//                        modifier = Modifier
+//                            .size(25.dp),
+//                        contentScale = ContentScale.Fit
+//                    )
+//                    Text(
+//                        text = "Feed",
+//                        fontSize = 13.sp,
+//                        fontWeight = FontWeight.Light,
+//                        color = Color.Black,
+//                        modifier = Modifier.align(Alignment.CenterHorizontally)
+//                    )
+//                    Box(
+//                        modifier = Modifier
+//                            .height(2.dp)
+//                            .background(color = Color(0xff3459DE))
+//                    )
+//                }
+//            }
+//
+//        }
     }
 }

@@ -1,4 +1,4 @@
-package br.senai.sp.jandira.sinalibras.Screens
+package br.senai.sp.jandira.sin alibras.Screens
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -184,7 +184,7 @@ fun Feed(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(88.dp)
+                        .size(70.dp)
                 )
 
                 Image(
@@ -204,21 +204,21 @@ fun Feed(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal=10.dp)
                     .background(Color(0xFFA5D1FF), shape = RoundedCornerShape(24.dp)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(Icons.Filled.Search, contentDescription = "Buscar", tint = Color.Black,
-                        modifier=Modifier.clickable{
+                        modifier=Modifier.padding(start=10.dp).clickable{
                             funcionouState.value=false
                             val callProfessorById = RetrofitFactory().getUsuarioService().getPesquisarProfessor(pesquisaState.value)
                             callProfessorById.enqueue(object : Callback<ResultProfessores> {
@@ -317,7 +317,12 @@ fun Feed(
                         colors = CardDefaults.cardColors(containerColor = Color(0xFFEAF4FF)),
                         modifier=Modifier.clickable{
                             if(feed.tipo=="postagem"){
-
+if(feed.professor?.id_professor ?: 0==id.toLong()&&tipoUsuario=="Professor"){
+    controleDeNavegacao.navigate("editarPostagem?idDaPostagem=${feed.id}&tipoUsuario=${tipoUsuario}&id=${id}&fotoPerfil=${fotoPerfil}&fotoCapa=${feed.foto}&texto=${feed.conteudo}")
+}
+                                else{
+                                    controleDeNavegacao.navigate("video?idDoVideo=${feed.id}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                                }
                             }
                             else{
                                 controleDeNavegacao.navigate("video?idDoVideo=${feed.id}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${feed.modulo?.id_modulo}&nomeModulo=${feed.modulo?.modulo}")
@@ -376,16 +381,16 @@ fun Feed(
                                 fotoPublicacao =
                                     rememberAsyncImagePainter(
                                         model = feed.foto,
-                                        placeholder = painterResource(R.drawable.erro),
-                                        error = painterResource(id = R.drawable.erro)
+                                        error = painterResource(id = R.drawable.erro),
+                                        contentScale = ContentScale.Crop
                                     )
 
                             } else {
                                 fotoPublicacao =
                                     rememberAsyncImagePainter(
                                         model = feed.foto_capa,
-                                                placeholder = painterResource(R.drawable.erro),
-                                        error = painterResource(id = R.drawable.erro)
+                                        error = painterResource(id = R.drawable.erro),
+                                        contentScale = ContentScale.Crop
                                     )
                             }
                                     Image(
@@ -416,8 +421,6 @@ fun Feed(
             else{
                     Button(
                         onClick = {
-    dadosPerfilProfessor==null
-                                  pesquisaState.value==""
                             pesquisaProfessor.value=false
                                   },
                         colors = ButtonColors(
@@ -599,18 +602,19 @@ fun Feed(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .clickable { controleDeNavegacao.navigate("implementacao?id=${id}&tipoUsuario=${tipoUsuario}") }
-
+                        .clickable {
+                            controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                        }
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.atividades),
-                        contentDescription = "Activities Icon",
+                        painter = painterResource(id = R.drawable.perfil_icone),
+                        contentDescription = "icone de perfil",
                         modifier = Modifier
                             .size(25.dp),
                         contentScale = ContentScale.Fit
                     )
                     Text(
-                        text = "Atividades",
+                        text = "Perfil",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Light,
                         color = Color.Black,
@@ -634,7 +638,6 @@ fun Feed(
                             contentDescription = "Profile Icon",
                             modifier = Modifier
                                 .size(45.dp)
-                                .offset((-10).dp, 0.dp)
                                 .clickable { controleDeNavegacao.navigate("implementacao?id=${id}&tipoUsuario=${tipoUsuario}") },
                             contentScale = ContentScale.Fit
                         )
@@ -646,7 +649,6 @@ fun Feed(
                             contentDescription = "Profile Icon",
                             modifier = Modifier
                                 .size(45.dp)
-                                .offset((-10).dp, 0.dp)
                                 .clickable { focus = true },
                             contentScale = ContentScale.Fit
                         )

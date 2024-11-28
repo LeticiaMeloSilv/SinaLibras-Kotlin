@@ -68,6 +68,14 @@ interface PostagensService {
     @POST("/v1/sinalibras/videoaula/comentario")
     fun setSalvarComentario(@Body comentario: Comentarios): Call<ResultComentario>
 
+    @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
+    @PUT("/v1/sinalibras/postagem/{id}")
+    fun setAtualizarPostagem(@Path("id")id:Int,@Body postagem: Postagem): Call<ResultPostagem>
+
+
+
+    @DELETE("/v1/sinalibras/postagem/{id}")
+    fun setDellPostagem(@Path("id")id:Int): Call<ResultPostagem>
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/postagem")

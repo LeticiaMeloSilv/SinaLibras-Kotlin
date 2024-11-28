@@ -221,7 +221,6 @@ import retrofit2.Response
 //                                p1: Response<ResultPostagem>
 //                            ) {
 //                                val usuarioSalvo = p1.body()
-//                                Log.i("aaaaa",usuarioSalvo.toString())
 //
 //                                if (p1.isSuccessful) {
 //                                    if (usuarioSalvo != null) {
@@ -239,7 +238,6 @@ import retrofit2.Response
 //                                p0: Call<ResultPostagem>,
 //                                p1: Throwable
 //                            ) {
-//                                Log.i("aaaaa", p1.toString())
 //                                mensagemErroState.value =
 //                                    "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
 //
@@ -433,8 +431,6 @@ fun PostPostagem(
                         }
 
                         override fun onFailure(call: Call<ResultPostagem>, t: Throwable) {
-                            Log.i("aaaaa", t.toString())
-
                             mensagemErroState.value =
                                 "Ocorreu um erro, tente novamente mais tarde."
                         }

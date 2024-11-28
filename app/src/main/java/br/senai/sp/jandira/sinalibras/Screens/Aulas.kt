@@ -77,9 +77,7 @@ mutableStateOf(ResultVideo())
     callVideos.enqueue(object : Callback<ResultVideo> {
         override fun onResponse(p0: Call<ResultVideo>, p1: Response<ResultVideo>) {
             val videoResponse = p1.body()
-            Log.i("ALUNO",videoResponse.toString())
             if (p1.isSuccessful) {
-                Log.i("erroo",videoResponse.toString())
 
                 if (videoResponse != null) {
                     if (videoResponse.videos != null) {
@@ -152,7 +150,7 @@ mutableStateOf(ResultVideo())
         }
 
     }
-    if (funcionouState) {
+    else if (funcionouState) {
         Column(
             modifier = Modifier
                 .background(color = Color(0xFFC7E2FE))
@@ -212,7 +210,7 @@ mutableStateOf(ResultVideo())
                             // Video thumbnail
 
                             Image(
-                                rememberAsyncImagePainter(model = video.url_video),
+                                rememberAsyncImagePainter(model = video.foto_capa),
                                 contentDescription = "card do video",
                                 modifier = Modifier
                                     .height(180.dp)

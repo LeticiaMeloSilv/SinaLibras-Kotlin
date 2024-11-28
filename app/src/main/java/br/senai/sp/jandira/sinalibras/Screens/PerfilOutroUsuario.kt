@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -182,7 +181,7 @@ fun PerfilOutroUsuario(
 
         val painter: Painter =
             if (!professor.foto_perfil.isNullOrEmpty()) {
-                rememberAsyncImagePainter(model = professor.foto_perfil)
+                rememberAsyncImagePainter(model = professor.foto_perfil, placeholder =painterResource(id= R.drawable.perfil))
             } else {
                 painterResource(id = R.drawable.perfil)
             }
@@ -264,31 +263,6 @@ fun PerfilOutroUsuario(
             //btn manda mens
             Button(
                 onClick = { //AQ COLOCA O LINK PRA TELA DE VIDEO CHAMADA
-
-                    var targetUserID by remember { mutableStateOf("") }
-                    val videoCallButton = remember { ZegoSendCallInvitationButton(context = LocalContext.current) }
-                    val voiceCallButton = remember { ZegoSendCallInvitationButton(context = LocalContext.current) }
-
-                    fun setupButtons() {
-                        if (targetUserID.isNotEmpty()) {
-                            videoCallButton.setIsVideoCall(true)
-                            videoCallButton.resourceID = "zego_uikit_call"
-                            videoCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserID, targetUserID)))
-
-                            voiceCallButton.setIsVideoCall(false)
-                            voiceCallButton.resourceID = "zego_uikit_call"
-                            voiceCallButton.setInvitees(listOf(ZegoUIKitUser(targetUserID, targetUserID)))
-                        }
-                    }
-
-                                targetUserID = idOutroUsuario
-                                setupButtons()
-
-                            AndroidView(
-                                factory = { videoCallButton },
-                                modifier = Modifier.size(60.dp)
-                            )
-
                      },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0F1951)),
                 shape = RoundedCornerShape(8.dp),
