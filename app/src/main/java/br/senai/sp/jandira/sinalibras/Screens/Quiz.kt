@@ -304,18 +304,13 @@ fun Quiz(controleDeNavegacao: NavHostController, emailFornecido: String, idForne
                 onClick = {
 
                     val respostas = respostasUsuario
-                    if(respostas.size<10){
+                    if(respostas.size != (dadosPerfil.questoes?.size ?: 10)){
                         Log.i("CALMA",respostas.size.toString())
                         Log.i("CALMA",respostas.toString())
 
                         mensagemErroState.value="Você deve responder a todas as perguntas para prosseguir."
                     }
-                    else if(respostas.size>10){
-                        Log.i("CALMA",respostas.size.toString())
-                        Log.i("CALMA",respostas.toString())
 
-                        mensagemErroState.value="Ocorreu um erro ao completar acão, favor contatar o administador da api"
-                    }
                     else {
                         val callQuestions =
                             RetrofitFactory().getQuizService().salvarRespostas(respostas)

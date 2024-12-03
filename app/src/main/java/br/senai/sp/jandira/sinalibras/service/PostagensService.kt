@@ -2,13 +2,13 @@ package br.senai.sp.jandira.service
 
 import br.senai.sp.jandira.sinalibras.model.Comentarios
 import br.senai.sp.jandira.sinalibras.model.Postagem
-import br.senai.sp.jandira.sinalibras.model.Professor
 import br.senai.sp.jandira.sinalibras.model.ResultComentario
 import br.senai.sp.jandira.sinalibras.model.ResultFeed
 import br.senai.sp.jandira.sinalibras.model.ResultModulo
 import br.senai.sp.jandira.sinalibras.model.ResultNivel
 import br.senai.sp.jandira.sinalibras.model.ResultPostagem
-import br.senai.sp.jandira.sinalibras.model.ResultProfessor
+import br.senai.sp.jandira.sinalibras.model.ResultPostagemId
+import br.senai.sp.jandira.sinalibras.model.ResultProfessores
 import br.senai.sp.jandira.sinalibras.model.ResultVideo
 import br.senai.sp.jandira.sinalibras.model.ResultVideoID
 import br.senai.sp.jandira.sinalibras.model.VideoAula
@@ -38,6 +38,8 @@ interface PostagensService {
     fun getAllFeed(): Call<ResultFeed>
 
 
+    @GET("/v1/sinalibras/videos/titulo/{titulo}")
+    fun getPesquisarVideo(@Path("titulo")titulo:String): Call<ResultVideo>
 
     @GET("/v1/sinalibras/videoaula")
     fun getAllVideos(): Call<ResultVideo>
@@ -54,6 +56,12 @@ interface PostagensService {
 
 
 
+
+    @GET("/v1/sinalibras/postagem/{id}")
+    fun getPostagemById(@Path("id")id:Int): Call<ResultPostagemId>
+
+
+
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/videoaula")
     fun setSalvarVideoAula(@Body videoAula: VideoAula): Call<ResultVideo>
@@ -66,12 +74,17 @@ interface PostagensService {
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/videoaula/comentario")
-    fun setSalvarComentario(@Body comentario: Comentarios): Call<ResultComentario>
+    fun setSalvarComentarioVideo(@Body comentario: Comentarios): Call<ResultComentario>
+
+
 
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @PUT("/v1/sinalibras/postagem/{id}")
     fun setAtualizarPostagem(@Path("id")id:Int,@Body postagem: Postagem): Call<ResultPostagem>
 
+    @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
+    @PUT("/v1/sinalibras/comentario/{id}")
+    fun setAtualizarComentarioVideo(@Path("id")id:Int,@Body comentario: Comentarios): Call<ResultComentario>
 
 
     @DELETE("/v1/sinalibras/postagem/{id}")
@@ -89,5 +102,9 @@ interface PostagensService {
     @Headers("Content-Type: application/json")//anotacao pra q o content type desse treco seja json
     @POST("/v1/sinalibras/postagem/comentario")
     fun setSalvarComentarioPostagem(@Body comentario: Comentarios): Call<ResultComentario>
+
+
+    @DELETE("/v1/sinalibras/videoaula/comentario/{id}")
+    fun setDellComentarioVideo(@Path("id")id:Int): Call<ResultComentario>
 
 }

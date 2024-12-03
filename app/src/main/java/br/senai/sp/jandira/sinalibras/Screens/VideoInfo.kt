@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,10 +16,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -36,10 +39,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -65,6 +71,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.time.format.DateTimeFormatter
+import kotlin.math.round
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -112,6 +119,12 @@ fun VideoInfo(
 ) {
     val currentDate: LocalDate = LocalDate.now()
 
+    var idComentario by remember{
+        mutableStateOf("")
+    }
+    var comentarioAntigo by remember{
+        mutableStateOf("")
+    }
     var dadosVideoAula by remember {
         mutableStateOf(VideoAula())
     }
@@ -132,6 +145,9 @@ fun VideoInfo(
     }
     var mensagemErroState = remember {
         mutableStateOf("")
+    }
+    var focusComentario by remember {
+        mutableStateOf(false)
     }
     Log.i("caralho", idDoVideo)
     val callVideoById = RetrofitFactory().getPostagensService().getVideoById(idDoVideo.toInt())
@@ -157,7 +173,6 @@ fun VideoInfo(
 
     val painter: Painter =
         if (dadosVideoAula.professor?.get(0)?.foto_perfil.isNullOrEmpty()) {
-            Log.i("CALMA", "139")
             rememberAsyncImagePainter(model = dadosVideoAula.professor?.get(0)?.foto_perfil)
         } else {
             painterResource(id = R.drawable.perfil)
@@ -339,6 +354,18 @@ if(descricaoState){
                     modifier = Modifier.verticalScroll(scrollState).padding(vertical = 16.dp, horizontal = 6.dp)
                 ){
                 dadosVideoAula.comentarios?.forEach { comentario ->
+                    Column(){
+                        Column(modifier=Modifier.clickable {
+                        if(id.toLong()==comentario.id_aluno){
+                            focusComentario=!focusComentario
+                            idComentario= comentario.id_comentario.toString()
+                            comentarioAntigo=comentario.comentario
+
+                        }
+                        else{
+
+                        }
+                    }){
                     Text(
                         text = comentario.id_aluno.toString(),//NOME ALUNO
                         fontWeight = FontWeight.SemiBold,
@@ -352,11 +379,160 @@ if(descricaoState){
                         modifier=Modifier.padding(horizontal = 8.dp)
                     )
                     }
+                    if(idComentario==comentario.id_comentario.toString()){
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .background(Color(0xFFC7E2FE),RoundedCornerShape(20.dp))
+                                .border(1.dp, Color.Black, RoundedCornerShape(20.dp))
+                                .clip(shape= RoundedCornerShape(20.dp))
+                                .clickable{
+                                    val callDellAluno = RetrofitFactory().getPostagensService()
+                                        .setDellComentarioVideo(idComentario.toInt())
+                                    callDellAluno.enqueue(object : Callback<ResultComentario> {
+                                        override fun onResponse(
+                                            p0: Call<ResultComentario>,
+                                            p1: Response<ResultComentario>
+                                        ) {
+                                            val alunoResponse = p1.body()
+                                            if (p1.isSuccessful) {
+                                                controleDeNavegacao.navigate("video?idDoVideo=${idDoVideo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}")                                                 } else {
+                                                if (alunoResponse != null) {
+                                                    mensagemErroState.value =
+                                                        alunoResponse.message.toString()
+                                                }
+                                                Log.i("CALMA", alunoResponse?.message!!.toString())
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            p0: Call<ResultComentario>,
+                                            p1: Throwable
+                                        ) {
+                                            mensagemErroState.value =
+                                                "Verifique se esta conectado a Internet ou tente novamente mais tarde"
+                                            Log.i("ERRO_DELETAR_PERFIL", p1.toString())
+                                        }
+                                    }) }
+                                .padding(horizontal = 8.dp, vertical = 10.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Excluir",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Color.Black
+                            )
+                        }
+                    }}
+                    }
                 }
                 Text(text = mensagemErroState.value, color = Color.Red)
 
             }
         }
+//            if (focusComentario) {
+//                Box(modifier=Modifier.fillMaxSize().background(color=Color(0x68090A1E))){
+//                    Column(
+//                        modifier = Modifier
+//                            .width(258.dp)
+//                            .background(
+//                                color = Color.White,
+//                                shape = RoundedCornerShape(10.dp)
+//                            )
+//                            .align(Alignment.Center)
+//                            .padding(start=16.dp,end=16.dp,top=16.dp, bottom = 16.dp)
+//                    ) {
+//                        Button(
+//                            onClick = {
+//                                focusComentario = false
+//                            },
+//                            colors = ButtonColors(
+//                                Color.Transparent,
+//                                Color.Transparent,
+//                                Color.Transparent,
+//                                Color.Transparent
+//                            ),
+//                            modifier = Modifier.offset(x = -20.dp, y = -10.dp)
+//                        ) {
+//                            Image(
+//                                painter = painterResource(id = R.drawable.btn_cancelar),
+//                                contentDescription = "Botao cancelar ação",
+//                                modifier = Modifier.size(40.dp)
+//                            )
+//                        }
+//                        Row(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .background(Color(0xFFC7E2FE))
+//                                .border(1.dp, Color.Black)
+//                                .clickable{
+//                                    focusComentario = false
+//                                    comentarioState.value=comentarioAntigo
+//                                }
+//                                .padding(horizontal = 12.dp, vertical = 16.dp),
+//                            horizontalArrangement = Arrangement.SpaceBetween,
+//                            verticalAlignment = Alignment.CenterVertically
+//                        ) {
+//                            Text(
+//                                text = "Editar",
+//                                fontSize = 16.sp,
+//                                fontWeight = FontWeight.Black,
+//                                color = Color.Black
+//                            )
+//                        }
+//
+//                        Spacer(modifier = Modifier.height(20.dp))
+//
+//                        Row(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .background(Color(0xFFC7E2FE))
+//                                .border(1.dp, Color.Black)
+//                                .clickable{
+//                                    val callDellAluno = RetrofitFactory().getPostagensService()
+//                                        .setDellComentarioVideo(idComentario.toInt())
+//                                    callDellAluno.enqueue(object : Callback<ResultComentario> {
+//                                        override fun onResponse(
+//                                            p0: Call<ResultComentario>,
+//                                            p1: Response<ResultComentario>
+//                                        ) {
+//                                            val alunoResponse = p1.body()
+//                                            if (p1.isSuccessful) {
+//                                                controleDeNavegacao.navigate("video?idDoVideo=${idDoVideo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}")                                                 } else {
+//                                                if (alunoResponse != null) {
+//                                                    mensagemErroState.value =
+//                                                        alunoResponse.message.toString()
+//                                                }
+//                                                Log.i("CALMA", alunoResponse?.message!!.toString())
+//                                            }
+//                                        }
+//
+//                                        override fun onFailure(
+//                                            p0: Call<ResultComentario>,
+//                                            p1: Throwable
+//                                        ) {
+//                                            mensagemErroState.value =
+//                                                "Verifique se esta conectado a Internet ou tente novamente mais tarde"
+//                                            Log.i("ERRO_DELETAR_PERFIL", p1.toString())
+//                                        }
+//                                    }) }
+//                                .padding(horizontal = 12.dp, vertical = 16.dp),
+//                            horizontalArrangement = Arrangement.SpaceBetween,
+//                            verticalAlignment = Alignment.CenterVertically
+//                        ) {
+//                            Text(
+//                                text = "Excluir",
+//                                fontSize = 16.sp,
+//                                fontWeight = FontWeight.Black,
+//                                color = Color.Black
+//                            )
+//                        }
+//                    }}
+//            }
+
+
             if(tipoUsuario=="aluno"){
                 Row(
                     modifier = Modifier
@@ -409,51 +585,107 @@ if(descricaoState){
                     )
                     Button(
                         onClick = {
-                            val callComentario = RetrofitFactory()
-                                .getPostagensService().setSalvarComentario(
-                                    comentario = Comentarios(
-                                        comentario = comentarioState.value,
-                                        data = currentDate.toString(),
-                                        id_videoaula = idDoVideo.toLong(),
-                                        id_aluno = id.toLong(),
-                                    )
-                                )
-                            callComentario.enqueue(object : Callback<ResultComentario> {
-                                override fun onResponse(
-                                    p0: Call<ResultComentario>,
-                                    p1: Response<ResultComentario>
-                                ) {
-                                    val comentarioSalvo = p1.body()
-
-                                    if (p1.isSuccessful) {
-                                        if (comentarioSalvo != null) {
-                                            Log.i("CALMA",comentarioSalvo.toString())
-                                            controleDeNavegacao.navigate("video?idDoVideo=${idDoVideo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}")
-                                        }
-                                    } else {
-                                        val errorBody = p1.errorBody()?.string()
-                                        val gson = Gson()
-                                        val usuarioSalvo = gson.fromJson(
-                                            errorBody,
-                                            ResultComentario::class.java
+                            if(comentarioAntigo=="") {
+                                val callComentario = RetrofitFactory()
+                                    .getPostagensService().setSalvarComentarioVideo(
+                                        comentario = Comentarios(
+                                            comentario = comentarioState.value,
+                                            data = currentDate.toString(),
+                                            id_videoaula = idDoVideo.toLong(),
+                                            id_aluno = id.toLong(),
                                         )
-                                        mensagemErroState.value = usuarioSalvo.message
+                                    )
+                                callComentario.enqueue(object : Callback<ResultComentario> {
+                                    override fun onResponse(
+                                        p0: Call<ResultComentario>,
+                                        p1: Response<ResultComentario>
+                                    ) {
+                                        val comentarioSalvo = p1.body()
+
+                                        if (p1.isSuccessful) {
+                                            if (comentarioSalvo != null) {
+                                                Log.i("CALMA", comentarioSalvo.toString())
+                                                controleDeNavegacao.navigate("video?idDoVideo=${idDoVideo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}&idModulo=${idModulo}&nomeModulo=${nomeModulo}")
+                                            }
+                                        } else {
+
+                                            if (comentarioSalvo != null) {
+                                                mensagemErroState.value = comentarioSalvo.message
+                                            }
+                                        }
                                     }
-                                }
 
 
-                                override fun onFailure(
-                                    p0: Call<ResultComentario>,
-                                    p1: Throwable
-                                ) {
-                                    Log.i("ERRO_CADASTRO", p1.toString())
-                                    mensagemErroState.value =
-                                        "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+                                    override fun onFailure(
+                                        p0: Call<ResultComentario>,
+                                        p1: Throwable
+                                    ) {
+                                        Log.i("ERRO_CADASTRO", p1.toString())
+                                        mensagemErroState.value =
+                                            "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
 
-                                }
+                                    }
 
-                            })
+                                })
+                            }else{
+                                //o back nn tem essa funcao, ent vou mudar a logica
+                                    val callUsuarios = RetrofitFactory()
+                                        .getPostagensService().setAtualizarComentarioVideo(
+                                            comentario = Comentarios(
+                                                comentario = comentarioState.value,
+                                                id_aluno = id.toLong(),
+                                                id_videoaula = idDoVideo.toLong(),
+                                                data = currentDate.toString(),
+                                            ),
+                                            id = idComentario.toInt()
+                                        )
+                                    callUsuarios.enqueue(object : Callback<ResultComentario> {
+                                        override fun onResponse(
+                                            p0: Call<ResultComentario>,
+                                            p1: Response<ResultComentario>
+                                        ) {
+                                            val usuarioSalvo = p1.body()
+                                            Log.i("aaaaa", usuarioSalvo.toString())
 
+                                            if (p1.isSuccessful) {
+                                                if (usuarioSalvo != null) {
+                                                    linkUrl = ""
+
+                                                    controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                                                } else {
+                                                    linkUrl = ""
+
+                                                    mensagemErroState.value =
+                                                        "Ocorreu um erro por servidor, tente novamente mais tarde"
+                                                }
+
+                                            } else {
+                                                linkUrl = ""
+                                                if (usuarioSalvo != null)
+                                                    mensagemErroState.value = usuarioSalvo.message.toString()
+                                                else
+                                                    mensagemErroState.value =
+                                                        "Ocorreu um erro, verifique se preencheu todos os campos"
+
+                                            }
+                                        }
+
+
+                                        override fun onFailure(
+                                            p0: Call<ResultComentario>,
+                                            p1: Throwable
+                                        ) {
+                                            Log.i("aaaaa", p1.toString())
+                                            linkUrl = ""
+
+                                            mensagemErroState.value =
+                                                "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+
+                                        }
+
+                                    })
+
+                            }
                         },
                         colors = ButtonColors(
                             Color.Transparent,
@@ -481,7 +713,10 @@ if(descricaoState){
             ) {
                 Button(
                     onClick = {
+                        if(nomeModulo!=="undefined")
                         controleDeNavegacao.navigate("aulas?idModulo=${idModulo}&nomeModulo=${nomeModulo}&id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                        else
+                            controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
                     },
                     colors = ButtonColors(
                         Color.Transparent,

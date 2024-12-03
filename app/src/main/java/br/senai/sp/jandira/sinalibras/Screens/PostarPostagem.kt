@@ -426,13 +426,17 @@ fun PostPostagem(
                             if (response.isSuccessful) {
                                 controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
                             } else {
-                                mensagemErroState.value = "Erro ao salvar."
+                                if(response.body()?.message.toString()!=""||response.body()?.message.toString()!=null)
+                                mensagemErroState.value = response.body()?.message.toString()
+                                else
+                                    mensagemErroState.value ="Ocorreu um erro, tente novamente mais tarde"
                             }
                         }
 
                         override fun onFailure(call: Call<ResultPostagem>, t: Throwable) {
                             mensagemErroState.value =
                                 "Ocorreu um erro, tente novamente mais tarde."
+                            Log.i("calma", t.toString())
                         }
                     })
                 },

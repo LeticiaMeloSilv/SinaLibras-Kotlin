@@ -222,47 +222,54 @@ fun Login(controleDeNavegacao: NavHostController) {
                         p1: Response<ResultAluno>
                     ) {
                         val alunoList = p1.body()
-                        Log.i("CARA",p0.toString())
-                        Log.i("CARA",alunoList.toString())
                         if(p1.isSuccessful){
                             if (alunoList != null) {
-                                controleDeNavegacao.navigate("feed?id=${alunoList.aluno?.id_aluno}&tipoUsuario=aluno&fotoPerfil=${alunoList.aluno?.foto_perfil}")
+                                if(alunoList.status)
+                                controleDeNavegacao.navigate("feed?id=${alunoList.aluno?.id_aluno.toString()}&tipoUsuario=aluno&fotoPerfil=${alunoList.aluno?.foto_perfil}")
+                                else{
+                                    val callProfessor = RetrofitFactory()
+                                        .getUsuarioService().setValidarEntradaProfessor(
+                                            usuario = Professor(
+                                                email = emailState.value,
+                                                senha = senhaState.value
+                                            )
+                                        )
+                                    callProfessor.enqueue(object : Callback<ResultProfessor> {
+                                        override fun onResponse(p0: Call<ResultProfessor>, p1: Response<ResultProfessor>) {
+                                            val professorList = p1.body()
+                                            if(p1.isSuccessful){
+                                                if (professorList != null) {
+                                                    controleDeNavegacao.navigate("feed?id=${professorList.professor?.id_professor.toString()}&tipoUsuario=professor&fotoPerfil=${professorList.professor?.foto_perfil}")
+                                                }
+                                            }
+                                            else{
+                                                if (professorList != null) {
+
+                                                    mensagemErroState.value = professorList.message
+                                                    umError.value = true
+                                                }
+                                                else{
+                                                    mensagemErroState.value = "Seus dados não conferem"
+                                                    umError.value = true
+
+                                                }
+
+                                            }
+                                        }
+
+                                        override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
+                                            Log.i("ERRO_LOGIN", p1.toString())
+                                            mensagemErroState.value =
+                                                "Ocorreu um erro, o serviço pode estar indisponivel. Favor, verifique se está conectado a internet ou tente novamente mais tarde"}
+
+                                    })
+                                }
                             }
                         }
                         else{
-                            val callProfessor = RetrofitFactory()
-                                .getUsuarioService().setValidarEntradaProfessor(
-                                    usuario = Professor(
-                                        email = emailState.value,
-                                        senha = senhaState.value
-                                    )
-                                )
-                            callProfessor.enqueue(object : Callback<ResultProfessor> {
-                                override fun onResponse(p0: Call<ResultProfessor>, p1: Response<ResultProfessor>) {
-                                    val professorList = p1.body()
-                                    Log.i("CARA",p0.toString())
-                                    Log.i("CARA",professorList.toString())
-                                    if(p1.isSuccessful){
-                                        if (professorList != null) {
-                                            controleDeNavegacao.navigate("feed?id=${professorList.professor?.id_professor}&tipoUsuario=professor&fotoPerfil=${professorList.professor?.foto_perfil}")
-                                        }
-                                    }
-                                    else{
-                                        val errorBody = p1.errorBody()?.string()
-                                        val gson = Gson()
-                                        val usuarioSalvo = gson.fromJson(errorBody, ResultAluno::class.java)
-                                        mensagemErroState.value = usuarioSalvo.message
-                                        umError.value = true
+                            mensagemErroState.value =
+                                "Ocorreu um erro, tente novamente mais tarde"
 
-                                    }
-                                                                }
-
-                                override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
-                                    Log.i("ERRO_LOGIN", p1.toString())
-                                    mensagemErroState.value =
-                                        "Ocorreu um erro, o serviço pode estar indisponivel. Favor, verifique se está conectado a internet ou tente novamente mais tarde"}
-
-                            })
  }
 
 
@@ -271,7 +278,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                     override fun onFailure(p0: Call<ResultAluno>, p1: Throwable) {
                         Log.i("ERRO_LOGIN", p1.toString())
                         mensagemErroState.value =
-                            "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
+                            "Ocorreu um erro, o serviço pode estar indisponivel. Favor, tente novamente mais tarde"
 
                     }
 

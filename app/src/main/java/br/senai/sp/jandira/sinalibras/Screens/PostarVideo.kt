@@ -170,7 +170,47 @@ fun PostVideo(
 
         })
     }
+if(carregando){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFFC7E2FE), Color(0xFF345ADE))
+                )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logotipo SinaLibras",
+                modifier = Modifier.size(100.dp)
+            )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "SinaLibras",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF3F51B5)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            //isso q faz o circulo q roda
+            CircularProgressIndicator(
+                color = Color(0xFF3F51B5),
+                strokeWidth = 4.dp,
+                modifier = Modifier.size(48.dp)
+            )
+        }
+    }
+}
     if(!funcionouNivelState||!funcionouModuloState){
     Box(
         modifier = Modifier
@@ -287,6 +327,8 @@ else if(erroState){
                     Button(
                         onClick = {
                             imageUri=null
+                            linkUrl=""
+                            fotoCapaUrl=""
                             controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
                         },
                         colors = ButtonColors(
@@ -476,16 +518,11 @@ else if(erroState){
                     onClick = {
                         Log.i("CARALHO",linkUrl)
                         Log.i("CARALHO",fotoCapaUrl)
-                        if(linkUrl!=""&&fotoCapaUrl!=""){
-                        carregando=false
-                        }
+
                         if(tituloState.value==""|| descricaoState.value==""||idModuloEscolhidoState.value==""||idNivelEscolhidoState.value==""||id==""||currentDate.toString()==""){
                             mensagemErroState.value = "Ocorreu um erro, verifique se preencheu todos os campos"
+                        }
 
-                        }
-                        if (linkUrl.isNotEmpty() && linkUrl.startsWith("http")|| fotoCapaUrl.isNotEmpty() && fotoCapaUrl.startsWith("http")) {
-                            carregando=true
-                        }
                         else{
                         val callUsuarios = RetrofitFactory()
                             .getPostagensService().setSalvarVideoAula(
@@ -509,7 +546,16 @@ else if(erroState){
                                 val usuarioSalvo = p1.body()
                                 Log.i("aaaaa",usuarioSalvo.toString())
                                 Log.i("aaaaa",p0.toString())
+                                if (linkUrl=="" || fotoCapaUrl=="") {
+                                    Log.i("Calma", "atitulo=${tituloState.value}, descricao=${descricaoState.value}, idmo=${idModuloEscolhidoState.value}, idni=${idNivelEscolhidoState.value}, id=${id}, data=${currentDate}")
 
+                                    carregando=true
+                                }
+                                if(linkUrl!=""&&fotoCapaUrl!=""){
+                                    Log.i("Calma", "btitulo=${tituloState.value}, descricao=${descricaoState.value}, idmo=${idModuloEscolhidoState.value}, idni=${idNivelEscolhidoState.value}, id=${id}, data=${currentDate}")
+
+                                    carregando=false
+                                }
 
                                 if (p1.isSuccessful) {
                                     if (usuarioSalvo != null) {
@@ -518,23 +564,14 @@ else if(erroState){
                                         controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
                                     }
                                     else {
-                                        linkUrl=""
-                                        fotoCapaUrl=""
-
                                         mensagemErroState.value = "Ocorreu um erro por parte do Servidor, tente novamente mais tarde"
 
                                     }
 
                                 } else {
                                     if(usuarioSalvo!=null){
-                                        linkUrl=""
-                                        fotoCapaUrl=""
-
                                         mensagemErroState.value = usuarioSalvo.message.toString()}
                                     else{
-                                        linkUrl=""
-                                        fotoCapaUrl=""
-
                                         mensagemErroState.value="Ocorreu um erro, verifique se preencheu todos os campos"}
 
                                 }
@@ -545,15 +582,14 @@ else if(erroState){
                                 p0: Call<ResultVideo>,
                                 p1: Throwable
                             ) {
-                                Log.i("aaaaa", p1.toString())
-                                linkUrl=""
-                                fotoCapaUrl=""
+
                                 mensagemErroState.value =
                                     "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
 
                             }
 
                         })}
+
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF3B5EDF),

@@ -60,7 +60,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Configuracoes(
     controleDeNavegacao: NavHostController,
@@ -551,15 +550,11 @@ fun Configuracoes(
                                             val alunoResponse = p1.body()
                                             if (p1.isSuccessful) {
                                                 Log.i("CALMA", alunoResponse.toString())
-                                                controleDeNavegacao.navigate("inicial")
+                                                controleDeNavegacao.navigate("inicio")
                                             } else {
-                                                val errorBody = p1.errorBody()?.string()
-                                                val gson = Gson()
-                                                val usuarioSalvo = gson.fromJson(
-                                                    errorBody,
-                                                    ResultAluno::class.java
-                                                )
-                                                mensagemErroState.value = usuarioSalvo.message
+                                                if (alunoResponse != null) {
+                                                    mensagemErroState.value = alunoResponse.message
+                                                }
                                                 umError.value = true
                                                 Log.i("CALMA", alunoResponse?.message!!.toString())
                                             }
@@ -589,13 +584,10 @@ fun Configuracoes(
                                                 Log.i("CALMA", professorResponse.toString())
 
                                             } else {
-                                                val errorBody = p1.errorBody()?.string()
-                                                val gson = Gson()
-                                                val usuarioSalvo = gson.fromJson(
-                                                    errorBody,
-                                                    ResultAluno::class.java
-                                                )
-                                                mensagemErroState.value = usuarioSalvo.message
+
+                                                if (professorResponse != null) {
+                                                    mensagemErroState.value = professorResponse.message
+                                                }
                                                 umError.value = true
                                                 Log.i(
                                                     "CALMA",

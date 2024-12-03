@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -65,8 +66,9 @@ fun PerfilOutroUsuario(
     idOutroUsuario: String,
     tipoOutroUsuario: String
 ) {
-
-
+    var focus by remember {
+        mutableStateOf(false)
+    }
 //    var dadosPerfil by remember {
 //        mutableStateOf(Result())
 //    }
@@ -98,7 +100,7 @@ fun PerfilOutroUsuario(
                     funcionouState = true
 
                 } else {
-                    Log.i("CALMA", alunoResponse?.message!!.toString())
+                    Log.i("fatal",p1.toString())
                     erroState = true
                 }
             }
@@ -117,6 +119,8 @@ fun PerfilOutroUsuario(
                 if (p1.isSuccessful) {
                     dadosPerfilProfessor = professorResponse?.professor!!
                     funcionouState = true
+                    Log.i("fatal", dadosPerfilProfessor.toString())
+
 
                 } else {
                     erroState = true
@@ -205,7 +209,7 @@ fun PerfilOutroUsuario(
                 ) {
                     Button(
                         onClick = {
-                            controleDeNavegacao.navigate("feed?id=${professor.id_professor}&tipoUsuario=${tipoUsuario}&fotoPerfil=${professor.foto_perfil}")
+                            controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
                         },
                         colors = ButtonColors(
                             Color.Transparent,
@@ -293,6 +297,91 @@ fun PerfilOutroUsuario(
                     )
                 }
             }
+            if (focus) {
+                Box(modifier=Modifier.fillMaxSize().background(color=Color(0x68090A1E))){
+                    Column(
+                        modifier = Modifier
+                            .width(258.dp)
+                            .background(
+                                color = Color.White,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .align(Alignment.BottomCenter)
+                            .padding(start=16.dp,end=16.dp,top=16.dp, bottom = 105.dp)
+                    ) {
+                        Button(
+                            onClick = {
+                                focus = false
+                            },
+                            colors = ButtonColors(
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent,
+                                Color.Transparent
+                            ),
+                            modifier = Modifier.offset(x = -20.dp, y = -10.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.btn_cancelar),
+                                contentDescription = "Botao cancelar ação",
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color(0xFFC7E2FE))
+                                .border(1.dp, Color.Black)
+                                .clickable{
+                                    controleDeNavegacao.navigate("postarVideo?id=${id}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")
+                                }
+                                .padding(horizontal = 12.dp, vertical = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Adicionar aula",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Color.Black
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.videoaula),
+                                contentDescription = "adicionar aula",
+                                modifier = Modifier.size(40.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color(0xFFC7E2FE))
+                                .border(1.dp, Color.Black)
+                                .clickable{
+                                    controleDeNavegacao.navigate("postarPostagem?id=${id}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")
+                                }
+                                .padding(horizontal = 12.dp, vertical = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Adicionar post",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Color.Black
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.postagem),
+                                contentDescription = "adicionar postagem",
+                                modifier = Modifier.size(40.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                    }}
+            }
 
             Card(
                 shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
@@ -335,18 +424,19 @@ fun PerfilOutroUsuario(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
-                            .clickable { controleDeNavegacao.navigate("implementacao?id=${id}&tipoUsuario=${tipoUsuario}") }
-
+                            .clickable {
+                                controleDeNavegacao.navigate("perfil?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
+                            }
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.atividades),
-                            contentDescription = "Activities Icon",
+                            painter = painterResource(id = R.drawable.perfil_icone),
+                            contentDescription = "icone de perfil",
                             modifier = Modifier
                                 .size(25.dp),
                             contentScale = ContentScale.Fit
                         )
                         Text(
-                            text = "Atividades",
+                            text = "Perfil",
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Light,
                             color = Color.Black,
@@ -354,7 +444,6 @@ fun PerfilOutroUsuario(
 
                         )
                     }
-
 
                     Box(
                         modifier = Modifier
@@ -371,7 +460,6 @@ fun PerfilOutroUsuario(
                                 contentDescription = "Profile Icon",
                                 modifier = Modifier
                                     .size(45.dp)
-                                    .offset((-10).dp, 0.dp)
                                     .clickable { controleDeNavegacao.navigate("implementacao?id=${id}&tipoUsuario=${tipoUsuario}") },
                                 contentScale = ContentScale.Fit
                             )
@@ -383,8 +471,7 @@ fun PerfilOutroUsuario(
                                 contentDescription = "Profile Icon",
                                 modifier = Modifier
                                     .size(45.dp)
-                                    .offset((-10).dp, 0.dp)
-                                    .clickable { controleDeNavegacao.navigate("criar?id=${id}&tipoUsuario=${tipoUsuario}") },
+                                    .clickable { focus = true },
                                 contentScale = ContentScale.Fit
                             )
                         }

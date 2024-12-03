@@ -1,7 +1,5 @@
 package br.senai.sp.jandira.sinalibras
 
-import android.app.Application
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,22 +29,22 @@ import br.senai.sp.jandira.sinalibras.Screens.VideoInfo
 import br.senai.sp.jandira.sinalibras.ui.theme.SinaLibrasTheme
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import br.senai.sp.jandira.sinalibras.Screens.Feed
 import br.senai.sp.jandira.sinalibras.Screens.Aulas
 import br.senai.sp.jandira.sinalibras.Screens.Chat
 import br.senai.sp.jandira.sinalibras.Screens.EditarPostagem
 import br.senai.sp.jandira.sinalibras.Screens.EditarVideo
-import br.senai.sp.jandira.sinalibras.Screens.Feed
 import br.senai.sp.jandira.sinalibras.Screens.Modulos
 import br.senai.sp.jandira.sinalibras.Screens.PerfilOutroUsuario
 import br.senai.sp.jandira.sinalibras.Screens.PostPostagem
 import br.senai.sp.jandira.sinalibras.Screens.PostVideo
+import br.senai.sp.jandira.sinalibras.Screens.PostagemInfo
 import br.senai.sp.jandira.sinalibras.Screens.Suporte
 import com.google.firebase.FirebaseApp
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -437,6 +435,30 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(//FEITO
+                            "postagem?idDoVideo={idDoVideo}&id={id}&tipoUsuario={tipoUsuario}&fotoPerfil={fotoPerfil}",
+                            arguments = listOf(
+                                navArgument("idDoVideo") { type = NavType.StringType },
+                                navArgument("tipoUsuario") { type = NavType.StringType },
+                                navArgument("id") { type = NavType.StringType },
+                                navArgument("fotoPerfil") {
+                                    type = NavType.StringType;nullable = true
+                                },
+                            )
+                        ) { backStackEntry ->
+                            val idDoVideo = backStackEntry.arguments?.getString("idDoVideo") ?: ""
+                            val tipoUsuario =
+                                backStackEntry.arguments?.getString("tipoUsuario") ?: ""
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val fotoPerfil = backStackEntry.arguments?.getString("fotoPerfil") ?: ""
+                            PostagemInfo(
+                                controleDeNavegacao = controleDeNavegacao,
+                                idDoVideo = idDoVideo,
+                                id = id,
+                                tipoUsuario = tipoUsuario,
+                                fotoPerfil = fotoPerfil
+                            )
+                        }
+                        composable(//FEITO
                             "editarVideo?idDoVideo={idDoVideo}&tipoUsuario={tipoUsuario}&id={id}&fotoPerfil={fotoPerfil}&idModulo={idModulo}&idNivel={idNivel}&duracao={duracao}&url={url}&foto={foto}&titulo={titulo}&descricao={descricao}",
                             arguments = listOf(
                                 navArgument("idDoVideo") { type = NavType.StringType },
@@ -486,7 +508,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(//FEITO
-                            "editarPostagem?idDaPostagem={idDaPostagem}&tipoUsuario={tipoUsuario}&id={id}&fotoPerfil={fotoPerfil}&fotoPerfil={foto}&texto={texto}",
+                            "editarPostagem?idDaPostagem={idDaPostagem}&tipoUsuario={tipoUsuario}&id={id}&fotoPerfil={fotoPerfil}&fotoCapa={foto}&texto={texto}",
                             arguments = listOf(
                                 navArgument("idDaPostagem") { type = NavType.StringType },
                                 navArgument("tipoUsuario") { type = NavType.StringType },
@@ -511,7 +533,8 @@ class MainActivity : ComponentActivity() {
                                 controleDeNavegacao = controleDeNavegacao,
                                 idDaPostagem = idDaPostagem,
                                 texto = texto,
-                                fotoPerfil=foto,
+                                fotoCapa=foto,
+                                fotoPerfil=fotoPerfil,
                                 id = id,
                                 tipoUsuario = tipoUsuario,
                                 getContent = { getContent.launch("image/*") },

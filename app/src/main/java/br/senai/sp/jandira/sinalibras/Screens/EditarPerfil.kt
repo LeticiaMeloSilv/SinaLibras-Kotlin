@@ -149,6 +149,8 @@ fun EditarPerfil(
 
             Button(
                 onClick = {
+                    imageUri=null
+                    fotoState.value=""
                     controleDeNavegacao.navigate("configuracoes?id=${id}&email=${email}&nome=${nome}&dataNascimento=${dataNascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")
                 },
                 colors = ButtonColors(
@@ -470,8 +472,6 @@ fun EditarPerfil(
                 val mesMandar = partesDataMandar[1]
                 val anoMandar = partesDataMandar[2]
                 val dataNascimentoMandar = "$anoMandar-$mesMandar-$diaMandar"
-
-                Log.i( "calma",nomeState.value.toString())
 
                 if (nomeState.value == "" || emailState.value == "" || nascimentoState.value == "") {
                     mensagemErroState.value =

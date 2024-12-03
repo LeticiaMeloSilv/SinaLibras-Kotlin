@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -46,10 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.sinalibras.R
 import br.senai.sp.jandira.sinalibras.model.Postagem
-import br.senai.sp.jandira.sinalibras.model.ResultModulo
-import br.senai.sp.jandira.sinalibras.model.ResultNivel
 import br.senai.sp.jandira.sinalibras.model.ResultPostagem
-import br.senai.sp.jandira.sinalibras.model.ResultVideo
 import br.senai.sp.jandira.sinalibras.service.RetrofitFactory
 import coil.compose.rememberAsyncImagePainter
 import org.threeten.bp.LocalDate
@@ -68,6 +64,7 @@ fun EditarPostagem(
     texto: String,
     getContent: () -> Unit,
     initialImageUri: Uri?,
+    fotoCapa: String,
 ) {
     var focusTela = remember {
         mutableStateOf(
