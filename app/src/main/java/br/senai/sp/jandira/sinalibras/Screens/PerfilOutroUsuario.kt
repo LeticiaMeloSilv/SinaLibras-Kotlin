@@ -459,8 +459,7 @@ fun PerfilOutroUsuario(
                                 ),
                                 contentDescription = "Profile Icon",
                                 modifier = Modifier
-                                    .size(45.dp)
-                                    .clickable { controleDeNavegacao.navigate("implementacao?id=${id}&tipoUsuario=${tipoUsuario}") },
+                                    .size(45.dp),
                                 contentScale = ContentScale.Fit
                             )
                         } else {

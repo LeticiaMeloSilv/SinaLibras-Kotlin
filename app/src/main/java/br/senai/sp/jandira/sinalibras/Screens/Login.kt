@@ -222,11 +222,10 @@ fun Login(controleDeNavegacao: NavHostController) {
                         p1: Response<ResultAluno>
                     ) {
                         val alunoList = p1.body()
-                        if(p1.isSuccessful){
                             if (alunoList != null) {
-                                if(alunoList.status)
-                                controleDeNavegacao.navigate("feed?id=${alunoList.aluno?.id_aluno.toString()}&tipoUsuario=aluno&fotoPerfil=${alunoList.aluno?.foto_perfil}")
-                                else{
+                                if (alunoList.status)
+                                    controleDeNavegacao.navigate("feed?id=${alunoList.aluno?.id_aluno.toString()}&tipoUsuario=aluno&fotoPerfil=${alunoList.aluno?.foto_perfil}")
+                                else {
                                     val callProfessor = RetrofitFactory()
                                         .getUsuarioService().setValidarEntradaProfessor(
                                             usuario = Professor(
@@ -235,21 +234,24 @@ fun Login(controleDeNavegacao: NavHostController) {
                                             )
                                         )
                                     callProfessor.enqueue(object : Callback<ResultProfessor> {
-                                        override fun onResponse(p0: Call<ResultProfessor>, p1: Response<ResultProfessor>) {
+                                        override fun onResponse(
+                                            p0: Call<ResultProfessor>,
+                                            p1: Response<ResultProfessor>
+                                        ) {
                                             val professorList = p1.body()
-                                            if(p1.isSuccessful){
+                                            if (p1.isSuccessful) {
                                                 if (professorList != null) {
+
                                                     controleDeNavegacao.navigate("feed?id=${professorList.professor?.id_professor.toString()}&tipoUsuario=professor&fotoPerfil=${professorList.professor?.foto_perfil}")
                                                 }
-                                            }
-                                            else{
+                                            } else {
                                                 if (professorList != null) {
 
                                                     mensagemErroState.value = professorList.message
                                                     umError.value = true
-                                                }
-                                                else{
-                                                    mensagemErroState.value = "Seus dados não conferem"
+                                                } else {
+                                                    mensagemErroState.value =
+                                                        "Seus dados não conferem"
                                                     umError.value = true
 
                                                 }
@@ -257,22 +259,18 @@ fun Login(controleDeNavegacao: NavHostController) {
                                             }
                                         }
 
-                                        override fun onFailure(p0: Call<ResultProfessor>, p1: Throwable) {
+                                        override fun onFailure(
+                                            p0: Call<ResultProfessor>,
+                                            p1: Throwable
+                                        ) {
                                             Log.i("ERRO_LOGIN", p1.toString())
                                             mensagemErroState.value =
-                                                "Ocorreu um erro, o serviço pode estar indisponivel. Favor, verifique se está conectado a internet ou tente novamente mais tarde"}
+                                                "Ocorreu um erro, o serviço pode estar indisponivel. Favor, verifique se está conectado a internet ou tente novamente mais tarde"
+                                        }
 
                                     })
                                 }
                             }
-                        }
-                        else{
-                            mensagemErroState.value =
-                                "Ocorreu um erro, tente novamente mais tarde"
-
- }
-
-
                     }
 
                     override fun onFailure(p0: Call<ResultAluno>, p1: Throwable) {

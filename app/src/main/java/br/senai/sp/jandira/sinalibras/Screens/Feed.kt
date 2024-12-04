@@ -62,6 +62,7 @@ import br.senai.sp.jandira.sinalibras.model.Aluno
 import br.senai.sp.jandira.sinalibras.model.Professor
 import br.senai.sp.jandira.sinalibras.model.ResultFeed
 import br.senai.sp.jandira.sinalibras.model.ResultModulo
+import br.senai.sp.jandira.sinalibras.model.ResultPostagem
 import br.senai.sp.jandira.sinalibras.model.ResultProfessor
 import br.senai.sp.jandira.sinalibras.model.ResultProfessores
 import br.senai.sp.jandira.sinalibras.model.ResultVideo
@@ -104,6 +105,9 @@ fun Feed(
     }
     var dadosVideos by remember {
         mutableStateOf(ResultVideo())
+    }
+    var dadosPostagem by remember {
+        mutableStateOf(ResultPostagem())
     }
     var pesquisaState = remember { mutableStateOf("") }
 
@@ -202,7 +206,7 @@ fun Feed(
                             placeholder = painterResource(R.drawable.perfil),
                             error = painterResource(id = R.drawable.erro)
                         ),
-                        contentDescription = null,
+                        contentDescription = "foto de perfil",
                         modifier = Modifier
                             .size(50.dp)
                             .background(Color(0xFFA5D1FF), CircleShape)
@@ -266,6 +270,42 @@ fun Feed(
                                                                         } else {
                                                                             pesquisaProfessor.value = true
                                                                         }
+                                                                    }
+                                                                    else{
+                                                                        val callPostagemByNome = RetrofitFactory()
+                                                                            .getPostagensService()
+                                                                            .getPesquisarPostagem(pesquisaState.value)
+                                                                        callPostagemByNome.enqueue(object : Callback<ResultPostagem> {
+                                                                            override fun onResponse(
+                                                                                p0: Call<ResultPostagem>,
+                                                                                p1: Response<ResultPostagem>
+                                                                            ) {
+                                                                                val videoResponse = p1.body()
+                                                                                if (p1.isSuccessful) {
+                                                                                    if (videoResponse != null) {
+                                                                                        if (videoResponse.status_code != 404) {
+                                                                                            pesquisaProfessor.value = true
+                                                                                            dadosPostagem = videoResponse
+                                                                                            funcionouState.value = true
+                                                                                        } else {
+                                                                                            pesquisaProfessor.value = true
+                                                                                        }
+                                                                                    }
+                                                                                } else {
+
+                                                                                    Log.i("API Error", "Null response body")
+                                                                                }
+                                                                            }
+
+                                                                            override fun onFailure(
+                                                                                p0: Call<ResultPostagem>,
+                                                                                p1: Throwable
+                                                                            ) {
+                                                                                Log.i("ERRO_PERFIL", p1.toString())
+                                                                            }
+
+
+                                                                        })
                                                                     }
                                                                 } else {
 

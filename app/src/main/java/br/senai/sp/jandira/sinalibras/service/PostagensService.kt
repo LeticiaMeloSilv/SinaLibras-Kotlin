@@ -55,6 +55,8 @@ interface PostagensService {
     fun getVideoById(@Path("id")id:Int): Call<ResultVideoID>
 
 
+    @GET("/v1/sinalibras/videos/buscar/{texto}")
+    fun getPesquisarPostagem(@Path("texto")texto:String): Call<ResultPostagem>
 
 
     @GET("/v1/sinalibras/postagem/{id}")

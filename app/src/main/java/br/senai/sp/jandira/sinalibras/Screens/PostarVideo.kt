@@ -391,7 +391,6 @@ else if(erroState){
 
                 Text(
                     text = "Titulo do video:",
-
                     color = Color.Black,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -524,6 +523,16 @@ else if(erroState){
                         }
 
                         else{
+                            if (linkUrl=="" || fotoCapaUrl=="") {
+                                Log.i("Calma", "atitulo=${tituloState.value}, descricao=${descricaoState.value}, idmo=${idModuloEscolhidoState.value}, idni=${idNivelEscolhidoState.value}, id=${id}, data=${currentDate}")
+
+                                carregando=true
+                            }
+                            if(linkUrl!=""&&fotoCapaUrl!=""){
+                                Log.i("Calma", "btitulo=${tituloState.value}, descricao=${descricaoState.value}, idmo=${idModuloEscolhidoState.value}, idni=${idNivelEscolhidoState.value}, id=${id}, data=${currentDate}")
+
+                                carregando=false
+
                         val callUsuarios = RetrofitFactory()
                             .getPostagensService().setSalvarVideoAula(
                                 videoAula = VideoAula(
@@ -543,32 +552,27 @@ else if(erroState){
                                 p0: Call<ResultVideo>,
                                 p1: Response<ResultVideo>
                             ) {
+                                carregando=true
+
                                 val usuarioSalvo = p1.body()
                                 Log.i("aaaaa",usuarioSalvo.toString())
                                 Log.i("aaaaa",p0.toString())
-                                if (linkUrl=="" || fotoCapaUrl=="") {
-                                    Log.i("Calma", "atitulo=${tituloState.value}, descricao=${descricaoState.value}, idmo=${idModuloEscolhidoState.value}, idni=${idNivelEscolhidoState.value}, id=${id}, data=${currentDate}")
-
-                                    carregando=true
-                                }
-                                if(linkUrl!=""&&fotoCapaUrl!=""){
-                                    Log.i("Calma", "btitulo=${tituloState.value}, descricao=${descricaoState.value}, idmo=${idModuloEscolhidoState.value}, idni=${idNivelEscolhidoState.value}, id=${id}, data=${currentDate}")
-
-                                    carregando=false
-                                }
 
                                 if (p1.isSuccessful) {
                                     if (usuarioSalvo != null) {
                                         linkUrl=""
                                         fotoCapaUrl=""
+                                        carregando=false
                                         controleDeNavegacao.navigate("feed?id=${id}&tipoUsuario=${tipoUsuario}&fotoPerfil=${fotoPerfil}")
                                     }
                                     else {
+                                        carregando=false
                                         mensagemErroState.value = "Ocorreu um erro por parte do Servidor, tente novamente mais tarde"
 
                                     }
 
                                 } else {
+                                    carregando=false
                                     if(usuarioSalvo!=null){
                                         mensagemErroState.value = usuarioSalvo.message.toString()}
                                     else{
@@ -582,13 +586,15 @@ else if(erroState){
                                 p0: Call<ResultVideo>,
                                 p1: Throwable
                             ) {
-
+                                carregando=false
                                 mensagemErroState.value =
                                     "Ocorreu um erro, o serviço pode estar indisponivel.Favor, tente novamente mais tarde"
 
                             }
 
-                        })}
+                        })
+                            }
+                        }
 
                     },
                     colors = ButtonDefaults.buttonColors(
