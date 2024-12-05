@@ -21,7 +21,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,6 +46,9 @@ fun Suporte(controleDeNavegacao: NavHostController,
     var conteudoDenuncia = remember {
         mutableStateOf("")
     }
+    var assuntoState = remember {
+        mutableStateOf("")
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +62,7 @@ fun Suporte(controleDeNavegacao: NavHostController,
         ) {
             Button(
                 onClick = {
-                    controleDeNavegacao.navigate("configuracoes?id=${id}&email=${email}&nome=${nome}&dataNascimento=${dataNascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")
+                   controleDeNavegacao.navigate("configuracoes?id=${id}&email=${email}&nome=${nome}&dataNascimento=${dataNascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")
                 },
                 colors = ButtonColors(
                     Color.Transparent,
@@ -76,7 +80,8 @@ fun Suporte(controleDeNavegacao: NavHostController,
             Text(
                 text = "Suporte/Denúncias",
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
 
         }
@@ -88,32 +93,41 @@ fun Suporte(controleDeNavegacao: NavHostController,
             contentDescription = "icone de usuario de suporte",
             modifier = Modifier
                 .size(60.dp)
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally),
+            tint = Color.Black
         )
         Text(
             text = "Novo Chamado",
             fontSize = 16.sp,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+                    color = Color.Black
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
-            value = nome,
-            onValueChange = {},
-            label = { Text("Nome") },
-            modifier = Modifier.fillMaxWidth()
+            value = assuntoState.value,
+            onValueChange = {assuntoState.value=it},
+            label = { Text("Assunto",color = Color.Black) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults
+                .colors(
+                    focusedContainerColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedContainerColor = Color.Transparent,
+                    unfocusedTextColor = Color.Black,
+                    errorTextColor = Color.Black,
+                    errorContainerColor = Color.Transparent,
+                    errorPlaceholderColor = Color.Black,
+                    errorLabelColor = Color.Black,
+                    focusedPlaceholderColor = Color.Black,
+                    unfocusedPlaceholderColor = Color.Black,
+                    unfocusedLabelColor = Color.Black,
+                    focusedLabelColor = Color.Black
+                )
+
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = {},
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -122,10 +136,25 @@ fun Suporte(controleDeNavegacao: NavHostController,
             onValueChange = {
                 conteudoDenuncia.value =it
             },
-            label = { Text("Assunto") },
+            label = { Text("Conteúdo",color = Color.Black) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp)
+                .height(150.dp),
+            colors = TextFieldDefaults
+                .colors(
+                    focusedContainerColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedContainerColor = Color.Transparent,
+                    unfocusedTextColor = Color.Black,
+                    errorTextColor = Color.Black,
+                    errorContainerColor = Color.Transparent,
+                    errorPlaceholderColor = Color.Black,
+                    errorLabelColor = Color.Black,
+                    focusedPlaceholderColor = Color.Black,
+                    unfocusedPlaceholderColor = Color.Black,
+                    unfocusedLabelColor = Color.Black,
+                    focusedLabelColor = Color.Black
+                )
         )
 
       //  Spacer(modifier = Modifier.height(16.dp))
@@ -141,9 +170,12 @@ fun Suporte(controleDeNavegacao: NavHostController,
         Icon(
             painter = painterResource(id = R.drawable.send),
             contentDescription = "Enviar",
-            modifier = Modifier.size(24.dp).clickable{
-
-            }
+            modifier = Modifier
+                .size(32.dp)
+                .clickable {
+                    controleDeNavegacao.navigate("configuracoes?id=${id}&email=${email}&nome=${nome}&dataNascimento=${dataNascimento}&fotoPerfil=${fotoPerfil}&tipoUsuario=${tipoUsuario}")
+                },
+            tint=Color(0xff334EAC)
         )
         Spacer(modifier = Modifier.height(165.dp))
 
@@ -152,11 +184,8 @@ fun Suporte(controleDeNavegacao: NavHostController,
             contentDescription = "Logo SinaLibras",
             modifier = Modifier
                 .size(114.dp)
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally),
+            tint=Color(0xff334EAC)
         )
     }
 }
-
-//RESOLOVER O BGLH DO DO EMAIL. NÃO É NOSSO FOCO AGR
-
-
